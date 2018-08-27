@@ -14,7 +14,7 @@ function Estado(id,final) {
 	}
 }
 
-var aristas={[]};
+var aristas=[{}];
 var automatas={};
 
 function Automata(){
@@ -36,19 +36,50 @@ function Automata(){
 		this.alfabeto.push(simbolo);
 		this.aceptados.push(e2);
 	}
-	this.mover= new function(e,s){
+	this.mover= new function(conjunto,s){
 		var r={};
-		for(var t in e.transiciones){
-			if(t.simbolo == s)
-				r.push(t.destino);
+		for(var e in conjunto){
+			for(var t in e.transiciones){
+				if(t.simbolo === s)
+					r.push(t.destino);
+			}
 		}
 		return r;
 	}
-
+	this.cerradura = new function(conjunto){
+		var r={};
+		var stack=[];
+		for(var e in conjunto){
+			stack.push(e);
+		}
+		while(stack.length != 0){
+			var e=stack.pop();
+			if(!r.contains(e)){
+				r.push(e);
+				for(t in e.transiciones){
+					if(t.simbolo === epsilon)
+						stack.push(t.destino);
+				}
+			}
+		}
+		return r;
+	}
 	this.unirAlfabeto = new function(alfa){
 		for (c in alfa){
 			this.alfabeto.push(c);
 		}
+	}
+	//Incompleta
+	this.transformar = new function(){
+		var E = [{}];
+		var marcados = {};
+		var e1={};
+		var mover_usados={};
+		for(c in this.alfabeto){
+			e1 = this.cerradura(this.mover(inicial,c));
+		}
+		E.push(e1);
+
 	}
 
 	this.unir = new function(automata){
