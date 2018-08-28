@@ -26,6 +26,8 @@ function Automata(){
 	var inicial;
 	var contador=0;
 	var alfabeto={};
+
+
 	this.basico = new function(simbolo){
 		var nodo1=new Estado(this.cont++,false);
 		var nodo2=new Estado(this.cont++,true);
@@ -36,6 +38,8 @@ function Automata(){
 		this.alfabeto.push(simbolo);
 		this.aceptados.push(e2);
 	}
+
+
 	this.mover= new function(conjunto,s){
 		var r={};
 		for(var e in conjunto){
@@ -46,6 +50,8 @@ function Automata(){
 		}
 		return r;
 	}
+
+
 	this.cerradura = new function(conjunto){
 		var r={};
 		var stack=[];
@@ -64,11 +70,21 @@ function Automata(){
 		}
 		return r;
 	}
+
+	this.Ir_A = new function(estado,simbolo){
+		var e = [];
+		e.push(estado);
+		return this.cerradura(this.mover(e,s))
+	}
+
+
 	this.unirAlfabeto = new function(alfa){
-		for (c in alfa){
+		for (var c in alfa){
 			this.alfabeto.push(c);
 		}
 	}
+
+
 	//Incompleta
 	this.transformar = new function(){
 		var E = [{}];
@@ -85,8 +101,8 @@ function Automata(){
 	this.unir = new function(automata){
 		var nodo1=new Estado(this.cont++,false);
 		var nodo2=new Estado(this.cont++,true);
-		e1.addTrans(new Transicion(epsilon,this.inicial));
-		e1.addTrans(new Transicion(epsilon,automata.inicial));
+		nodo1.addTrans(new Transicion(epsilon,this.inicial));
+		nodo2.addTrans(new Transicion(epsilon,automata.inicial));
 		for(var e in this.aceptados){
 			e.addTrans(new Transicion(epsilon,e2));
 			e.final =false;
@@ -98,8 +114,37 @@ function Automata(){
 		this.aceptados=[];
 		this.aceptados.push(e2);
 		this.inicial=e1;
-		unirAlfabeto(automata.alfabeto);//innecesario
-		alfabeto = {};
+		this.unirAlfabeto(automata.alfabeto);//innecesario
+		//alfabeto = {};
+	}
+
+	this.concatenar = new function(automata){
+		for(var e in this.aceptados){
+			for(var t in automata.inicial.transiciones){
+				e.addTrans(t.destino, t.simbolo);
+			}
+			e.final = false;
+		}
+		this.aceptados = [];
+		for(var e in automata.aceptados){
+			this.aceptados.push(e);
+		}
+		this.unirAlfabeto(automata.alfabeto);
+	}
+
+	this.cerraduraKleene(){
+		var nodo1=new Estado(this.cont++,false);
+		var nodo2=new Estado(this.cont++,true);
+		nodo1.addTrans(new Transicion(epsilon, this.inicial));
+		nodo1.addTrans(new Transicion(epsilon, e2));
+		for(var e in this.aceptados){
+			e.final=false;
+			e.addTrans(new Transicion(epsilon, this.inicial)):
+			e.addTrans(new Transicion(epsilon, e2));
+		}
+		this.inicial = e1;
+		this.aceptados = [];
+		this.aceptados.push(e2);
 	}
 }
 
