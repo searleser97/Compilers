@@ -84,18 +84,62 @@ function Automata(){
 		}
 	}
 
+	this.transformar = new function(){		
+		var E = [{}];//Arreglo que contiene conjuntos de estados del AFND despues de hacer las operaciones correspondientes
+		var Ei=[{}];//Arreglo que contiene los nuevos nodos que seran creados para el AFD
+		var en_cola=[];//Cola que nos ayuda a procesar todos los elementos de E
+		var contador=0;//Contador utilizado para saber la posicion de los nodos recien creados
 
-	//Incompleta
-	this.transformar = new function(){
-		var E = [{}];
-		var marcados = {};
-		var e1={};
-		var mover_usados={};
-		for(c in this.alfabeto){
-			e1 = this.cerradura(this.mover(inicial,c));
+		//Hacemos cerradura del nodo inicial
+		E[contador] = this.cerradura(this.inicial);
+		en_cola.push(E[contador]);//Se introduce un CONJUNTO a la cola
+
+		//Se crea el nodo del nuevo AFD
+		Ei[contador]=new Estado(contador,false);
+
+		while(!en_cola.empty()){
+
+			var e = en_cola.pop();//Se saca el conjunto correspondiente
+			var nodo_creado = Ei[E.find(e)];//El nodo que fue creado se encuentra mediante una busqueda
+			//realizada en E con el conjunto que sacamos de la cola. El conjunto que se encuentra comparte
+			//indice con el nodo creado con tal informacion.
+
+			for(var c in this.alfabeto){//Por cada letra de nuestro alfabeto
+
+				var res=cerradura(mover(e,c));//Se hace la operacion Ir_A
+				var encontrar =E.find(res);//El find regresa una posicion del arreglo E si es que encuentra el elemento res en este mismo.
+				//Si ya lo habiamos creado entonces solo agregamos la arista
+				if(encontrar){
+					Ei[nodo_creado].addTrans(c,Ei[encontrar]);
+				}
+				else{
+					//Si no lo teniamos, entonces se agrega el conjunto a E (aumentando el indice) y tambien se crea un estado en Ei.
+					E[contador++]=res;
+					Ei[contador] = new Estado(contador,false);
+					Ei[nodo_creado].addTrans(c,Ei[encontrar]);//Se le agrega la transicion
+					en_cola.push(E[contador]);//Se meta a la cola
+				}
+				
+			}
 		}
-		E.push(e1);
+		//Creamos el nuevo AFD a devolver con sus inicializaciones correspondientes
+		var resultado = new AFD();
+		resultado.estados=Ei;
+		resultado.inicial=Ei[0];
+		resultado.alfabeto=this.alfabeto;
+		//Checar cuales son finales y agregarlos al conjunto del nuevo AFD
+		var index=0;
+		for(var conjunto in E){
+			for(var e in conjunto){
+				if(this.aceptados.contains(e)){
+					resultado.aceptados.push(Ei[index]);
+					break;
+				}
+			}
+			index++;
+		}
 
+		return resultado;
 	}
 
 	this.unir = new function(automata){
