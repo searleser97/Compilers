@@ -14,6 +14,12 @@ function Estado(id,final) {
 	}
 }
 
+function TransicionTotal(inicial, simbolo, final){
+	this.inicial = inicial;
+	this.simbolo = simbolo;
+	this.final = final;
+}
+
 var aristas=[{}];
 var automatas={};
 
@@ -26,12 +32,14 @@ function Automata(){
 	var inicial;
 	var contador=0;
 	var alfabeto={};
+	var totalTransiciones = [];
 
 
 	this.basico = new function(simbolo){
 		var nodo1=new Estado(this.cont++,false);
 		var nodo2=new Estado(this.cont++,true);
 		nodo1.addTrans(simbolo,nodo2);
+		totalTransiciones.push(new TransicionTotal(nodo1, simbolo, nodo2));
 		this.inicial = nodo1;
 		this.estados.push(e1);
 		this.estados.push(e2);
@@ -90,6 +98,8 @@ function Automata(){
 		var en_cola=[];//Cola que nos ayuda a procesar todos los elementos de E
 		var contador=0;//Contador utilizado para saber la posicion de los nodos recien creados
 
+		var nuevasTransiciones = []
+
 		//Hacemos cerradura del nodo inicial
 		E[contador] = this.cerradura(this.inicial);
 		en_cola.push(E[contador]);//Se introduce un CONJUNTO a la cola
@@ -111,22 +121,25 @@ function Automata(){
 				//Si ya lo habiamos creado entonces solo agregamos la arista
 				if(encontrar){
 					Ei[nodo_creado].addTrans(c,Ei[encontrar]);
+					nuevasTransiciones.push(new TransicionTotal(Ei[nodo_creado], c, Ei[encontrar]));
 				}
 				else{
 					//Si no lo teniamos, entonces se agrega el conjunto a E (aumentando el indice) y tambien se crea un estado en Ei.
 					E[contador++]=res;
 					Ei[contador] = new Estado(contador,false);
 					Ei[nodo_creado].addTrans(c,Ei[encontrar]);//Se le agrega la transicion
+					nuevasTransiciones.push(new TransicionTotal(Ei[nodo_creado], c, Ei[encontrar]));
 					en_cola.push(E[contador]);//Se meta a la cola
 				}
 				
 			}
 		}
 		//Creamos el nuevo AFD a devolver con sus inicializaciones correspondientes
-		var resultado = new AFD();
+		var resultado = new Automata();
 		resultado.estados=Ei;
 		resultado.inicial=Ei[0];
 		resultado.alfabeto=this.alfabeto;
+		resultado.totalTransiciones = nuevasTransiciones;
 		//Checar cuales son finales y agregarlos al conjunto del nuevo AFD
 		var index=0;
 		for(var conjunto in E){
@@ -146,18 +159,22 @@ function Automata(){
 		var nodo1=new Estado(this.cont++,false);
 		var nodo2=new Estado(this.cont++,true);
 		nodo1.addTrans(new Transicion(epsilon,this.inicial));
-		nodo2.addTrans(new Transicion(epsilon,automata.inicial));
+		totalTransiciones.push(new TransicionTotal(nodo1, epsilon, this.inicial));
+		nodo1.addTrans(new Transicion(epsilon,automata.inicial));
+		totalTransiciones.push(new TransicionTotal(nodo1, epsilon, automata.inicial));
 		for(var e in this.aceptados){
-			e.addTrans(new Transicion(epsilon,e2));
+			e.addTrans(new Transicion(epsilon,nodo2));
+			totalTransiciones.push(new TransicionTotal(e, epsilon, nodo2));
 			e.final =false;
 		}
 		for(var e in automata.aceptados){
-			e.addTrans(new Transicion(epsilon,e2));
+			e.addTrans(new Transicion(epsilon,nodo2));
+			totalTransiciones.push(new TransicionTotal(e, epsilon, nodo2));
 			e.final =false;
 		}
 		this.aceptados=[];
-		this.aceptados.push(e2);
-		this.inicial=e1;
+		this.aceptados.push(nodo2);
+		this.inicial=nodo1;
 		this.unirAlfabeto(automata.alfabeto);//innecesario
 		//alfabeto = {};
 	}
@@ -165,7 +182,8 @@ function Automata(){
 	this.concatenar = new function(automata){
 		for(var e in this.aceptados){
 			for(var t in automata.inicial.transiciones){
-				e.addTrans(t.destino, t.simbolo);
+				e.addTrans(t.simbolo, t.destino);
+				totalTransiciones.push(new TransicionTotal(e, t.simbolo, t.destino));
 			}
 			e.final = false;
 		}
@@ -180,15 +198,19 @@ function Automata(){
 		var nodo1=new Estado(this.cont++,false);
 		var nodo2=new Estado(this.cont++,true);
 		nodo1.addTrans(new Transicion(epsilon, this.inicial));
-		nodo1.addTrans(new Transicion(epsilon, e2));
+		totalTransiciones.push(new TransicionTotal(nodo1, epsilon, this.inicial));
+		nodo1.addTrans(new Transicion(epsilon, nodo2));
+		totalTransiciones.push(new TransicionTotal(nodo1, epsilon, nodo2));
 		for(var e in this.aceptados){
 			e.final=false;
-			e.addTrans(new Transicion(epsilon, this.inicial)):
-			e.addTrans(new Transicion(epsilon, e2));
+			e.addTrans(new Transicion(epsilon, this.inicial));
+			totalTransiciones.push(new TransicionTotal(e, epsilon, this.inicial));
+			e.addTrans(new Transicion(epsilon, nodo2));
+			totalTransiciones.push(new TransicionTotal(e, epsilon, nodo2));
 		}
-		this.inicial = e1;
+		this.inicial = nodo1;
 		this.aceptados = [];
-		this.aceptados.push(e2);
+		this.aceptados.push(nodo2);
 	}
 }
 
