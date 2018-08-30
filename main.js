@@ -5,6 +5,7 @@ a2.basico(s);
 automatas.push(a1);
 var conjunto = a1.mover();
 a1.unir(a2);
+createFSMDiagram(a1);
 
 var inn = '' +
     'A 0 A\n' +
@@ -59,7 +60,7 @@ var stacks = [];
 var actualStatesWithItsStacks = [];
 
 // end of global variables needed
-function createFSM() {
+function createFSMDiagram(automata) {
     clearInterval(interval);
     fsm = {};
     nodesIds = {};
@@ -67,15 +68,15 @@ function createFSM() {
     nodes = [];
     var edges = [{}];
     isStartPoint = {};
-    startPoints = [a1.inicial];
-    var acceptedStatesArr = a1.aceptados;
+    startPoints = [automata.inicial];
+    var acceptedStatesArr = automata.aceptados;
     for (var i in acceptedStatesArr)
         acceptedStates[acceptedStatesArr[i]] = true;
     for (st in startPoints)
         isStartPoint[startPoints[st]] = true;
     var fromTo = {};
     // var lines = (document.getElementById('fsm').value).split('\n');
-    for (var trans of a1.totalTransiciones) {
+    for (var trans of automata.totalTransiciones) {
         // var line = lines[i];
         // var values = line.split(' ');
         var from = trans.inicial;
