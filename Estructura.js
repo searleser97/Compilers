@@ -1,3 +1,6 @@
+var epsilon = '\\e';
+var totalTransiciones = [];
+
 function Transicion(simbolo, destino) {
 	this.simbolo = simbolo;
 	this.destino = destino;
@@ -5,10 +8,10 @@ function Transicion(simbolo, destino) {
 }
 
 function Estado(id, final) {
-	_this = this;
+	var _this = this;
 	_this.id = id;
 	_this.final = final;
-	_this.transiciones = [{}];
+	_this.transiciones = [];
 	//funciones
 	_this.addTrans = function (simbolo, destino) {
 		_this.transiciones.push(new Transicion(simbolo, destino));
@@ -21,33 +24,34 @@ function TransicionTotal(inicial, simbolo, final) {
 	this.final = final;
 }
 
-var aristas = [{}];
 var automatas = new Set();
+var contador = 0;
 
 function Automata() {
 	//De alguna manera introducir la informacion o mandarla como parametros
 	//this.inicial= inicial;
 	//funciones
 	var _this = this;
-	_this.totalTransiciones = [];
+	
 	_this.estados = [];
 	_this.aceptados = [];
-	_this.inicial = {};
-	_this.contador = 0;
+	_this.aceptadosID = [];
+	_this.inicial = null;
 	_this.alfabeto = new Set();
 
 
 
 	_this.basico = function (simbolo) {
-		var e1 = new Estado(_this.contador++, false);
-		var e2 = new Estado(_this.contador++, true);
+		var e1 = new Estado(contador++, false);
+		var e2 = new Estado(contador++, true);
 		e1.addTrans(simbolo, e2);
-		_this.totalTransiciones.push(new TransicionTotal(e1, simbolo, e2));
+		totalTransiciones.push(new TransicionTotal(e1.id, simbolo, e2.id));
 		_this.inicial = e1;
 		_this.estados.push(e1);
 		_this.estados.push(e2);
 		_this.alfabeto.add(simbolo);
 		_this.aceptados.push(e2);
+		_this.aceptadosID.push(e2.id);
 	}
 
 
@@ -159,24 +163,29 @@ function Automata() {
 	}
 */
 	this.unir = function (automata) {
-		var nodo1 = new Estado(_this.cont++, false);
-		var nodo2 = new Estado(_this.cont++, true);
+		var nodo1 = new Estado(contador++, false);
+		var nodo2 = new Estado(contador++, true);
 		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
-		_this.totalTransiciones.push(new TransicionTotal(nodo1, epsilon, _this.inicial));
-		//nodo1.addTrans(new Transicion(epsilon, automata.inicial));
-		_this.totalTransiciones.push(new TransicionTotal(nodo1, epsilon, automata.inicial));
+		totalTransiciones.push(new TransicionTotal(nodo1.id, epsilon, _this.inicial.id));
+		nodo1.addTrans(new Transicion(epsilon, automata.inicial));
+		totalTransiciones.push(new TransicionTotal(nodo1.id, epsilon, automata.inicial.id));
 		for (var e of _this.aceptados) {
 			e.addTrans(new Transicion(epsilon, nodo2));
-			_this.totalTransiciones.push(new TransicionTotal(e, epsilon, nodo2));
+			totalTransiciones.push(new TransicionTotal(e.id, epsilon, nodo2.id));
 			e.final = false;
 		}
 		for (var e of automata.aceptados) {
 			e.addTrans(new Transicion(epsilon, nodo2));
-			_this.totalTransiciones.push(new TransicionTotal(e, epsilon, nodo2));
+			totalTransiciones.push(new TransicionTotal(e.id, epsilon, nodo2.id));
 			e.final = false;
 		}
+		_this.estados.push(nodo1);
+		_this.estados.push(nodo2);
+		_this.estados = _this.estados + automata.estados;
 		_this.aceptados = [];
 		_this.aceptados.push(nodo2);
+		_this.aceptadosID = [];
+		_this.aceptadosID.push(nodo2.id);
 		_this.inicial = nodo1;
 		_this.unirAlfabeto(automata.alfabeto);//innecesario
 		//alfabeto = {};
@@ -185,35 +194,71 @@ function Automata() {
 	_this.concatenar = function (automata) {
 		for (var e of _this.aceptados) {
 			for (var t of automata.inicial.transiciones) {
-				e.addTrans(t.simbolo, t.destino);
-				_this.totalTransiciones.push(new TransicionTotal(e, t.simbolo, t.destino));
+				var aux = t.destino;
+				e.addTrans(t.simbolo, aux);
+				totalTransiciones.push(new TransicionTotal(e.id, t.simbolo.toString(), aux.id));
 			}
 			e.final = false;
 		}
 		_this.aceptados = [];
-		for (var e of automata.aceptados) {
-			_this.aceptados.push(e);
+		_this.aceptadosID = [];
+		for (var f of automata.aceptados) {
+			_this.aceptados.push(f);
+			_this.aceptadosID.push(f.id)
+		}
+		for (var f of automata.estados){
+			if (f !== automata.inicial) {
+				_this.estados.push(f);
+			}
+		}
+		var index = 0;
+		for (var f of totalTransiciones){
+			if (f.inicial === automata.inicial.id) {
+				totalTransiciones.splice(index,1);
+			}
+			index++;
 		}
 		_this.unirAlfabeto(automata.alfabeto);
 	}
 
 	_this.cerraduraKleene = function () {
-		var nodo1 = new Estado(_this.cont++, false);
-		var nodo2 = new Estado(_this.cont++, true);
+		var nodo1 = new Estado(contador++, false);
+		var nodo2 = new Estado(contador++, true);
 		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
-		_this.totalTransiciones.push(new TransicionTotal(nodo1, epsilon, _this.inicial));
+		totalTransiciones.push(new TransicionTotal(nodo1.id, epsilon, _this.inicial.id));
 		nodo1.addTrans(new Transicion(epsilon, nodo2));
-		_this.totalTransiciones.push(new TransicionTotal(nodo1, epsilon, nodo2));
+		totalTransiciones.push(new TransicionTotal(nodo1.id, epsilon, nodo2.id));
 		for (var e of _this.aceptados) {
 			e.final = false;
 			e.addTrans(new Transicion(epsilon, _this.inicial));
-			_this.totalTransiciones.push(new TransicionTotal(e, epsilon, _this.inicial));
+			totalTransiciones.push(new TransicionTotal(e.id, epsilon, _this.inicial.id));
 			e.addTrans(new Transicion(epsilon, nodo2));
-			_this.totalTransiciones.push(new TransicionTotal(e, epsilon, nodo2));
+			totalTransiciones.push(new TransicionTotal(e.id, epsilon, nodo2.id));
 		}
 		_this.inicial = nodo1;
 		_this.aceptados = [];
 		_this.aceptados.push(nodo2);
+		_this.aceptadosID = [];
+		_this.aceptadosID.push(nodo2.id);
+	}
+
+	_this.cerraduraPositiva = function () {
+		var nodo1 = new Estado(contador++, false);
+		var nodo2 = new Estado(contador++, true);
+		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
+		totalTransiciones.push(new TransicionTotal(nodo1.id, epsilon, _this.inicial.id));
+		for (var e of _this.aceptados) {
+			e.final = false;
+			e.addTrans(new Transicion(epsilon, _this.inicial));
+			totalTransiciones.push(new TransicionTotal(e.id, epsilon, _this.inicial.id));
+			e.addTrans(new Transicion(epsilon, nodo2));
+			totalTransiciones.push(new TransicionTotal(e.id, epsilon, nodo2.id));
+		}
+		_this.inicial = nodo1;
+		_this.aceptados = [];
+		_this.aceptados.push(nodo2);
+		_this.aceptadosID = [];
+		_this.aceptadosID.push(nodo2.id);
 	}
 }
 
