@@ -32,15 +32,15 @@ function Automata() {
 	_this.totalTransiciones = [];
 	_this.estados = [];
 	_this.aceptados = [];
-	_this.inicial;
+	_this.inicial={};
 	_this.contador = 0;
 	_this.alfabeto = new Set();
 	
 
 
 	_this.basico = new function (simbolo) {
-		var e1 = new Estado(this.cont++, false);
-		var e2 = new Estado(this.cont++, true);
+		var e1 = new Estado(_this.contador++, false);
+		var e2 = new Estado(_this.contador++, true);
 		e1.addTrans(simbolo, e2);
 		_this.totalTransiciones.push(new TransicionTotal(e1, simbolo, e2));
 		_this.inicial = e1;
@@ -51,7 +51,7 @@ function Automata() {
 	}
 
 
-	this.mover = new function (conjunto, s) {
+	_this.mover = new function (conjunto, s) {
 		var r = {};
 		for (var e in conjunto) {
 			for (var t in e.transiciones) {
@@ -63,7 +63,7 @@ function Automata() {
 	}
 
 
-	this.cerradura = new function (conjunto) {
+	_this.cerradura = new function (conjunto) {
 		var r = {};
 		var stack = [];
 		for (var e in conjunto) {
@@ -81,21 +81,21 @@ function Automata() {
 		}
 		return r;
 	}
-
-	this.Ir_A = new function (estado, simbolo) {
-		var e = [];
+	/*
+	_this.Ir_A = new function (estado, simbolo) {
+		var e = {};
 		e.push(estado);
-		return this.cerradura(this.mover(e, s))
-	}
+		return _this.cerradura(_this.mover(e, simbolo));
+	}*/
 
 
-	this.unirAlfabeto = new function (alfa) {
+	_this.unirAlfabeto = new function (alfa) {
 		for (var c in alfa) {
-			this.alfabeto.push(c);
+			_this.alfabeto.push(c);
 		}
 	}
-
-	this.transformar = new function () {
+	/*
+	_this.transformar = new function () {
 		var E = [{}];//Arreglo que contiene conjuntos de estados del AFND despues de hacer las operaciones correspondientes
 		var Ei = [{}];//Arreglo que contiene los nuevos nodos que seran creados para el AFD
 		var en_cola = [];//Cola que nos ayuda a procesar todos los elementos de E
@@ -104,7 +104,7 @@ function Automata() {
 		var nuevasTransiciones = []
 
 		//Hacemos cerradura del nodo inicial
-		E[contador] = this.cerradura(this.inicial);
+		E[contador] = _this.cerradura(_this.inicial);
 		en_cola.push(E[contador]);//Se introduce un CONJUNTO a la cola
 
 		//Se crea el nodo del nuevo AFD
@@ -117,7 +117,7 @@ function Automata() {
 			//realizada en E con el conjunto que sacamos de la cola. El conjunto que se encuentra comparte
 			//indice con el nodo creado con tal informacion.
 
-			for (var c in this.alfabeto) {//Por cada letra de nuestro alfabeto
+			for (var c in _this.alfabeto) {//Por cada letra de nuestro alfabeto
 
 				var res = cerradura(mover(e, c));//Se hace la operacion Ir_A
 				var encontrar = E.find(res);//El find regresa una posicion del arreglo E si es que encuentra el elemento res en este mismo.
@@ -141,13 +141,13 @@ function Automata() {
 		var resultado = new Automata();
 		resultado.estados = Ei;
 		resultado.inicial = Ei[0];
-		resultado.alfabeto = this.alfabeto;
+		resultado.alfabeto = _this.alfabeto;
 		resultado.totalTransiciones = nuevasTransiciones;
 		//Checar cuales son finales y agregarlos al conjunto del nuevo AFD
 		var index = 0;
 		for (var conjunto in E) {
 			for (var e in conjunto) {
-				if (this.aceptados.contains(e)) {
+				if (_this.aceptados.contains(e)) {
 					resultado.aceptados.push(Ei[index]);
 					break;
 				}
@@ -157,63 +157,63 @@ function Automata() {
 
 		return resultado;
 	}
-
-	this.unir = new function (automata) {
-		var nodo1 = new Estado(this.cont++, false);
-		var nodo2 = new Estado(this.cont++, true);
-		nodo1.addTrans(new Transicion(epsilon, this.inicial));
-		totalTransiciones.push(new TransicionTotal(nodo1, epsilon, this.inicial));
-		nodo1.addTrans(new Transicion(epsilon, automata.inicial));
-		totalTransiciones.push(new TransicionTotal(nodo1, epsilon, automata.inicial));
-		for (var e in this.aceptados) {
+*/
+	_this.unir = new function (automata) {
+		var nodo1 = new Estado(_this.cont++, false);
+		var nodo2 = new Estado(_this.cont++, true);
+		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
+		_this.totalTransiciones.push(new TransicionTotal(nodo1, epsilon, _this.inicial));
+		//nodo1.addTrans(new Transicion(epsilon, automata.inicial));
+		_this.totalTransiciones.push(new TransicionTotal(nodo1, epsilon, automata.inicial));
+		for (var e in _this.aceptados) {
 			e.addTrans(new Transicion(epsilon, nodo2));
-			totalTransiciones.push(new TransicionTotal(e, epsilon, nodo2));
+			_this.totalTransiciones.push(new TransicionTotal(e, epsilon, nodo2));
 			e.final = false;
 		}
 		for (var e in automata.aceptados) {
 			e.addTrans(new Transicion(epsilon, nodo2));
-			totalTransiciones.push(new TransicionTotal(e, epsilon, nodo2));
+			_this.totalTransiciones.push(new TransicionTotal(e, epsilon, nodo2));
 			e.final = false;
 		}
-		this.aceptados = [];
-		this.aceptados.push(nodo2);
-		this.inicial = nodo1;
-		this.unirAlfabeto(automata.alfabeto);//innecesario
+		_this.aceptados = [];
+		_this.aceptados.push(nodo2);
+		_this.inicial = nodo1;
+		_this.unirAlfabeto(automata.alfabeto);//innecesario
 		//alfabeto = {};
 	}
 
-	this.concatenar = new function (automata) {
-		for (var e in this.aceptados) {
+	_this.concatenar = new function (automata) {
+		for (var e in _this.aceptados) {
 			for (var t in automata.inicial.transiciones) {
 				e.addTrans(t.simbolo, t.destino);
-				totalTransiciones.push(new TransicionTotal(e, t.simbolo, t.destino));
+				_this.totalTransiciones.push(new TransicionTotal(e, t.simbolo, t.destino));
 			}
 			e.final = false;
 		}
-		this.aceptados = [];
+		_this.aceptados = [];
 		for (var e in automata.aceptados) {
-			this.aceptados.push(e);
+			_this.aceptados.push(e);
 		}
-		this.unirAlfabeto(automata.alfabeto);
+		_this.unirAlfabeto(automata.alfabeto);
 	}
 
-	this.cerraduraKleene = new function() {
-		var nodo1 = new Estado(this.cont++, false);
-		var nodo2 = new Estado(this.cont++, true);
-		nodo1.addTrans(new Transicion(epsilon, this.inicial));
-		totalTransiciones.push(new TransicionTotal(nodo1, epsilon, this.inicial));
+	_this.cerraduraKleene = new function() {
+		var nodo1 = new Estado(_this.cont++, false);
+		var nodo2 = new Estado(_this.cont++, true);
+		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
+		_this.totalTransiciones.push(new TransicionTotal(nodo1, epsilon, _this.inicial));
 		nodo1.addTrans(new Transicion(epsilon, nodo2));
-		totalTransiciones.push(new TransicionTotal(nodo1, epsilon, nodo2));
-		for (var e in this.aceptados) {
+		_this.totalTransiciones.push(new TransicionTotal(nodo1, epsilon, nodo2));
+		for (var e in _this.aceptados) {
 			e.final = false;
-			e.addTrans(new Transicion(epsilon, this.inicial));
-			totalTransiciones.push(new TransicionTotal(e, epsilon, this.inicial));
+			e.addTrans(new Transicion(epsilon, _this.inicial));
+			_this.totalTransiciones.push(new TransicionTotal(e, epsilon, _this.inicial));
 			e.addTrans(new Transicion(epsilon, nodo2));
-			totalTransiciones.push(new TransicionTotal(e, epsilon, nodo2));
+			_this.totalTransiciones.push(new TransicionTotal(e, epsilon, nodo2));
 		}
-		this.inicial = nodo1;
-		this.aceptados = [];
-		this.aceptados.push(nodo2);
+		_this.inicial = nodo1;
+		_this.aceptados = [];
+		_this.aceptados.push(nodo2);
 	}
 }
 
