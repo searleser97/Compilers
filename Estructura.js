@@ -32,13 +32,13 @@ function Automata() {
 	_this.totalTransiciones = [];
 	_this.estados = [];
 	_this.aceptados = [];
-	_this.inicial={};
+	_this.inicial = {};
 	_this.contador = 0;
 	_this.alfabeto = new Set();
-	
 
 
-	_this.basico = new function (simbolo) {
+
+	_this.basico = function (simbolo) {
 		var e1 = new Estado(_this.contador++, false);
 		var e2 = new Estado(_this.contador++, true);
 		e1.addTrans(simbolo, e2);
@@ -51,7 +51,7 @@ function Automata() {
 	}
 
 
-	_this.mover = new function (conjunto, s) {
+	_this.mover = function (conjunto, s) {
 		var r = {};
 		for (var e in conjunto) {
 			for (var t in e.transiciones) {
@@ -63,7 +63,7 @@ function Automata() {
 	}
 
 
-	_this.cerradura = new function (conjunto) {
+	_this.cerradura = function (conjunto) {
 		var r = {};
 		var stack = [];
 		for (var e in conjunto) {
@@ -89,7 +89,7 @@ function Automata() {
 	}*/
 
 
-	_this.unirAlfabeto = new function (alfa) {
+	_this.unirAlfabeto = function (alfa) {
 		for (var c in alfa) {
 			_this.alfabeto.push(c);
 		}
@@ -158,7 +158,7 @@ function Automata() {
 		return resultado;
 	}
 */
-	_this.unir = new function (automata) {
+	this.unir = function (automata) {
 		var nodo1 = new Estado(_this.cont++, false);
 		var nodo2 = new Estado(_this.cont++, true);
 		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
@@ -182,7 +182,7 @@ function Automata() {
 		//alfabeto = {};
 	}
 
-	_this.concatenar = new function (automata) {
+	_this.concatenar = function (automata) {
 		for (var e in _this.aceptados) {
 			for (var t in automata.inicial.transiciones) {
 				e.addTrans(t.simbolo, t.destino);
@@ -197,7 +197,7 @@ function Automata() {
 		_this.unirAlfabeto(automata.alfabeto);
 	}
 
-	_this.cerraduraKleene = new function() {
+	_this.cerraduraKleene = function () {
 		var nodo1 = new Estado(_this.cont++, false);
 		var nodo2 = new Estado(_this.cont++, true);
 		nodo1.addTrans(new Transicion(epsilon, _this.inicial));

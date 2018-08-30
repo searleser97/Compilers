@@ -1,5 +1,6 @@
 var a1 = new Automata();
 a1.basico(s);
+console.log(a1.inicial);
 var a2 = new Automata();
 a2.basico(s);
 automatas.push(a1);
