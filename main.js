@@ -29,11 +29,16 @@ totalTransiciones.push(new TransicionTotal(e1.id, t1.simbolo.toString(), e2.id))
 //a1.unir(a2);
 
 var a1 = new Automata();
-a1.basico('x');
+a1.basico('s');
 
 var a2 = new Automata();
-a2.basico('y');
+a2.basico('t');
 
+a1.unir(a2);
+a1.cerraduraPositiva();
+createFSMDiagram(a1);
+
+/* 
 var a3 = new Automata();
 a3.basico('z');
 
@@ -42,10 +47,10 @@ a2.concatenar(a3);
 a1.cerraduraPositiva();
 
 a1.unir(a2);
-//a1.concatenar(a2);
+//a1.concatenar(a2); */
 
 
-createFSMDiagram(a1);
+
 
 //a1.unir(a3);
 
@@ -137,7 +142,7 @@ function createFSMDiagram(automata) {
                         border: 'black'
                     },
                     borderWidth: 8,
-                    physics: false,
+                    // physics: false,
                     value: 5
                 });
             else
@@ -148,7 +153,7 @@ function createFSMDiagram(automata) {
                         background: background,
                         border: 'black'
                     },
-                    physics: false,
+                    // physics: false,
                     value: 5
                 });
             nodesIds[from] = true;
@@ -166,7 +171,7 @@ function createFSMDiagram(automata) {
                         border: 'black'
                     },
                     borderWidth: 8,
-                    physics: false,
+                    // physics: false,
                     value: 5
                 });
             else
@@ -177,7 +182,7 @@ function createFSMDiagram(automata) {
                         background: background,
                         border: 'black'
                     },
-                    physics: false,
+                    // physics: false,
                     value: 5
                 });
             nodesIds[to] = true;
@@ -273,15 +278,19 @@ function createFSMDiagram(automata) {
         edges: edges
     };
     var options = {
-        // nodes: { borderWidth: 3 },
+        /* // nodes: { borderWidth: 3 },
         // interaction: { hover: true }
-        // edges: {
-        //     smooth: {
-        //         type: 'diagonalCross'
-        //     }
-        // }
+        edges: {
+            smooth: {
+                enabled: true,
+                type: "dynamic",
+                roundness: 0.5
+            }
+        },
+        physics: true */
     };
     var network = new vis.Network(container, data, options);
+    // var  network = new vis.Network(container, data);
 }
 
 function setModeStringOrChar() {
