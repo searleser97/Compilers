@@ -195,7 +195,7 @@ function Automata() {
 		this.unirAlfabeto(automata.alfabeto);
 	}
 
-	this.cerraduraKleene() {
+	this.cerraduraKleene = new function() {
 		var nodo1 = new Estado(this.cont++, false);
 		var nodo2 = new Estado(this.cont++, true);
 		nodo1.addTrans(new Transicion(epsilon, this.inicial));
