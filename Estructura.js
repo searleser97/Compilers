@@ -22,7 +22,7 @@ function TransicionTotal(inicial, simbolo, final) {
 }
 
 var aristas = [{}];
-var automatas = {};
+var automatas = new Set();
 
 function Automata() {
 	//De alguna manera introducir la informacion o mandarla como parametros
@@ -53,8 +53,8 @@ function Automata() {
 
 	_this.mover = function (conjunto, s) {
 		var r = {};
-		for (var e in conjunto) {
-			for (var t in e.transiciones) {
+		for (var e of conjunto) {
+			for (var t of e.transiciones) {
 				if (t.simbolo === s)
 					r.push(t.destino);
 			}
@@ -66,14 +66,14 @@ function Automata() {
 	_this.cerradura = function (conjunto) {
 		var r = {};
 		var stack = [];
-		for (var e in conjunto) {
+		for (var e of conjunto) {
 			stack.push(e);
 		}
 		while (stack.length != 0) {
 			var e = stack.pop();
 			if (!r.contains(e)) {
 				r.push(e);
-				for (t in e.transiciones) {
+				for (t of e.transiciones) {
 					if (t.simbolo === epsilon)
 						stack.push(t.destino);
 				}
@@ -90,8 +90,8 @@ function Automata() {
 
 
 	_this.unirAlfabeto = function (alfa) {
-		for (var c in alfa) {
-			_this.alfabeto.push(c);
+		for (var c of alfa) {
+			_this.alfabeto.add(c);
 		}
 	}
 	/*
@@ -117,7 +117,7 @@ function Automata() {
 			//realizada en E con el conjunto que sacamos de la cola. El conjunto que se encuentra comparte
 			//indice con el nodo creado con tal informacion.
 
-			for (var c in _this.alfabeto) {//Por cada letra de nuestro alfabeto
+			for (var c of _this.alfabeto) {//Por cada letra de nuestro alfabeto
 
 				var res = cerradura(mover(e, c));//Se hace la operacion Ir_A
 				var encontrar = E.find(res);//El find regresa una posicion del arreglo E si es que encuentra el elemento res en este mismo.
@@ -145,8 +145,8 @@ function Automata() {
 		resultado.totalTransiciones = nuevasTransiciones;
 		//Checar cuales son finales y agregarlos al conjunto del nuevo AFD
 		var index = 0;
-		for (var conjunto in E) {
-			for (var e in conjunto) {
+		for (var conjunto of E) {
+			for (var e of conjunto) {
 				if (_this.aceptados.contains(e)) {
 					resultado.aceptados.push(Ei[index]);
 					break;
@@ -165,12 +165,12 @@ function Automata() {
 		_this.totalTransiciones.push(new TransicionTotal(nodo1, epsilon, _this.inicial));
 		//nodo1.addTrans(new Transicion(epsilon, automata.inicial));
 		_this.totalTransiciones.push(new TransicionTotal(nodo1, epsilon, automata.inicial));
-		for (var e in _this.aceptados) {
+		for (var e of _this.aceptados) {
 			e.addTrans(new Transicion(epsilon, nodo2));
 			_this.totalTransiciones.push(new TransicionTotal(e, epsilon, nodo2));
 			e.final = false;
 		}
-		for (var e in automata.aceptados) {
+		for (var e of automata.aceptados) {
 			e.addTrans(new Transicion(epsilon, nodo2));
 			_this.totalTransiciones.push(new TransicionTotal(e, epsilon, nodo2));
 			e.final = false;
@@ -183,15 +183,15 @@ function Automata() {
 	}
 
 	_this.concatenar = function (automata) {
-		for (var e in _this.aceptados) {
-			for (var t in automata.inicial.transiciones) {
+		for (var e of _this.aceptados) {
+			for (var t of automata.inicial.transiciones) {
 				e.addTrans(t.simbolo, t.destino);
 				_this.totalTransiciones.push(new TransicionTotal(e, t.simbolo, t.destino));
 			}
 			e.final = false;
 		}
 		_this.aceptados = [];
-		for (var e in automata.aceptados) {
+		for (var e of automata.aceptados) {
 			_this.aceptados.push(e);
 		}
 		_this.unirAlfabeto(automata.alfabeto);
@@ -204,7 +204,7 @@ function Automata() {
 		_this.totalTransiciones.push(new TransicionTotal(nodo1, epsilon, _this.inicial));
 		nodo1.addTrans(new Transicion(epsilon, nodo2));
 		_this.totalTransiciones.push(new TransicionTotal(nodo1, epsilon, nodo2));
-		for (var e in _this.aceptados) {
+		for (var e of _this.aceptados) {
 			e.final = false;
 			e.addTrans(new Transicion(epsilon, _this.inicial));
 			_this.totalTransiciones.push(new TransicionTotal(e, epsilon, _this.inicial));

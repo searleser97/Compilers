@@ -1,10 +1,9 @@
 var a1 = new Automata();
-a1.basico(s);
-console.log(a1.inicial);
+a1.basico('s');
 var a2 = new Automata();
-a2.basico(s);
-automatas.push(a1);
-var conjunto = a1.mover();
+a2.basico('a');
+automatas.add(a1);
+// var conjunto = a1.mover();
 a1.unir(a2);
 createFSMDiagram(a1);
 
@@ -80,9 +79,9 @@ function createFSMDiagram(automata) {
     for (var trans of automata.totalTransiciones) {
         // var line = lines[i];
         // var values = line.split(' ');
-        var from = trans.inicial;
-        var symbol = trans.simbolo;
-        var to = trans.final;
+        var from = String(trans.inicial);
+        var symbol = String(trans.simbolo);
+        var to = String(trans.final);
         if (nodesIds[from] === undefined) {
             var background = 'white';
             if (isStartPoint[from])
