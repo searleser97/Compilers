@@ -260,6 +260,25 @@ function Automata() {
 		_this.aceptadosID = [];
 		_this.aceptadosID.push(nodo2.id);
 	}
+
+	_this.cerraduraInterrogacion = function () {
+		var nodo1 = new Estado(contador++, false);
+		var nodo2 = new Estado(contador++, true);
+		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
+		totalTransiciones.push(new TransicionTotal(nodo1.id, epsilon, _this.inicial.id));
+		nodo1.addTrans(new Transicion(epsilon, nodo2));
+		totalTransiciones.push(new TransicionTotal(nodo1.id, epsilon, nodo2.id));
+		for (var e of _this.aceptados) {
+			e.final = false;
+			e.addTrans(new Transicion(epsilon, nodo2));
+			totalTransiciones.push(new TransicionTotal(e.id, epsilon, nodo2.id));
+		}
+		_this.inicial = nodo1;
+		_this.aceptados = [];
+		_this.aceptados.push(nodo2);
+		_this.aceptadosID = [];
+		_this.aceptadosID.push(nodo2.id);
+	}
 }
 
 function main() {
