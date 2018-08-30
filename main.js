@@ -1,11 +1,54 @@
+
+/*
+var e1 = new Estado(0,false);
+var e2 = new Estado(1,true);
+e1.addTrans('a',e2);
+a1.totalTransiciones.push(new TransicionTotal(e1.id, 'a', e2.id));
+a1.inicial = e1;
+a1.aceptados.push(e2);
+a1.alfabeto.add('a');
+*/
+
+/*
 var a1 = new Automata();
 a1.basico('s');
+
+a1.cerradura(new Estado(++contador, 'x'));
+
 var a2 = new Automata();
 a2.basico('a');
-automatas.add(a1);
-// var conjunto = a1.mover();
+*/
+
+/*
+var e1 = a1.aceptados.pop();
+var t1 = a2.inicial.transiciones.pop();
+var e2 = t1.destino;
+totalTransiciones.push(new TransicionTotal(e1.id, t1.simbolo.toString(), e2.id));
+*/
+//a1.concatenar(a2);
+//a1.unir(a2);
+
+var a1 = new Automata();
+a1.basico('x');
+
+var a2 = new Automata();
+a2.basico('y');
+
+var a3 = new Automata();
+a3.basico('z');
+
+a2.concatenar(a3);
+
+a1.cerraduraPositiva();
+
 a1.unir(a2);
+//a1.concatenar(a2);
+
+
 createFSMDiagram(a1);
+
+//a1.unir(a3);
+
 
 var inn = '' +
     'A 0 A\n' +
@@ -27,12 +70,11 @@ var file = '' +
     '1\n' +
     '10\n' +
     '110';
-var epsilon = '\\e';
 var acceptedStatesStr = 'D';
-document.getElementById('linesToEval').value = file;
-document.getElementById('fsm').value = inn;
-document.getElementById('acStates').value = acceptedStatesStr;
-document.getElementById('startPoint').value = 'A';
+//document.getElementById('linesToEval').value = file;
+//document.getElementById('fsm').value = inn;
+//document.getElementById('acStates').value = acceptedStatesStr;
+//document.getElementById('startPoint').value = 'A';
 // global variables needed
 var lineNumber = 0;
 var acceptedOrRejected = [];
@@ -68,15 +110,15 @@ function createFSMDiagram(automata) {
     nodes = [];
     var edges = [{}];
     isStartPoint = {};
-    startPoints = [automata.inicial];
-    var acceptedStatesArr = automata.aceptados;
+    startPoints = [automata.inicial.id];
+    var acceptedStatesArr = automata.aceptadosID;
     for (var i in acceptedStatesArr)
         acceptedStates[acceptedStatesArr[i]] = true;
     for (st in startPoints)
         isStartPoint[startPoints[st]] = true;
     var fromTo = {};
     // var lines = (document.getElementById('fsm').value).split('\n');
-    for (var trans of automata.totalTransiciones) {
+    for (var trans of totalTransiciones) {
         // var line = lines[i];
         // var values = line.split(' ');
         var from = String(trans.inicial);
