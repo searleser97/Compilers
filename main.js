@@ -70,17 +70,6 @@ var isPDA = false;
 var stacks = [];
 var actualStatesWithItsStacks = [];
 
-function getAristas(automata){
-    var aristas = [];
-    for (var e of automata.estados){
-        for (var t of e.transiciones){
-            var aux = t.destino;
-            aristas.push(new TransicionTotal(e.id, t.simbolo.toString(), aux.id));
-        }
-    }
-    return aristas;
-}
-
 // end of global variables needed
 function createFSMDiagram(automata) {
     clearInterval(interval);
@@ -98,7 +87,7 @@ function createFSMDiagram(automata) {
         isStartPoint[startPoints[st]] = true;
     var fromTo = {};
     // var lines = (document.getElementById('fsm').value).split('\n');
-    for (var trans of getAristas(automata)) {
+    for (var trans of automata.getAristas()) {
         // var line = lines[i];
         // var values = line.split(' ');
         var from = String(trans.inicial);

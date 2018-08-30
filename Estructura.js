@@ -31,7 +31,7 @@ function Automata() {
 	//this.inicial= inicial;
 	//funciones
 	var _this = this;
-	
+
 	_this.estados = [];
 	_this.aceptados = [];
 	_this.aceptadosID = [];
@@ -175,7 +175,7 @@ function Automata() {
 		}
 		_this.estados.push(nodo1);
 		_this.estados.push(nodo2);
-		for (var f of automata.estados){
+		for (var f of automata.estados) {
 			_this.estados.push(f);
 		}
 		_this.aceptados = [];
@@ -201,7 +201,7 @@ function Automata() {
 			_this.aceptados.push(f);
 			_this.aceptadosID.push(f.id)
 		}
-		for (var f of automata.estados){
+		for (var f of automata.estados) {
 			if (f.id !== automata.inicial.id) {
 				_this.estados.push(f);
 			}
@@ -262,6 +262,17 @@ function Automata() {
 		_this.aceptados.push(nodo2);
 		_this.aceptadosID = [];
 		_this.aceptadosID.push(nodo2.id);
+	}
+
+	_this.getAristas = function () {
+		var aristas = [];
+		for (var e of _this.estados) {
+			for (var t of e.transiciones) {
+				var aux = t.destino;
+				aristas.push(new TransicionTotal(e.id, t.simbolo.toString(), aux.id));
+			}
+		}
+		return aristas;
 	}
 }
 
