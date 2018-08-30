@@ -1,0 +1,67 @@
+<html>
+
+<head>
+    <title>Finite State Machines</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <link rel="stylesheet" href="vis.min.css">
+</head>
+
+<body>
+    <div id="title"><h1>Evaluador de textos por medio de un Automata</h1></div>
+    <div id="options">
+        <div id="textMode" onclick="setModeStringOrChar()"><b>CHARACTER</b></div>
+        <div id="PDAopt">isPDA<input onclick="setPDA()" id="isPDA" type="checkbox" /></div>
+    </div>
+    <div class="inputs">
+        <div class="fsmInput">
+            <div class="edgesLabelsNodes">
+                <label>Ingrese el automata:</label>
+                <textarea id="fsm" class="inputText"></textarea>
+            </div>
+            <div class="acceptedStates">
+                <label>Ingrese los estados de inicio:</label>
+                <input type="text" id="startPoint" placeholder="ingrese el id del estado de aceptacion">
+                <label>Ingrese los estados de aceptacion:</label>
+                <textarea id="acStates" class="inputText"></textarea>
+            </div>
+        </div>
+        <div class="textInput">
+            <label>Ingrese el texto a evaluar</label>
+            <textarea id="linesToEval" class="inputText"></textarea>
+        </div>
+    </div>
+    <div class="buttons">
+        <div class="fsmInput">
+            <div class="submitt">
+                <button onclick="createFSM()" id="createFSM">Crear Automata</button>
+            </div>
+        </div>
+        <div class="textInput">
+            <div class="submitt">
+                <button onclick="evaluateLinesWithFSM()" id="runFSM">Evaluar</button>
+            </div>
+        </div>
+    </div>
+    <div class="evalLine">
+        <div id="output" class="output"></div>
+    </div>
+    <div id="mynetwork">
+        <div class="vis-network" tabindex="900" style="position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;">
+            <canvas style="margin-top: 100px; position: relative; touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 90%;" width="600" height="400"></canvas>
+        </div>
+    </div>
+    <div class="playOpts">
+        <div class="play">
+            <button onclick="play()">PLAY</button>
+        </div>
+        <div class="pause">
+            <button onclick="pause()">PAUSE</button>
+        </div>
+    </div>
+    <script src="Estructura.js"></script>
+    <script src="vis.min.js"></script>
+    <script src="randomColor.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
