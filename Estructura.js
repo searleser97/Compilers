@@ -5,12 +5,13 @@ function Transicion(simbolo, destino) {
 }
 
 function Estado(id, final) {
-	this.id = id;
-	this.final = final;
-	this.transiciones = [{}];
+	_this = this;
+	_this.id = id;
+	_this.final = final;
+	_this.transiciones = [{}];
 	//funciones
-	this.addTrans = function (simbolo, destino) {
-		transiciones.push(new Transicion(simbolo, destino));
+	_this.addTrans = function (simbolo, destino) {
+		_this.transiciones.push(new Transicion(simbolo, destino));
 	}
 }
 
@@ -27,25 +28,26 @@ function Automata() {
 	//De alguna manera introducir la informacion o mandarla como parametros
 	//this.inicial= inicial;
 	//funciones
-	var totalTransiciones = [];
-	var estados = [];
-	var aceptados = [];
-	var inicial;
-	var contador = 0;
-	var alfabeto = {};
+	var _this = this;
+	_this.totalTransiciones = [];
+	_this.estados = [];
+	_this.aceptados = [];
+	_this.inicial;
+	_this.contador = 0;
+	_this.alfabeto = new Set();
 	
 
 
-	this.basico = new function (simbolo) {
-		var nodo1 = new Estado(this.cont++, false);
-		var nodo2 = new Estado(this.cont++, true);
-		nodo1.addTrans(simbolo, nodo2);
-		totalTransiciones.push(new TransicionTotal(nodo1, simbolo, nodo2));
-		this.inicial = nodo1;
-		this.estados.push(e1);
-		this.estados.push(e2);
-		this.alfabeto.push(simbolo);
-		this.aceptados.push(e2);
+	_this.basico = new function (simbolo) {
+		var e1 = new Estado(this.cont++, false);
+		var e2 = new Estado(this.cont++, true);
+		e1.addTrans(simbolo, e2);
+		_this.totalTransiciones.push(new TransicionTotal(e1, simbolo, e2));
+		_this.inicial = e1;
+		_this.estados.push(e1);
+		_this.estados.push(e2);
+		_this.alfabeto.add(simbolo);
+		_this.aceptados.push(e2);
 	}
 
 
@@ -195,11 +197,7 @@ function Automata() {
 		this.unirAlfabeto(automata.alfabeto);
 	}
 
-<<<<<<< HEAD
 	this.cerraduraKleene = new function() {
-=======
-	this.cerraduraKleene = new function (){
->>>>>>> 99b10dee595eda814ac4d28d93c690cfe18b6dac
 		var nodo1 = new Estado(this.cont++, false);
 		var nodo2 = new Estado(this.cont++, true);
 		nodo1.addTrans(new Transicion(epsilon, this.inicial));
