@@ -106,7 +106,7 @@ function createFSMDiagram(automata) {
                         border: 'black'
                     },
                     borderWidth: 8,
-                    physics: false,
+                    // physics: false,
                     value: 5
                 });
             else
@@ -117,7 +117,7 @@ function createFSMDiagram(automata) {
                         background: background,
                         border: 'black'
                     },
-                    physics: false,
+                    // physics: false,
                     value: 5
                 });
             nodesIds[from] = true;
@@ -135,7 +135,7 @@ function createFSMDiagram(automata) {
                         border: 'black'
                     },
                     borderWidth: 8,
-                    physics: false,
+                    // physics: false,
                     value: 5
                 });
             else
@@ -146,7 +146,7 @@ function createFSMDiagram(automata) {
                         background: background,
                         border: 'black'
                     },
-                    physics: false,
+                    // physics: false,
                     value: 5
                 });
             nodesIds[to] = true;
