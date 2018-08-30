@@ -1,5 +1,4 @@
 var epsilon = '\\e';
-var totalTransiciones = [];
 
 function Transicion(simbolo, destino) {
 	this.simbolo = simbolo;
@@ -13,8 +12,8 @@ function Estado(id, final) {
 	_this.final = final;
 	_this.transiciones = [];
 	//funciones
-	_this.addTrans = function (simbolo, destino) {
-		_this.transiciones.push(new Transicion(simbolo, destino));
+	_this.addTrans = function (transicion) {
+		_this.transiciones.push(transicion);
 	}
 }
 
@@ -44,8 +43,7 @@ function Automata() {
 	_this.basico = function (simbolo) {
 		var e1 = new Estado(contador++, false);
 		var e2 = new Estado(contador++, true);
-		e1.addTrans(simbolo, e2);
-		totalTransiciones.push(new TransicionTotal(e1.id, simbolo, e2.id));
+		e1.addTrans(new Transicion(simbolo, e2));
 		_this.inicial = e1;
 		_this.estados.push(e1);
 		_this.estados.push(e2);
@@ -166,22 +164,20 @@ function Automata() {
 		var nodo1 = new Estado(contador++, false);
 		var nodo2 = new Estado(contador++, true);
 		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
-		totalTransiciones.push(new TransicionTotal(nodo1.id, epsilon, _this.inicial.id));
 		nodo1.addTrans(new Transicion(epsilon, automata.inicial));
-		totalTransiciones.push(new TransicionTotal(nodo1.id, epsilon, automata.inicial.id));
 		for (var e of _this.aceptados) {
 			e.addTrans(new Transicion(epsilon, nodo2));
-			totalTransiciones.push(new TransicionTotal(e.id, epsilon, nodo2.id));
 			e.final = false;
 		}
 		for (var e of automata.aceptados) {
 			e.addTrans(new Transicion(epsilon, nodo2));
-			totalTransiciones.push(new TransicionTotal(e.id, epsilon, nodo2.id));
 			e.final = false;
 		}
 		_this.estados.push(nodo1);
 		_this.estados.push(nodo2);
-		_this.estados = _this.estados + automata.estados;
+		for (var f of automata.estados){
+			_this.estados.push(f);
+		}
 		_this.aceptados = [];
 		_this.aceptados.push(nodo2);
 		_this.aceptadosID = [];
@@ -195,8 +191,7 @@ function Automata() {
 		for (var e of _this.aceptados) {
 			for (var t of automata.inicial.transiciones) {
 				var aux = t.destino;
-				e.addTrans(t.simbolo, aux);
-				totalTransiciones.push(new TransicionTotal(e.id, t.simbolo.toString(), aux.id));
+				e.addTrans(new Transicion(t.simbolo, aux));
 			}
 			e.final = false;
 		}
@@ -207,16 +202,9 @@ function Automata() {
 			_this.aceptadosID.push(f.id)
 		}
 		for (var f of automata.estados){
-			if (f !== automata.inicial) {
+			if (f.id !== automata.inicial.id) {
 				_this.estados.push(f);
 			}
-		}
-		var index = 0;
-		for (var f of totalTransiciones){
-			if (f.inicial === automata.inicial.id) {
-				totalTransiciones.splice(index,1);
-			}
-			index++;
 		}
 		_this.unirAlfabeto(automata.alfabeto);
 	}
@@ -225,16 +213,14 @@ function Automata() {
 		var nodo1 = new Estado(contador++, false);
 		var nodo2 = new Estado(contador++, true);
 		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
-		totalTransiciones.push(new TransicionTotal(nodo1.id, epsilon, _this.inicial.id));
 		nodo1.addTrans(new Transicion(epsilon, nodo2));
-		totalTransiciones.push(new TransicionTotal(nodo1.id, epsilon, nodo2.id));
 		for (var e of _this.aceptados) {
 			e.final = false;
 			e.addTrans(new Transicion(epsilon, _this.inicial));
-			totalTransiciones.push(new TransicionTotal(e.id, epsilon, _this.inicial.id));
 			e.addTrans(new Transicion(epsilon, nodo2));
-			totalTransiciones.push(new TransicionTotal(e.id, epsilon, nodo2.id));
 		}
+		_this.estados.push(nodo1);
+		_this.estados.push(nodo2);
 		_this.inicial = nodo1;
 		_this.aceptados = [];
 		_this.aceptados.push(nodo2);
@@ -246,14 +232,13 @@ function Automata() {
 		var nodo1 = new Estado(contador++, false);
 		var nodo2 = new Estado(contador++, true);
 		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
-		totalTransiciones.push(new TransicionTotal(nodo1.id, epsilon, _this.inicial.id));
 		for (var e of _this.aceptados) {
 			e.final = false;
 			e.addTrans(new Transicion(epsilon, _this.inicial));
-			totalTransiciones.push(new TransicionTotal(e.id, epsilon, _this.inicial.id));
 			e.addTrans(new Transicion(epsilon, nodo2));
-			totalTransiciones.push(new TransicionTotal(e.id, epsilon, nodo2.id));
 		}
+		_this.estados.push(nodo1);
+		_this.estados.push(nodo2);
 		_this.inicial = nodo1;
 		_this.aceptados = [];
 		_this.aceptados.push(nodo2);
@@ -265,14 +250,13 @@ function Automata() {
 		var nodo1 = new Estado(contador++, false);
 		var nodo2 = new Estado(contador++, true);
 		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
-		totalTransiciones.push(new TransicionTotal(nodo1.id, epsilon, _this.inicial.id));
 		nodo1.addTrans(new Transicion(epsilon, nodo2));
-		totalTransiciones.push(new TransicionTotal(nodo1.id, epsilon, nodo2.id));
 		for (var e of _this.aceptados) {
 			e.final = false;
 			e.addTrans(new Transicion(epsilon, nodo2));
-			totalTransiciones.push(new TransicionTotal(e.id, epsilon, nodo2.id));
 		}
+		_this.estados.push(nodo1);
+		_this.estados.push(nodo2);
 		_this.inicial = nodo1;
 		_this.aceptados = [];
 		_this.aceptados.push(nodo2);

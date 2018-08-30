@@ -1,58 +1,22 @@
-
-/*
-var e1 = new Estado(0,false);
-var e2 = new Estado(1,true);
-e1.addTrans('a',e2);
-a1.totalTransiciones.push(new TransicionTotal(e1.id, 'a', e2.id));
-a1.inicial = e1;
-a1.aceptados.push(e2);
-a1.alfabeto.add('a');
-*/
-
-/*
 var a1 = new Automata();
-a1.basico('s');
+a1.basico('+');
 
-a1.cerradura(new Estado(++contador, 'x'));
 
 var a2 = new Automata();
-a2.basico('a');
-*/
-
-/*
-var e1 = a1.aceptados.pop();
-var t1 = a2.inicial.transiciones.pop();
-var e2 = t1.destino;
-totalTransiciones.push(new TransicionTotal(e1.id, t1.simbolo.toString(), e2.id));
-*/
-//a1.concatenar(a2);
-//a1.unir(a2);
-
-var a1 = new Automata();
-a1.basico('s');
-
-var a2 = new Automata();
-a2.basico('t');
+a2.basico('-');
 
 a1.unir(a2);
-a1.cerraduraPositiva();
-createFSMDiagram(a1);
 
-/* 
+a1.cerraduraInterrogacion();
+
 var a3 = new Automata();
-a3.basico('z');
+a3.basico('D');
 
-a2.concatenar(a3);
+a3.cerraduraPositiva();
 
-a1.cerraduraPositiva();
+a1.concatenar(a3);
 
-a1.unir(a2);
-//a1.concatenar(a2); */
-
-
-
-
-//a1.unir(a3);
+createFSMDiagram(a1);
 
 
 var inn = '' +
@@ -106,6 +70,17 @@ var isPDA = false;
 var stacks = [];
 var actualStatesWithItsStacks = [];
 
+function getAristas(automata){
+    var aristas = [];
+    for (var e of automata.estados){
+        for (var t of e.transiciones){
+            var aux = t.destino;
+            aristas.push(new TransicionTotal(e.id, t.simbolo.toString(), aux.id));
+        }
+    }
+    return aristas;
+}
+
 // end of global variables needed
 function createFSMDiagram(automata) {
     clearInterval(interval);
@@ -123,7 +98,7 @@ function createFSMDiagram(automata) {
         isStartPoint[startPoints[st]] = true;
     var fromTo = {};
     // var lines = (document.getElementById('fsm').value).split('\n');
-    for (var trans of totalTransiciones) {
+    for (var trans of getAristas(automata)) {
         // var line = lines[i];
         // var values = line.split(' ');
         var from = String(trans.inicial);
@@ -142,7 +117,7 @@ function createFSMDiagram(automata) {
                         border: 'black'
                     },
                     borderWidth: 8,
-                    // physics: false,
+                    physics: false,
                     value: 5
                 });
             else
@@ -153,7 +128,7 @@ function createFSMDiagram(automata) {
                         background: background,
                         border: 'black'
                     },
-                    // physics: false,
+                    physics: false,
                     value: 5
                 });
             nodesIds[from] = true;
@@ -171,7 +146,7 @@ function createFSMDiagram(automata) {
                         border: 'black'
                     },
                     borderWidth: 8,
-                    // physics: false,
+                    physics: false,
                     value: 5
                 });
             else
@@ -182,7 +157,7 @@ function createFSMDiagram(automata) {
                         background: background,
                         border: 'black'
                     },
-                    // physics: false,
+                    physics: false,
                     value: 5
                 });
             nodesIds[to] = true;
@@ -278,19 +253,15 @@ function createFSMDiagram(automata) {
         edges: edges
     };
     var options = {
-        /* // nodes: { borderWidth: 3 },
+        // nodes: { borderWidth: 3 },
         // interaction: { hover: true }
-        edges: {
-            smooth: {
-                enabled: true,
-                type: "dynamic",
-                roundness: 0.5
-            }
-        },
-        physics: true */
+        // edges: {
+        //     smooth: {
+        //         type: 'diagonalCross'
+        //     }
+        // }
     };
     var network = new vis.Network(container, data, options);
-    // var  network = new vis.Network(container, data);
 }
 
 function setModeStringOrChar() {
