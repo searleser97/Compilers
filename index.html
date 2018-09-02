@@ -12,11 +12,11 @@
     <div class="container">
         <div id="title">
             <center>
-                <h1>Finite State Machines</h1>
+                <h2>Finite State Machines</h2>
             </center>
         </div>
         <div id="menu">
-            <div class="row">
+            <div class="form-group row">
                 <div class="col-sm">
                     <select class="form-control" id="sel_automata_1">
                         <option selected disabled>Seleccione Automata A</option>
@@ -25,9 +25,9 @@
                 <div class="col-sm">
                     <select class="form-control" id="operations">
                         <option selected disabled>Seleccione Operacion</option>
-                        <option>Crear Basico</option>
+                        <option value="basico">Crear Basico</option>
                         <option>Unir</option>
-                        <option>unir Parcial</option>
+                        <option>Unir Parcial</option>
                         <option>Concatenar</option>
                         <option>Cerradura Kleene</option>
                         <option>Cerradura Positiva</option>
@@ -40,8 +40,23 @@
                     </select>
                 </div>
             </div>
-            <div class="row">
-                <button type="submit" class="btn btn-primary">Ejecutar Operacion</button>
+
+            <div class="form-group row">
+                <div class="col-sm">
+                    <input type="hidden" class="form-control" placeholder="Ingrese simbolo del automata Basico" id="id_nuevo_basico">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm">
+                    <button type="submit" class="btn btn-primary">Ejecutar Operacion</button>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm">
+                    <select class="form-control" id="sel_automata_to_show">
+                        <option selected disabled>Seleccione Automata a Dibujar</option>
+                    </select>
+                </div>
             </div>
             <div id="mynetwork">
                 <div class="vis-network" tabindex="900" style="position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;">
@@ -53,7 +68,7 @@
             <script src="Estructura.js"></script>
             <script src="vis.min.js"></script>
             <script src="randomColor.js"></script>
-            <script src="main.js"></script>
+            <script src="drawAutomata.js"></script>
 
             <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
                 crossorigin="anonymous"></script>
@@ -61,6 +76,8 @@
                 crossorigin="anonymous"></script>
             <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
                 crossorigin="anonymous"></script>
+
+            <script src="main.js"></script>
         </div>
 
 </body>
