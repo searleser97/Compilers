@@ -2,9 +2,6 @@
 =========             VARIABLES GLOBALES                =============
 ===================================================================*/
 
-// Símbolo que usaremos como epsilon
-var epsilon = '\\e';
-
 // Variable para llevar el id de los estados.
 var contador = 0;
 
