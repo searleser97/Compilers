@@ -1,3 +1,7 @@
+/*===================================================================
+=========                 AUTÓMATAS                     =============
+===================================================================*/
+
 // Autómata 1
 var a1 = new Automata();
 a1.basico('+');
@@ -9,6 +13,8 @@ var a3 = new Automata();
 a3.basico('D');
 a3.cerraduraPositiva();
 a1.concatenar(a3);
+
+
 
 // Autómata 2
 var a4 = new Automata();
@@ -47,6 +53,8 @@ a8.concatenar(a12);
 a8.cerraduraInterrogacion();
 a4.concatenar(a8);
 
+
+
 // Autómata 3
 var a13 = new Automata();
 a13.basico('L');
@@ -58,6 +66,8 @@ a14.unir(a15);
 a14.cerraduraPositiva();
 a13.concatenar(a14);
 
+
+
 // Autómata 4
 var a16 = new Automata();
 a16.basico('S');
@@ -66,8 +76,16 @@ a17.basico('T');
 a16.unir(a17);
 a16.cerraduraPositiva();
 
-createFSMDiagram(a1);
+a16.transformar();
 
+// Elegir el autómata a dibujar
+createFSMDiagram(a16);
+
+
+/*===================================================================
+=========        VARIABLES INICIALIZACIÓN WEB           =============
+===================================================================*/
+/*
 var inn = '' +
     'A 0 A\n' +
     'A 1 A\n' +
@@ -77,6 +95,8 @@ var inn = '' +
     'C 1 D\n' +
     'D 0 D\n' +
     'D 1 D';
+*/
+/*
 var file = '' +
     '00\n' +
     '000\n' +
@@ -88,18 +108,36 @@ var file = '' +
     '1\n' +
     '10\n' +
     '110';
-var acceptedStatesStr = 'D';
+*/
+
+/*===================================================================
+=========             VARIABLES GLOBALES                =============
+===================================================================*/
+//var acceptedStatesStr = 'D';
 //document.getElementById('linesToEval').value = file;
 //document.getElementById('fsm').value = inn;
 //document.getElementById('acStates').value = acceptedStatesStr;
 //document.getElementById('startPoint').value = 'A';
 // global variables needed
-var lineNumber = 0;
-var acceptedOrRejected = [];
-var way = [];
-var interval;
-var interval2;
-var symbolPos = 0;
+//var lineNumber = 0;
+//var acceptedOrRejected = [];
+//var way = [];
+//var symbolPos = 0;
+//var symbolsToPrint = [];
+//var lineSpan;
+//var nMaxlineNumberDigits;
+//var lineIsPending;
+//var output = document.getElementById('output');
+//var output = "Hola";
+//var stringOrChar = 2;
+//var stacks = [];
+//var actualStatesWithItsStacks = [];
+
+/*===================================================================
+=========              VARIABLES DIBUJO                 =============
+===================================================================*/
+var isPDA = false;
+var isStartPoint = {};
 var fsm = {};
 var nodesIds = {};
 var color = 'blue';
@@ -108,19 +146,20 @@ var nodes = [];
 var edges = [{}];
 var startPoints;
 var lines;
-var symbolsToPrint = [];
-var lineSpan;
-var nMaxlineNumberDigits;
-var lineIsPending;
-var isStartPoint = {};
-var output = document.getElementById('output');
-var stringOrChar = 2;
-var isPDA = false;
-var stacks = [];
-var actualStatesWithItsStacks = [];
+var interval;
+var interval2;
 
-// end of global variables needed
+
+/*===================================================================
+=========               FUNCIÓN DIBUJAR                 =============
+===================================================================*/
 function createFSMDiagram(automata) {
+    
+    // Muestra alfabeto en consola para verificar
+    for (let item of automata.alfabeto){
+        console.log(item + ' ');
+    }
+
     clearInterval(interval);
     fsm = {};
     nodesIds = {};
@@ -128,20 +167,41 @@ function createFSMDiagram(automata) {
     nodes = [];
     var edges = [{}];
     isStartPoint = {};
-    startPoints = [automata.inicial.id];
-    var acceptedStatesArr = automata.aceptadosID;
+
+    // Tomamos el ID del estado inicial
+    startPoints = [automata.inicial.id]; 
+
+    // Tomamos los IDs de los estados finales del autómata
+    var acceptedStatesArr = automata.aceptadosID; 
+
+    // Pintamos estados finales
     for (var i in acceptedStatesArr)
         acceptedStates[acceptedStatesArr[i]] = true;
+
+    // Pintamos estados iniciales
     for (st in startPoints)
         isStartPoint[startPoints[st]] = true;
+
     var fromTo = {};
     // var lines = (document.getElementById('fsm').value).split('\n');
+
+    // Recorremos todas las transiciones del autómata
     for (var trans of automata.getAristas()) {
         // var line = lines[i];
         // var values = line.split(' ');
+
+        // Tomamos el punto de partida
         var from = String(trans.inicial);
+
+        // Símbolo de la transición
         var symbol = String(trans.simbolo);
+
+        // Destino de la arista
         var to = String(trans.final);
+
+        /*------------------------------------------------
+		****************     NO MOVER     ****************
+		------------------------------------------------*/
         if (nodesIds[from] === undefined) {
             var background = 'white';
             if (isStartPoint[from])
@@ -302,6 +362,7 @@ function createFSMDiagram(automata) {
     var network = new vis.Network(container, data, options);
 }
 
+/*
 function setModeStringOrChar() {
     var textMode = document.getElementById("textMode");
     if (stringOrChar == 2) {
@@ -313,7 +374,7 @@ function setModeStringOrChar() {
     }
 }
 
-
+/*
 function isPDANodeUnique(actualStates, nextStateWithStack) {
     for (r in actualStates) {
         if (nextStateWithStack[0] == actualStates[r][0]) {
@@ -331,7 +392,7 @@ function isPDANodeUnique(actualStates, nextStateWithStack) {
     return true;
 }
 
-
+/*
 function statesConnectedWithEpsilon(actualStates, visitedStates) {
     var localActualStates = [...actualStates];
     for (var index = 0; index < localActualStates.length; index++) {
@@ -364,7 +425,7 @@ function statesConnectedWithEpsilon(actualStates, visitedStates) {
     }
     return [localActualStates, visitedStates];
 }
-
+/*
 function evaluateLinesWithFSM() {
     output.innerHTML = '';
     symbolPos = 0;
@@ -471,7 +532,7 @@ function changeNodeColor(nodeId, color) {
     }]);
 }
 
-
+/*
 function travelInStates() {
     if (lineIsPending) {
         printLineInterval();
@@ -497,7 +558,9 @@ function travelInStates() {
     lineIsPending = true;
     printLineInterval();
 }
+*/
 
+/*
 function printLine() {
     if (symbolPos > 0) {
         var prevStates = way[symbolPos - 1];
@@ -535,6 +598,7 @@ function printLine() {
     symbolPos += 1;
 }
 
+
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -544,6 +608,7 @@ function getRandomColor() {
     return color;
 }
 
+/*
 function pause() {
     clearInterval(interval2);
 }
@@ -551,6 +616,7 @@ function pause() {
 function play() {
     travelInStates();
 }
+
 
 function printLineInterval() {
     interval2 = setInterval(function () {
@@ -564,3 +630,4 @@ function setPDA() {
     else
         isPDA = true;
 }
+*/
