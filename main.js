@@ -175,12 +175,12 @@ function createFSMDiagram(automata) {
     var acceptedStatesArr = automata.aceptadosID; 
 
     // Pintamos estados finales
-    for (var i in acceptedStatesArr)
-        acceptedStates[acceptedStatesArr[i]] = true;
+    for (let acStates of acceptedStatesArr)
+        acceptedStates[acStates] = true;
 
     // Pintamos estados iniciales
-    for (st in startPoints)
-        isStartPoint[startPoints[st]] = true;
+    for (let st of startPoints)
+        isStartPoint[st] = true;
 
     var fromTo = {};
     // var lines = (document.getElementById('fsm').value).split('\n');
