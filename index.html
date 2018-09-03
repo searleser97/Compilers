@@ -12,7 +12,7 @@
     <div class="container">
         <div id="title">
             <center>
-                <h2>Finite State Machines</h2>
+                <h2>Compiladores</h2>
             </center>
         </div>
         <div id="menu">
@@ -25,13 +25,13 @@
                 <div class="col-sm">
                     <select class="form-control" id="operations">
                         <option selected disabled>Seleccione Operacion</option>
-                        <option value="basico">Crear Basico</option>
-                        <option>Unir</option>
-                        <option>Unir Parcial</option>
-                        <option>Concatenar</option>
-                        <option>Cerradura Kleene</option>
-                        <option>Cerradura Positiva</option>
-                        <option>Cerradura Interrogacion</option>
+                        <option value="basic">Crear Basico</option>
+                        <option value="join">Unir</option>
+                        <option value="parcialJoin">Unir Parcial</option>
+                        <option value="concatenate">Concatenar</option>
+                        <option value="kleene">Cerradura Kleene</option>
+                        <option value="positive">Cerradura Positiva</option>
+                        <option value="quantifier">Cerradura Interrogacion</option>
                     </select>
                 </div>
                 <div class="col-sm">
@@ -48,7 +48,7 @@
             </div>
             <div class="form-group row">
                 <div class="col-sm">
-                    <button type="submit" class="btn btn-primary">Ejecutar Operacion</button>
+                    <button id="submit" type="submit" class="btn btn-primary">Ejecutar Operacion</button>
                 </div>
             </div>
             <div class="form-group row">
