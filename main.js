@@ -139,6 +139,8 @@ $('#submit').click(function() {
     break;
     case 'quantifier':
       automataA.cerraduraInterrogacion();
+    case 'transformToAFD':
+      automataA.transformar();
     break;
   }
   if (isNew)
