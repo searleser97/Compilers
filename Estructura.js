@@ -300,8 +300,41 @@ function Automata() {
 
 
 	
-	/*
-	_this.transformar = new function () {
+	_this.findIndex=function(E,conjunto){
+		var index=-1;
+		var bandera = false;
+		for (var i = E.length - 1; i >= 0; i--) {
+			//if(E[i].length === conjunto.length){
+			var bandera = true;
+			for (var elemento of conjunto){
+				//console.log(elemento);
+				if(!E[i].has(elemento)){
+					bandera = false;
+					break;
+				}
+			}
+			if(bandera){
+				index = i;
+				break;
+			}
+			//}
+		}
+		return index;
+	}
+
+	_this.findAccepted=function(e){
+		var index=-1;
+		var bandera = false;
+		for (var i = _this.aceptados.length - 1; i >= 0; i--) {
+			if(_this.aceptados[i] === e)
+				index = i;
+		}
+		return index;
+	}
+
+	
+
+	_this.transformar = function () {
 		var E = [{}];//Arreglo que contiene conjuntos de estados del AFND despues de hacer las operaciones correspondientes
 		var Ei = [{}];//Arreglo que contiene los nuevos nodos que seran creados para el AFD
 		var en_cola = [];//Cola que nos ayuda a procesar todos los elementos de E
@@ -309,60 +342,85 @@ function Automata() {
 
 		var nuevasTransiciones = []
 
+		var auxiliar = new Set();
+		auxiliar.add(_this.inicial);
 		//Hacemos cerradura del nodo inicial
-		E[contador] = _this.cerradura(_this.inicial);
+		E[contador] = _this.cerradura(auxiliar);
 		en_cola.push(E[contador]);//Se introduce un CONJUNTO a la cola
-
+		console.log("La primera cerradura da ");
+		for(var iterator of E[contador]){
+			console.log(iterator);
+		}
 		//Se crea el nodo del nuevo AFD
-		Ei[contador] = new Estado(lse);
-
-		while (!en_cola.empty()) {
-
-			var e = en_cola.pop();//Se saca el conjunto correspondiente
-			var nodo_creado = Ei[E.find(e)];//El nodo que fue creado se encuentra mediante una busqueda
+		Ei[contador] = new Estado(false);
+		var analizados =0;
+		while (analizados < en_cola.length) {
+			var e = new Set();
+			e = en_cola[analizados];//Se saca el conjunto correspondiente
+			
+			var nodo_creado = _this.findIndex(E,e);//El nodo que fue creado se encuentra mediante una busqueda
 			//realizada en E con el conjunto que sacamos de la cola. El conjunto que se encuentra comparte
 			//indice con el nodo creado con tal informacion.
-
+			console.log("Sacamos a ");
+			console.log(e);
+			console.log("en el indice ");
+			console.log(nodo_creado);
 			for (var c of _this.alfabeto) {//Por cada letra de nuestro alfabeto
-
-				var res = cerradura(mover(e, c));//Se hace la operacion Ir_A
-				var encontrar = E.find(res);//El find regresa una posicion del arreglo E si es que encuentra el elemento res en este mismo.
+				var res_mover =_this.mover(e, c);
+				console.log("Nuestro resultado del mover con la letra "+c+" es");
+				for(var it of res_mover){
+					console.log(it);
+				}
+				var res = _this.cerradura(res_mover);//Se hace la operacion Ir_A
+				console.log("Nuestro res es de ");
+				console.log(res);
+				for(var it of res){
+					console.log(it);
+				}
+				var encontrar = _this.findIndex(E,res);//El find regresa una posicion del arreglo E si es que encuentra el elemento res en este mismo.
 				//Si ya lo habiamos creado entonces solo agregamos la arista
-				if (encontrar) {
-					Ei[nodo_creado].addTrans(c, Ei[encontrar]);
-					nuevasTransiciones.push(new TransicionTotal(Ei[nodo_creado], c, Ei[encontrar]));
+				console.log("El encontrar es de ");
+				console.log(encontrar);
+				if (encontrar >= 0) {
+					Ei[nodo_creado].addTrans(new Transicion(c, Ei[encontrar]));
+					//nuevasTransiciones.push(new TransicionTotal(Ei[nodo_creado], c, Ei[encontrar]));
 				}
 				else {
 					//Si no lo teniamos, entonces se agrega el conjunto a E (aumentando el indice) y tambien se crea un estado en Ei.
-					E[contador++] = res;
-					Ei[contador] = new Estado(lse);
-					Ei[nodo_creado].addTrans(c, Ei[encontrar]);//Se le agrega la transicion
-					nuevasTransiciones.push(new TransicionTotal(Ei[nodo_creado], c, Ei[encontrar]));
+					
+					contador++;
+					E[contador] = res;
+					Ei[contador] = new Estado(false);
+					Ei[nodo_creado].addTrans(new Transicion(c, Ei[contador]));//Se le agrega la transicion
+					//nuevasTransiciones.push(new TransicionTotal(Ei[nodo_creado], c, Ei[encontrar]));
 					en_cola.push(E[contador]);//Se meta a la cola
+					console.log("Agregamos a la cola a");
+					console.log(E[contador]);
 				}
 
 			}
+			analizados++;
 		}
 		//Creamos el nuevo AFD a devolver con sus inicializaciones correspondientes
 		var resultado = new Automata();
 		resultado.estados = Ei;
 		resultado.inicial = Ei[0];
 		resultado.alfabeto = _this.alfabeto;
-		resultado.totalTransiciones = nuevasTransiciones;
+		//resultado.totalTransiciones = nuevasTranssiciones;
 		//Checar cuales son finales y agregarlos al conjunto del nuevo AFD
 		var index = 0;
+		
 		for (var conjunto of E) {
 			for (var e of conjunto) {
-				if (_this.aceptados.contains(e)) {
+				if (_this.findAccepted(e) >=0) {
 					resultado.aceptados.push(Ei[index]);
+					console.log(Ei[index]);
 					break;
 				}
 			}
 			index++;
 		}
-
 		return resultado;
 	}
-*/
 	
 }
