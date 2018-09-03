@@ -1,7 +1,7 @@
 /*===================================================================
 =========                 AUTÓMATAS                     =============
 ===================================================================*/
-
+/*
 // Autómata 1
 var a1 = new Automata();
 a1.basico('+');
@@ -81,7 +81,8 @@ a16.cerraduraPositiva();
 a1.unir(a4);
 a1.unir(a13);
 a1.unir(a16);
-createFSMDiagram(a1);
+createFSMDiagram(a1);¨
+*/
 
 var automatas = [];
 
@@ -92,7 +93,7 @@ function createBasicAutomata(symbol) {
 }
 
 $('#operations').change(function () {
-  self_operations = new Set(['positive', 'kleene', 'quantifier', 'transformToAFD']);
+  self_operations = new Set(['positive', 'kleene', 'quantifier', 'transformToAFD', 'superJoin']);
   let selected = $(this).val();
 
   if (selected == 'basic') {
@@ -110,6 +111,9 @@ $('#operations').change(function () {
 });
 
 $('#submit').click(function() {
+
+  console.log(automatas);
+
   let automataA = automatas[$('#sel_automata_1').val()];
   let automataB = automatas[$('#sel_automata_2').val()];
   let operation = $('#operations').val();
@@ -126,8 +130,8 @@ $('#submit').click(function() {
     case 'join':
       automataA.unir(automataB);
     break;
-    case 'parcialJoin':
-      automataA.unirParcial(automataB);
+    case 'superJoin':
+      automataA.superUnir();
     break;
     case 'concatenate':
       automataA.concatenar(automataB);
@@ -140,6 +144,7 @@ $('#submit').click(function() {
     break;
     case 'quantifier':
       automataA.cerraduraInterrogacion();
+    break;
     case 'transformToAFD':
       automataA.transformar();
     break;

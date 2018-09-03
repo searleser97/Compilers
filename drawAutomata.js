@@ -70,11 +70,6 @@ var interval2;
 =========               FUNCIÓN DIBUJAR                 =============
 ===================================================================*/
 function createFSMDiagram(automata) {
-    
-    // Muestra alfabeto en consola para verificar
-    for (let item of automata.alfabeto){
-        console.log(item + ' ');
-    }
 
     clearInterval(interval);
     fsm = {};

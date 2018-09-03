@@ -4,6 +4,7 @@
 
 // Variable para llevar el id de los estados.
 var contador = 0;
+var contAutom = 0;
 
 
 
@@ -66,6 +67,7 @@ function Automata() {
 	_this.aceptadosID = []; // Usado para graficar
 	_this.inicial = null;
 	_this.alfabeto = new Set();
+	_this.idAutomata = contAutom++;
 
 	/*------------------------------------------------
 	****************    , MÉTODOS     ****************
@@ -132,23 +134,41 @@ function Automata() {
 		_this.aceptadosID.push(nodo2.id);
 		_this.inicial = nodo1;
 		_this.unirAlfabeto(automata.alfabeto);
+
+		automatas[automata.idAutomata] = null;
 	}
 
 	// Última función que pidió el profesor, une los autómatas pero sin converger los estados finales
-	this.unirParcial = function (automata) {
+	this.superUnir = function () {
 		var nodo1 = new Estado(false);
 		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
-		nodo1.addTrans(new Transicion(epsilon, automata.inicial));
-		for (var e of automata.aceptados) 
-			_this.aceptadosID.push(e.id);{
-			_this.aceptados.push(e);
+		console.log(_this.idAutomata);
+
+		for (var automata of automatas){
+			if (automata !== null) {
+				console.log(automata.idAutomata);
+				if (automata.idAutomata !== _this.idAutomata) {
+					console.log(2);
+					nodo1.addTrans(new Transicion(epsilon, automata.inicial));
+					//automata.inicial = false;
+					for (var e of automata.aceptados) 
+						_this.aceptadosID.push(e.id);{
+						_this.aceptados.push(e);
+					}
+					console.log(3);
+					for (var f of automata.estados) {
+						_this.estados.push(f);
+					}
+					console.log(4);
+					_this.unirAlfabeto(automata.alfabeto);
+					automatas[automata.idAutomata] = null;
+				}
+			}
 		}
+		
 		_this.estados.push(nodo1);
-		for (var f of automata.estados) {
-			_this.estados.push(f);
-		}
+		_this.inicial = false;
 		_this.inicial = nodo1;
-		_this.unirAlfabeto(automata.alfabeto);
 	}
 
 	// Función que concatena dos autómatas como la operación ab
@@ -172,6 +192,8 @@ function Automata() {
 			}
 		}
 		_this.unirAlfabeto(automata.alfabeto);
+
+		automatas[automata.idAutomata] = null;
 	}
 
 	// Función que nos permite añadir la operación a*
