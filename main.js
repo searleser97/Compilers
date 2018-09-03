@@ -13,6 +13,7 @@
 // a3.basico('D');
 // a3.cerraduraPositiva();
 // a1.concatenar(a3);
+// createFSMDiagram(a1);
 
 
 
@@ -52,6 +53,7 @@
 // a8.concatenar(a12);
 // a8.cerraduraInterrogacion();
 // a4.concatenar(a8);
+// createFSMDiagram(a4);
 
 
 
@@ -65,7 +67,7 @@
 // a14.unir(a15);
 // a14.cerraduraPositiva();
 // a13.concatenar(a14);
-
+// createFSMDiagram(a13);
 
 
 // Autómata 4
@@ -75,10 +77,7 @@
 // a17.basico('T');
 // a16.unir(a17);
 // a16.cerraduraPositiva();
-
-
-// Elegir el autómata a dibujar
-// createFSMDiagram(a4);
+// createFSMDiagram(a16);
 
 var automatas = [];
 
