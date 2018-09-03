@@ -92,7 +92,7 @@ function createBasicAutomata(symbol) {
 }
 
 $('#operations').change(function () {
-  self_operations = new Set(['positive', 'kleene', 'quantifier']);
+  self_operations = new Set(['positive', 'kleene', 'quantifier', 'transformToAFD']);
   let selected = $(this).val();
 
   if (selected == 'basic') {
@@ -100,6 +100,7 @@ $('#operations').change(function () {
     $('#sel_automata_1').attr('disabled', true);
     $('#sel_automata_2').attr('disabled', true);
   } else if (self_operations.has(selected)) {
+    $('#sel_automata_1').attr('disabled', false);
     $('#sel_automata_2').attr('disabled', true);
   } else {
     $('#id_nuevo_basico').attr('type', 'hidden');
