@@ -83,6 +83,12 @@ a1.unir(a13);
 a1.unir(a16);
 createFSMDiagram(a1);¨
 */
+//Ejemplo ed AFND -> AFD
+/*
+var a18= new Automata();
+a18= a16.transformar();
+createFSMDiagram(a18);
+*/
 
 var automatas = [];
 
