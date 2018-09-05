@@ -1,7 +1,7 @@
+var automatas = [];
 /*===================================================================
 =========                 AUTÓMATAS                     =============
 ===================================================================*/
-/*
 // Autómata 1
 var a1 = new Automata();
 a1.basico('+');
@@ -69,7 +69,6 @@ a14.cerraduraPositiva();
 a13.concatenar(a14);
 // createFSMDiagram(a13);
 
-
 // Autómata 4
 var a16 = new Automata();
 a16.basico('S');
@@ -81,21 +80,29 @@ a16.cerraduraPositiva();
 a1.unir(a4);
 a1.unir(a13);
 a1.unir(a16);
-createFSMDiagram(a1);¨
-*/
-//Ejemplo ed AFND -> AFD
-/*
-var a18= new Automata();
-a18= a16.transformar();
-createFSMDiagram(a18);
-*/
+a1.transformar();
+// a40 = a1.transformar();
+// a1 = a40;
+createFSMDiagram(a1);
+addAutomata(a1);
 
-var automatas = [];
+//Ejemplo ed AFND -> AFD
+
+// var a18= new Automata();
+// a18= a16.transformar();
+// createFSMDiagram(a18);
+
+
+function addAutomata(automata) {
+  let newId = automatas.length;
+  $('#sel_automata_1').append(new Option(newId, newId));
+  $('#sel_automata_2').append(new Option(newId, newId));
+  $('#sel_automata_to_show').append(new Option(newId, newId));
+  automatas.push(automata);
+}
 
 function createBasicAutomata(symbol) {
-  let a = new Automata();
-  a.basico(symbol);
-  automatas.push(a);
+  return new Automata().basico(symbol);
 }
 
 $('#operations').change(function () {
@@ -116,7 +123,7 @@ $('#operations').change(function () {
   }
 });
 
-$('#submit').click(function() {
+$('#submit').click(function () {
 
   console.log(automatas);
 
@@ -124,36 +131,32 @@ $('#submit').click(function() {
   let automataB = automatas[$('#sel_automata_2').val()];
   let operation = $('#operations').val();
   let isNew = false;
-  switch(operation) {
+  switch (operation) {
     case 'basic':
       isNew = true;
-      createBasicAutomata($('#id_nuevo_basico').val());
-      let newId = automatas.length - 1;
-      $('#sel_automata_1').append(new Option(newId, newId));
-      $('#sel_automata_2').append(new Option(newId, newId));
-      $('#sel_automata_to_show').append(new Option(newId, newId));
-    break;
+      addAutomata(createBasicAutomata($('#id_nuevo_basico').val()));
+      break;
     case 'join':
       automataA.unir(automataB);
-    break;
+      break;
     case 'superJoin':
       automataA.superUnir();
-    break;
+      break;
     case 'concatenate':
       automataA.concatenar(automataB);
-    break;
+      break;
     case 'kleene':
       automataA.cerraduraKleene();
-    break;
+      break;
     case 'positive':
       automataA.cerraduraPositiva();
-    break;
+      break;
     case 'quantifier':
       automataA.cerraduraInterrogacion();
-    break;
+      break;
     case 'transformToAFD':
-      automataA.transformar();
-    break;
+      addAutomata(automataA = automataA.transformar());
+      break;
   }
   if (isNew)
     createFSMDiagram(automatas[automatas.length - 1]);
