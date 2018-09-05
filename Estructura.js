@@ -261,11 +261,11 @@ function Automata() {
 	// Función que a partir de un conjunto de nodos y un símbolo, 
 	// nos regresa el conjunto de posibles nodos a donde podemos movernos
 	_this.mover = function (conjunto, s) {
-		var r = {};
+		var r = new Set();
 		for (var e of conjunto) {
 			for (var t of e.transiciones) {
 				if (t.simbolo === s)
-					r.push(t.destino);
+					r.add(t.destino);
 			}
 		}
 		return r;
@@ -273,15 +273,17 @@ function Automata() {
 
 	// Función que realiza la cerradura epsilon (C_/e)
 	_this.cerradura = function (conjunto) {
-		var r = {};
+		var r = new Set();
+		//var chec = new Set();
 		var stack = [];
 		for (var e of conjunto) {
 			stack.push(e);
 		}
-		while (stack.length != 0) {
-			var e = stack.pop();
-			if (!r.contains(e)) {
-				r.push(e);
+		while (stack.length !== 0) {
+			var e = stack.shift();
+			if (!r.has(e)) {
+				r.add(e);
+				//check.add(e);
 				for (t of e.transiciones) {
 					if (t.simbolo === epsilon)
 						stack.push(t.destino);
@@ -298,8 +300,6 @@ function Automata() {
 		return _this.cerradura(_this.mover(e, simbolo));
 	}*/
 
-
-	
 	_this.findIndex=function(E,conjunto){
 		var index=-1;
 		var bandera = false;
