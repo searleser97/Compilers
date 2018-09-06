@@ -302,9 +302,11 @@ function Automata() {
 
 	_this.findIndex=function(E,conjunto){
 		var index=-1;
-		var bandera = false;
+		//var bandera = false;
+		if(!conjunto.size)
+			return index;
 		for (var i = E.length - 1; i >= 0; i--) {
-			//if(E[i].length === conjunto.length){
+			//if(E[i].size === conjunto.size){
 			var bandera = true;
 			for (var elemento of conjunto){
 				//console.log(elemento);
@@ -344,6 +346,8 @@ function Automata() {
 
 		var auxiliar = new Set();
 		auxiliar.add(_this.inicial);
+		console.log("Agregamos al inicial que es ");
+		console.log(_this.inicial);
 		//Hacemos cerradura del nodo inicial
 		E[contador] = _this.cerradura(auxiliar);
 		en_cola.push(E[contador]);//Se introduce un CONJUNTO a la cola
@@ -374,20 +378,26 @@ function Automata() {
 				var res = _this.cerradura(res_mover);//Se hace la operacion Ir_A
 				console.log("Nuestro res es de ");
 				console.log(res);
+				var contar=0;
 				for(var it of res){
 					console.log(it);
+					contar++;
 				}
+				console.log("El contar es de ");
+				console.log(res.size);
+				//var encontrar=-1;
+				//if(res.size){
 				var encontrar = _this.findIndex(E,res);//El find regresa una posicion del arreglo E si es que encuentra el elemento res en este mismo.
-				//Si ya lo habiamos creado entonces solo agregamos la arista
+					//Si ya lo habiamos creado entonces solo agregamos la arista
+				//}				
 				console.log("El encontrar es de ");
 				console.log(encontrar);
 				if (encontrar >= 0) {
 					Ei[nodo_creado].addTrans(new Transicion(c, Ei[encontrar]));
 					//nuevasTransiciones.push(new TransicionTotal(Ei[nodo_creado], c, Ei[encontrar]));
 				}
-				else {
+				else if(contar >0){
 					//Si no lo teniamos, entonces se agrega el conjunto a E (aumentando el indice) y tambien se crea un estado en Ei.
-					
 					contador++;
 					E[contador] = res;
 					Ei[contador] = new Estado(false);
@@ -409,11 +419,11 @@ function Automata() {
 		//resultado.totalTransiciones = nuevasTranssiciones;
 		//Checar cuales son finales y agregarlos al conjunto del nuevo AFD
 		var index = 0;
-		
 		for (var conjunto of E) {
 			for (var e of conjunto) {
 				if (_this.findAccepted(e) >=0) {
 					resultado.aceptados.push(Ei[index]);
+					resultado.aceptadosID.push(Ei[index].id);
 					console.log(Ei[index]);
 					break;
 				}
