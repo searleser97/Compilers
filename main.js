@@ -102,7 +102,9 @@ function addAutomata(automata) {
 }
 
 function createBasicAutomata(symbol) {
-  return new Automata().basico(symbol);
+  let a = new Automata()
+  a.basico(symbol);
+  return a;
 }
 
 $('#operations').change(function () {
