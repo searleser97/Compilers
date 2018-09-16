@@ -1,9 +1,8 @@
-var automatas = [];
 /*===================================================================
 =========                 AUTÓMATAS                     =============
 ===================================================================*/
 // Autómata 1
-var a1 = new Automata();
+/* var a1 = new Automata();
 a1.basico('+');
 var a2 = new Automata();
 a2.basico('-');
@@ -12,13 +11,13 @@ a1.cerraduraInterrogacion();
 var a3 = new Automata();
 a3.basico('D');
 a3.cerraduraPositiva();
-a1.concatenar(a3);
+a1.concatenar(a3); */
 // createFSMDiagram(a1);
 
 
 
 // Autómata 2
-var a4 = new Automata();
+/* var a4 = new Automata();
 a4.basico('+');
 var a5 = new Automata();
 a5.basico('-');
@@ -52,13 +51,13 @@ a12.basico('D');
 a12.cerraduraPositiva();
 a8.concatenar(a12);
 a8.cerraduraInterrogacion();
-a4.concatenar(a8);
+a4.concatenar(a8); */
 // createFSMDiagram(a4);
 
 
 
 // Autómata 3
-var a13 = new Automata();
+/* var a13 = new Automata();
 a13.basico('L');
 var a14 = new Automata();
 a14.basico('L');
@@ -66,11 +65,11 @@ var a15 = new Automata();
 a15.basico('D');
 a14.unir(a15);
 a14.cerraduraPositiva();
-a13.concatenar(a14);
+a13.concatenar(a14); */
 // createFSMDiagram(a13);
 
 // Autómata 4
-var a16 = new Automata();
+/* var a16 = new Automata();
 a16.basico('S');
 var a17 = new Automata();
 a17.basico('T');
@@ -80,11 +79,11 @@ a16.cerraduraPositiva();
 a1.unir(a4);
 a1.unir(a13);
 a1.unir(a16);
-a1.transformar();
+a1.transformar(); */
 // a40 = a1.transformar();
 // a1 = a40;
-createFSMDiagram(a1);
-addAutomata(a1);
+/* createFSMDiagram(a1);
+addAutomata(a1); */
 
 //Ejemplo ed AFND -> AFD
 
@@ -92,12 +91,23 @@ addAutomata(a1);
 // a18= a16.transformar();
 // createFSMDiagram(a18);
 
+var automatas = [];
+
+function populateSelects() {
+  $('#sel_automata_to_show').html('');
+  $('#sel_automata_1').html('');
+  $('#sel_automata_2').html('');
+  for (let i = 0; i < automatas.length; i++) {
+    let opt = new Option(i, i);
+    if (automatas[i] == null || automatas[i] == undefined)
+      $(opt).attr('disabled', true);
+    $('#sel_automata_to_show').append($(opt).clone());
+    $('#sel_automata_1').append($(opt).clone());
+    $('#sel_automata_2').append($(opt).clone());
+  }
+}
 
 function addAutomata(automata) {
-  let newId = automatas.length;
-  $('#sel_automata_1').append(new Option(newId, newId));
-  $('#sel_automata_2').append(new Option(newId, newId));
-  $('#sel_automata_to_show').append(new Option(newId, newId));
   automatas.push(automata);
 }
 
@@ -132,11 +142,13 @@ $('#submit').click(function () {
   let automataA = automatas[$('#sel_automata_1').val()];
   let automataB = automatas[$('#sel_automata_2').val()];
   let operation = $('#operations').val();
-  let isNew = false;
+  if (automataA == undefined && operation != 'basic') {
+    alert('Cree un automata primero');
+    return;
+  }
   switch (operation) {
     case 'basic':
-      isNew = true;
-      addAutomata(createBasicAutomata($('#id_nuevo_basico').val()));
+      addAutomata(automataA = createBasicAutomata($('#id_nuevo_basico').val()));
       break;
     case 'join':
       automataA.unir(automataB);
@@ -160,10 +172,8 @@ $('#submit').click(function () {
       addAutomata(automataA = automataA.transformar());
       break;
   }
-  if (isNew)
-    createFSMDiagram(automatas[automatas.length - 1]);
-  else
-    createFSMDiagram(automataA);
+  populateSelects();
+  createFSMDiagram(automataA);
 });
 
 $('#sel_automata_to_show').change(function () {
