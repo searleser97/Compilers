@@ -136,9 +136,6 @@ $('#operations').change(function () {
 });
 
 $('#submit').click(function () {
-
-  console.log(automatas);
-
   let automataA = automatas[$('#sel_automata_1').val()];
   let automataB = automatas[$('#sel_automata_2').val()];
   let operation = $('#operations').val();
