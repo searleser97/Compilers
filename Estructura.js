@@ -329,7 +329,7 @@ function Automata() {
 		var bandera = false;
 		for (var i = _this.aceptados.length - 1; i >= 0; i--) {
 			if(_this.aceptados[i] === e)
-				index = i;
+				index = _this.aceptados[i].token;
 		}
 		return index;
 	}
@@ -421,7 +421,11 @@ function Automata() {
 		var index = 0;
 		for (var conjunto of E) {
 			for (var e of conjunto) {
-				if (_this.findAccepted(e) >=0) {
+				var aux = _this.findAccepted(e);
+				console.log(aux);
+				if (aux >=0) {
+					Ei[index].final = true;
+					Ei[index].token = aux;
 					resultado.aceptados.push(Ei[index]);
 					resultado.aceptadosID.push(Ei[index].id);
 					console.log(Ei[index]);
@@ -430,6 +434,9 @@ function Automata() {
 			}
 			index++;
 		}
+		console.log("Final...");
+		console.log(Ei);
+		console.log(resultado.aceptados);
 		return resultado;
 	}
 
