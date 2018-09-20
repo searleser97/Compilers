@@ -316,8 +316,9 @@ function Automata() {
 				}
 			}
 			if(bandera){
-				index = i;
-				break;
+				if(E[i].size === conjunto.size)
+					index = i;
+				//break;
 			}
 			//}
 		}
