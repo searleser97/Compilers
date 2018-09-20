@@ -6,8 +6,6 @@
 var contador = 0;
 var contAutom = 0;
 
-
-
 /*===================================================================
 =========                 TRANSICIÓN                    =============
 ===================================================================*/
@@ -36,6 +34,7 @@ function Estado(final) {
 	_this.id = contador++;
 	_this.final = final;
 	_this.transiciones = [];
+	_this.token = -1;
 
 	/*------------------------------------------------
 	****************    , MÉTODOS     ****************
@@ -432,5 +431,27 @@ function Automata() {
 		}
 		return resultado;
 	}
+
+	_this.setFinalToken = function(token) {
+		for (acceptedState of _this.aceptados) {
+			acceptedState.token = token;
+		}
+	}
+
+	_this.getStateFromId = function(stateId) {
+		for (state of _this.estados)
+			if (state.id == stateId)
+				return state;
+		return false;
+	}
 	
+}
+
+function getToken(states) {
+	let token = -1;
+	for (state of states) {
+		if (state.final)
+		 token = state.token;
+	}
+	return token;
 }

@@ -64,6 +64,7 @@ var startPoints;
 var lines;
 var interval;
 var interval2;
+var tokens = [];
 
 
 /*===================================================================
@@ -80,10 +81,10 @@ function createFSMDiagram(automata) {
     isStartPoint = {};
 
     // Tomamos el ID del estado inicial
-    startPoints = [automata.inicial.id]; 
+    startPoints = [automata.inicial.id];
 
     // Tomamos los IDs de los estados finales del autómata
-    var acceptedStatesArr = automata.aceptadosID; 
+    var acceptedStatesArr = automata.aceptadosID;
 
     // Pintamos estados finales
     for (let acStates of acceptedStatesArr)
@@ -261,3 +262,276 @@ function createFSMDiagram(automata) {
     var network = new vis.Network(container, data, options);
 }
 
+function isPDANodeUnique(actualStates, nextStateWithStack) {
+    for (r in actualStates) {
+        if (nextStateWithStack[0] == actualStates[r][0]) {
+            if (nextStateWithStack[1].length == actualStates[r][1].length) {
+                if (nextStateWithStack[1].length == 0)
+                    return false;
+                for (var inde = 0; inde < nextStateWithStack[1].length; inde++) {
+                    if (nextStateWithStack[1][inde] !== actualStates[r][1][inde])
+                        break;
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+function statesConnectedWithEpsilon(actualStates, visitedStates) {
+    var localActualStates = [...actualStates];
+    for (var index = 0; index < localActualStates.length; index++) {
+        var actualState = localActualStates[index];
+        if (actualState[0] !== undefined) {
+            if (actualState[0][epsilon] !== undefined) {
+                for (u in actualState[0][epsilon]) {
+                    var stackOps = [actualState[0][epsilon][u][1], actualState[0][epsilon][u][2]];
+                    var nextStateWithStack = [fsm[actualState[0][epsilon][u][0]],
+                    [...actualState[1]]
+                    ];
+                    var canProceed = true;
+                    if (stackOps[0] !== epsilon) {
+                        if (stackOps[0] !== nextStateWithStack[1].pop())
+                            canProceed = false;
+                    }
+                    if (stackOps[1] !== epsilon) {
+                        for (var indexx = stackOps[1].length - 1; indexx > -1; indexx--)
+                            nextStateWithStack[1].push(stackOps[1][indexx]);
+                    }
+                    if (canProceed) {
+                        if (isPDANodeUnique(localActualStates, nextStateWithStack)) {
+                            localActualStates.push(nextStateWithStack);
+                            visitedStates.push([actualState[0][epsilon][u][0], nextStateWithStack[1]]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return [localActualStates, visitedStates];
+}
+
+function evaluateLinesWithFSM() {
+    output.innerHTML = '';
+    symbolPos = 0;
+    lineNumber = 0;
+    acceptedOrRejected = [];
+    way = [];
+    symbolsToPrint = []
+    lines = document.getElementById('linesToEval').value.split('\n');
+    // lines = document.getElementById('linesToEval').value.split(' ');
+    // lines = 'D +D';
+    nMaxlineNumberDigits = parseInt(Math.log10(lines.length - 1)) + 1;
+    var objSet = new Set();
+    var actualStates = [];
+    var superFlag = 0;
+    for (var i in lines) {
+        line = lines[i];
+        var symbols;
+        symbols = line.split('');
+        // inicio de automata
+        actualStates = [];
+        for (k in startPoints) {
+            actualStates.push([fsm[startPoints[k]],
+            []
+            ]);
+        }
+
+        var nextStates = [];
+        var flag1 = false;
+        var auxActualStates = statesConnectedWithEpsilon(actualStates, []);
+        actualStates = auxActualStates[0];
+        var visitedStatesPerSymbol = auxActualStates[1];
+        visitedStatesPerSymbol.push([startPoints[0],
+        []
+        ]);
+        way.push(visitedStatesPerSymbol);
+        symbolsToPrint.push('');
+        // fin del inicio de automata
+        var lastMatchedPosition = -1;
+
+        for (var j = ++lastMatchedPosition, m = 0; j < symbols.length && m < 8; j++ , m++) {
+            var newActualStates = [];
+            visitedStatesPerSymbol = [];
+            flag1 = false;
+            console.log(symbols[j])
+            for (q in actualStates) {
+                if (actualStates[q][0] !== undefined) {
+                    nextStates = actualStates[q][0][symbols[j]];
+                    if (nextStates == undefined) {
+                        continue;
+                    } else {
+                        flag1 = true;
+                    }
+                    for (o in nextStates) {
+                        var nextStateStack = [...actualStates[q][1]];
+                        var canProceed = true;
+                        if (nextStates[o][1] !== epsilon) {
+                            if (nextStates[o][1] !== nextStateStack.pop())
+                                canProceed = false;
+                        }
+                        if (nextStates[o][2] !== epsilon) {
+                            for (var indexx = nextStates[o][2].length - 1; indexx > -1; indexx--)
+                                nextStateStack.push(nextStates[o][2][indexx]);
+                        }
+                        if (canProceed) {
+                            newActualStates.push([fsm[nextStates[o][0]],
+                                nextStateStack
+                            ]);
+                            visitedStatesPerSymbol.push([nextStates[o][0], nextStateStack]);
+                        }
+                    }
+                }
+            }
+            auxActualStates = statesConnectedWithEpsilon(newActualStates, visitedStatesPerSymbol);
+            newActualStates = auxActualStates[0];
+            visitedStatesPerSymbol = auxActualStates[1];
+            actualStates = newActualStates;
+            if (flag1) {
+                way.push(visitedStatesPerSymbol);
+                symbolsToPrint.push(symbols[j]);
+            }
+            console.log('entro');
+            way.push([]);
+            symbolsToPrint.push('\0');
+            var flag = false;
+            for (p in visitedStatesPerSymbol) {
+                if (acceptedStates[visitedStatesPerSymbol[p][0]] && visitedStatesPerSymbol[p][1].length == 0) {
+                    flag = true;
+                    lastMatchedPosition = j;
+                    tokens.push(getToken([a1.getStateFromId(visitedStatesPerSymbol[p][0])]));
+                    break;
+                }
+            }
+            if (flag)
+                acceptedOrRejected.push('');
+            else
+                acceptedOrRejected.push(i);
+            // inicio de automata
+            j = lastMatchedPosition;
+            actualStates = [];
+            for (k in startPoints) {
+                actualStates.push([fsm[startPoints[k]],
+                []
+                ]);
+            }
+
+            nextStates = [];
+            flag1 = false;
+            auxActualStates = statesConnectedWithEpsilon(actualStates, []);
+            actualStates = auxActualStates[0];
+            visitedStatesPerSymbol = auxActualStates[1];
+            visitedStatesPerSymbol.push([startPoints[0],
+            []
+            ]);
+            way.push(visitedStatesPerSymbol);
+            symbolsToPrint.push('');
+
+        }
+    }
+    way.push([]);
+    symbolsToPrint.push('\0\0');
+    console.log(tokens);
+    var outs = '';
+    for (token of tokens)
+        outs += token + ' ';
+    output.value = 'Tokens: ' + outs;
+    tokens = [];
+}
+
+function changeNodeColor(nodeId, color) {
+    nodes.update([{
+        id: nodeId,
+        color: {
+            background: color
+        }
+    }]);
+}
+
+
+function travelInStates() {
+    if (lineIsPending) {
+        printLineInterval();
+        return;
+    }
+
+    if (symbolsToPrint[symbolPos] == '\0\0') {
+        clearInterval(interval2);
+        return;
+    }
+    lineSpan = document.createElement('span');
+    lineSpan.id = 'line' + lineNumber;
+    var nSpaces = nMaxlineNumberDigits - (parseInt(Math.log10(lineNumber)) + 1);
+    var spaces = '';
+    for (var i = 0; i < nSpaces; i++) {
+        spaces += '&nbsp;&nbsp;';
+    }
+    lineSpan.innerHTML = spaces + lineNumber.toString() + ':&nbsp;';
+    if (lineNumber > 0)
+        output.innerHTML += '<br>';
+    output.appendChild(lineSpan);
+    output.scrollTop = output.scrollHeight;
+    lineIsPending = true;
+    printLineInterval();
+}
+
+function printLine() {
+    if (symbolPos > 0) {
+        var prevStates = way[symbolPos - 1];
+        for (ps in prevStates) {
+            if (isStartPoint[prevStates[ps][0]])
+                changeNodeColor(prevStates[ps][0], 'lightgreen');
+            else
+                changeNodeColor(prevStates[ps][0], 'white');
+        }
+    }
+
+    if (symbolsToPrint[symbolPos] == '\0') {
+        var outputLine = document.getElementById('line' + lineNumber);
+        if (acceptedOrRejected[lineNumber] != '') {
+            outputLine.classList.add('highlightRed');
+        } else {
+            outputLine.classList.add('highlightGreen');
+        }
+        lineNumber += 1;
+        symbolPos += 1;
+        lineIsPending = false;
+        clearInterval(interval2);
+        travelInStates();
+        return;
+    }
+    if (symbolsToPrint[symbolPos] == ' ')
+        lineSpan.innerHTML += '&nbsp;';
+    else
+        lineSpan.innerHTML += symbolsToPrint[symbolPos];
+
+    var states = way[symbolPos];
+    for (s in states) {
+        changeNodeColor(states[s][0], 'red');
+    }
+    symbolPos += 1;
+}
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function pause() {
+    clearInterval(interval2);
+}
+
+function play() {
+    travelInStates();
+}
+
+function printLineInterval() {
+    interval2 = setInterval(function () {
+        printLine()
+    }, 1000);
+}
