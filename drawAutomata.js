@@ -81,10 +81,10 @@ function createFSMDiagram(automata) {
     isStartPoint = {};
 
     // Tomamos el ID del estado inicial
-    startPoints = [automata.inicial.id];
+    startPoints = [automata.inicial.id]; 
 
     // Tomamos los IDs de los estados finales del autómata
-    var acceptedStatesArr = automata.aceptadosID;
+    var acceptedStatesArr = automata.aceptadosID; 
 
     // Pintamos estados finales
     for (let acStates of acceptedStatesArr)
@@ -288,7 +288,7 @@ function statesConnectedWithEpsilon(actualStates, visitedStates) {
                 for (u in actualState[0][epsilon]) {
                     var stackOps = [actualState[0][epsilon][u][1], actualState[0][epsilon][u][2]];
                     var nextStateWithStack = [fsm[actualState[0][epsilon][u][0]],
-                    [...actualState[1]]
+                        [...actualState[1]]
                     ];
                     var canProceed = true;
                     if (stackOps[0] !== epsilon) {
@@ -319,8 +319,8 @@ function evaluateLinesWithFSM() {
     acceptedOrRejected = [];
     way = [];
     symbolsToPrint = []
-    lines = document.getElementById('linesToEval').value.split('\n');
-    // lines = document.getElementById('linesToEval').value.split(' ');
+    // lines = document.getElementById('linesToEval').value.split('\n');
+    lines = document.getElementById('linesToEval').value.split(' ');
     // lines = 'D +D';
     nMaxlineNumberDigits = parseInt(Math.log10(lines.length - 1)) + 1;
     var objSet = new Set();
@@ -329,33 +329,33 @@ function evaluateLinesWithFSM() {
     for (var i in lines) {
         line = lines[i];
         var symbols;
+        // if (stringOrChar == 1)
+        //     symbols = line.split(' ');
+        // else
+        //     symbols = line.split('');
         symbols = line.split('');
-        // inicio de automata
         actualStates = [];
         for (k in startPoints) {
             actualStates.push([fsm[startPoints[k]],
-            []
+                []
             ]);
         }
 
+        var symbolNotInAlfabet = false;
         var nextStates = [];
         var flag1 = false;
         var auxActualStates = statesConnectedWithEpsilon(actualStates, []);
         actualStates = auxActualStates[0];
         var visitedStatesPerSymbol = auxActualStates[1];
         visitedStatesPerSymbol.push([startPoints[0],
-        []
+            []
         ]);
         way.push(visitedStatesPerSymbol);
         symbolsToPrint.push('');
-        // fin del inicio de automata
-        var lastMatchedPosition = -1;
-
-        for (var j = ++lastMatchedPosition, m = 0; j < symbols.length && m < 8; j++ , m++) {
+        for (var j in symbols) {
             var newActualStates = [];
             visitedStatesPerSymbol = [];
             flag1 = false;
-            console.log(symbols[j])
             for (q in actualStates) {
                 if (actualStates[q][0] !== undefined) {
                     nextStates = actualStates[q][0][symbols[j]];
@@ -383,6 +383,7 @@ function evaluateLinesWithFSM() {
                         }
                     }
                 }
+                
             }
             auxActualStates = statesConnectedWithEpsilon(newActualStates, visitedStatesPerSymbol);
             newActualStates = auxActualStates[0];
@@ -391,51 +392,30 @@ function evaluateLinesWithFSM() {
             if (flag1) {
                 way.push(visitedStatesPerSymbol);
                 symbolsToPrint.push(symbols[j]);
-            }
-            console.log('entro');
-            way.push([]);
-            symbolsToPrint.push('\0');
-            var flag = false;
-            for (p in visitedStatesPerSymbol) {
-                if (acceptedStates[visitedStatesPerSymbol[p][0]] && visitedStatesPerSymbol[p][1].length == 0) {
-                    flag = true;
-                    lastMatchedPosition = j;
-                    tokens.push(getToken([a1.getStateFromId(visitedStatesPerSymbol[p][0])]));
-                    break;
-                }
-            }
-            if (flag)
-                acceptedOrRejected.push('');
-            else
-                acceptedOrRejected.push(i);
-            // inicio de automata
-            j = lastMatchedPosition;
-            actualStates = [];
-            for (k in startPoints) {
-                actualStates.push([fsm[startPoints[k]],
-                []
-                ]);
-            }
-
-            nextStates = [];
-            flag1 = false;
-            auxActualStates = statesConnectedWithEpsilon(actualStates, []);
-            actualStates = auxActualStates[0];
-            visitedStatesPerSymbol = auxActualStates[1];
-            visitedStatesPerSymbol.push([startPoints[0],
-            []
-            ]);
-            way.push(visitedStatesPerSymbol);
-            symbolsToPrint.push('');
-
+            } else
+                break;
         }
+        way.push([]);
+        symbolsToPrint.push('\0');
+        var flag = false;
+        for (p in visitedStatesPerSymbol) {
+            if (acceptedStates[visitedStatesPerSymbol[p][0]] && visitedStatesPerSymbol[p][1].length == 0) {
+                flag = true;
+                tokens.push(getToken([a1.getStateFromId(visitedStatesPerSymbol[p][0])]));
+                break;
+            }
+        }
+        if (flag)
+            acceptedOrRejected.push('');
+        else
+            acceptedOrRejected.push(i);
     }
     way.push([]);
     symbolsToPrint.push('\0\0');
     console.log(tokens);
     var outs = '';
     for (token of tokens)
-        outs += token + ' ';
+        outs += token + ' '; 
     output.value = 'Tokens: ' + outs;
     tokens = [];
 }
@@ -531,7 +511,7 @@ function play() {
 }
 
 function printLineInterval() {
-    interval2 = setInterval(function () {
+    interval2 = setInterval(function() {
         printLine()
     }, 1000);
 }
