@@ -171,7 +171,10 @@ addAutomata(a7);
 addAutomata(a13);
 
 a1.superUnir();
+a1 = a1.transformar();
+
 createFSMDiagram(a1);
+lexicalAnalysis(a1, 'abbacccdsstscababbssabcccaaddabccaddsstss\\');
 // evaluateLinesWithFSM();
 
 function populateSelects() {

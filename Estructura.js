@@ -42,6 +42,14 @@ function Estado(final) {
 	_this.addTrans = function (transicion) {
 		_this.transiciones.push(transicion);
 	}
+
+	_this.getTransWithSymbol = function (symbol) {
+		var transitions = [];
+		for (transition of _this.transiciones)
+			if (transition.simbolo == symbol)
+				transitions.push(transition);
+		return transitions;
+	}
 }
 
 function TransicionTotal(inicial, simbolo, final) {
@@ -452,14 +460,4 @@ function Automata() {
 				return state;
 		return false;
 	}
-	
-}
-
-function getToken(states) {
-	let token = -1;
-	for (state of states) {
-		if (state.final)
-		 token = state.token;
-	}
-	return token;
 }
