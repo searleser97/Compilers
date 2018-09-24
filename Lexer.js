@@ -55,19 +55,8 @@ function Lexer(automata, strToTest) {
           lastMatchedPosition = _this.position;
         }
         _this.advance();
-      } else {
-        if (lastMatchedState == undefined) {
-          _this.current_state = _this.automata.inicial;
-          _this.curr_symbol = strToTest[0];
-          _this.position = 0;
-          return -1;
-        } else {
-          _this.lastMatchedSubstr = _this.strToTest.substring(_this.lastMatchedPosition, lastMatchedPosition);
-          _this.lastMatchedPosition = lastMatchedPosition;
-          _this.lastMatchedState = lastMatchedState;
-          return lastMatchedState.token;
-        }
-      }
+      } else
+        break;
     }
     if (lastMatchedState == undefined) {
       _this.current_state = _this.automata.inicial;
