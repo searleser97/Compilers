@@ -171,12 +171,11 @@ addAutomata(a7);
 addAutomata(a13);
 
 a1.superUnir();
-a1 = a1.transformar();
+var a1_dfa = a1.transformar();
 
-addAutomata(a1);
+addAutomata(a1_dfa);
 
 // createFSMDiagram(a1);
-// lexicalAnalysis(a1, 'abbacccdsstscababbssabcccaaddabccaddsstss');
 $('#strToEval').val('abbacccdsstscababbssabcccaaddabccaddsstss');
 
 function populateSelects() {
