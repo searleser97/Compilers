@@ -69,31 +69,39 @@ function Lexer(automata, strToTest) {
         }
       }
     }
-    _this.lastMatchedSubstr = _this.strToTest.substring(_this.lastMatchedPosition, lastMatchedPosition);
-    _this.lastMatchedPosition = lastMatchedPosition;
-    _this.lastMatchedState = lastMatchedState;
-    return lastMatchedState.token;
+    if (lastMatchedState == undefined) {
+      _this.current_state = _this.automata.inicial;
+      _this.curr_symbol = strToTest[0];
+      _this.position = 0;
+      return -1;
+    } else {
+      _this.lastMatchedSubstr = _this.strToTest.substring(_this.lastMatchedPosition, lastMatchedPosition);
+      _this.lastMatchedPosition = lastMatchedPosition;
+      _this.lastMatchedState = lastMatchedState;
+      return lastMatchedState.token;
+    }
   }
 }
 
 function lexicalAnalysis(dfa, strToTest) {
   tokens = [];
-  str = strToTest + '\0'; 
+  str = strToTest + '\0';
   console.log('starts lexical analysis');
   var lexer = new Lexer(dfa, str);
   lexerToken = lexer.getNextToken();
   while (true) {
-      if (lexerToken == EOF) {
-          console.log('fin de cadena');
-          break;
-      }
-      if (lexerToken == -1) {
-          console.log('error');
-          break;
-      }
-      console.log('lexerToken: ' + lexerToken);
-      tokens.push(lexerToken);
-      lexerToken = lexer.getNextToken();
+    if (lexerToken == EOF) {
+      console.log('fin de cadena');
+      break;
+    }
+    if (lexerToken == -1) {
+      tokens = 'Error at position ' + lexer.lastMatchedPosition;
+      tokens += '\nnear: ' + lexer.lastMatchedSubstr;
+      break;
+    }
+    console.log('lexerToken: ' + lexerToken);
+    tokens.push(lexerToken);
+    lexerToken = lexer.getNextToken();
   }
   return tokens;
 }
