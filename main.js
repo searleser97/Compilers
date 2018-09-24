@@ -175,7 +175,7 @@ a1 = a1.transformar();
 
 addAutomata(a1);
 
-createFSMDiagram(a1);
+// createFSMDiagram(a1);
 // lexicalAnalysis(a1, 'abbacccdsstscababbssabcccaaddabccaddsstss');
 $('#strToEval').val('abbacccdsstscababbssabcccaaddabccaddsstss');
 
@@ -194,23 +194,12 @@ function populateSelects() {
 }
 
 function addAutomata(automata) {
-  if (automata.idAutomata < automatas.length) {
-    $('#sel_automata_1').append(new Option(automata.idAutomata, automata.idAutomata));
-    $('#sel_automata_2').append(new Option(automata.idAutomata, automata.idAutomata));
-    $('#sel_automata_to_use').append(new Option(automata.idAutomata, automata.idAutomata));
+  if (automata.idAutomata < automatas.length)
     automatas[automata.idAutomata] = automata;
-  } else {
-    let newId = automatas.length;
-    $('#sel_automata_1').append(new Option(newId, newId));
-    $('#sel_automata_2').append(new Option(newId, newId));
-    $('#sel_automata_to_use').append(new Option(newId, newId));
+  else
     automatas.push(automata);
-  }
+  populateSelects();
 }
-
-// function addAutomata(automata) {
-//   automatas.push(automata);
-// }
 
 function createBasicAutomata(symbol) {
   let a = new Automata()
