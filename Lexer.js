@@ -80,7 +80,6 @@ function lexicalAnalysis(dfa, strToTest) {
   tokens = [];
   str = strToTest + '\0'; 
   console.log('starts lexical analysis');
-  output.innerHTML = '';
   var lexer = new Lexer(dfa, str);
   lexerToken = lexer.getNextToken();
   while (true) {

@@ -176,7 +176,8 @@ a1 = a1.transformar();
 addAutomata(a1);
 
 createFSMDiagram(a1);
-lexicalAnalysis(a1, 'abbacccdsstscababbssabcccaaddabccaddsstss');
+// lexicalAnalysis(a1, 'abbacccdsstscababbssabcccaaddabccaddsstss');
+$('#strToEval').val('abbacccdsstscababbssabcccaaddabccaddsstss');
 
 function populateSelects() {
   $('#sel_automata_to_use').html('');
@@ -283,4 +284,5 @@ $('#lexicEvalBtn').click(function () {
   let automata = automatas[$('#sel_automata_to_use').val()];
   let tokens = lexicalAnalysis(automata, $('#strToEval').val());
   console.log(tokens);
+  $('#tokensOutput').val(tokens);
 });
