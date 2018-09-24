@@ -312,24 +312,6 @@ function statesConnectedWithEpsilon(actualStates, visitedStates) {
     return [localActualStates, visitedStates];
 }
 
-function lexicalAnalysis(dfa, str) {
-    output.innerHTML = '';
-    var lexer = new Lexer(dfa, str);
-    lexerToken = lexer.getNextToken();
-    while (true) {
-        console.log('lexerToken: ')
-        console.log(lexerToken);
-        if (lexerToken == 0) {
-            console.log('fin Cadena');
-            break;
-        }
-        if (lexerToken == -1) {
-            console.log('error');
-            break;
-        }
-        lexerToken = lexer.getNextToken();
-    }
-}
 
 function changeNodeColor(nodeId, color) {
     nodes.update([{

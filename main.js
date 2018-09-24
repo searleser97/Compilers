@@ -173,19 +173,20 @@ addAutomata(a13);
 a1.superUnir();
 a1 = a1.transformar();
 
+addAutomata(a1);
+
 createFSMDiagram(a1);
-lexicalAnalysis(a1, 'abbacccdsstscababbssabcccaaddabccaddsstss\\');
-// evaluateLinesWithFSM();
+lexicalAnalysis(a1, 'abbacccdsstscababbssabcccaaddabccaddsstss');
 
 function populateSelects() {
-  $('#sel_automata_to_show').html('');
+  $('#sel_automata_to_use').html('');
   $('#sel_automata_1').html('');
   $('#sel_automata_2').html('');
   for (let i = 0; i < automatas.length; i++) {
     let opt = new Option(i, i);
     if (automatas[i] == null || automatas[i] == undefined)
       $(opt).attr('disabled', true);
-    $('#sel_automata_to_show').append($(opt).clone());
+    $('#sel_automata_to_use').append($(opt).clone());
     $('#sel_automata_1').append($(opt).clone());
     $('#sel_automata_2').append($(opt).clone());
   }
@@ -195,13 +196,13 @@ function addAutomata(automata) {
   if (automata.idAutomata < automatas.length) {
     $('#sel_automata_1').append(new Option(automata.idAutomata, automata.idAutomata));
     $('#sel_automata_2').append(new Option(automata.idAutomata, automata.idAutomata));
-    $('#sel_automata_to_show').append(new Option(automata.idAutomata, automata.idAutomata));
+    $('#sel_automata_to_use').append(new Option(automata.idAutomata, automata.idAutomata));
     automatas[automata.idAutomata] = automata;
-  }else{
+  } else {
     let newId = automatas.length;
     $('#sel_automata_1').append(new Option(newId, newId));
     $('#sel_automata_2').append(new Option(newId, newId));
-    $('#sel_automata_to_show').append(new Option(newId, newId));
+    $('#sel_automata_to_use').append(new Option(newId, newId));
     automatas.push(automata);
   }
 }
@@ -273,7 +274,13 @@ $('#submit').click(function () {
   createFSMDiagram(automataA);
 });
 
-$('#sel_automata_to_show').change(function () {
+$('#sel_automata_to_use').change(function () {
   let selected = $(this).val();
   createFSMDiagram(automatas[selected]);
+});
+
+$('#lexicEvalBtn').click(function () {
+  let automata = automatas[$('#sel_automata_to_use').val()];
+  let tokens = lexicalAnalysis(automata, $('#strToEval').val());
+  console.log(tokens);
 });

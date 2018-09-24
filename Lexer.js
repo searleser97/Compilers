@@ -6,8 +6,8 @@ function Lexer(automata, strToTest) {
   _this.position = 0;
   _this.current_state = automata.inicial;
   _this.lastMatchedState = undefined;
-  _this.curr_symbol = undefined;
-  _this.lastMatchedPosition = undefined;
+  _this.curr_symbol = strToTest[0];
+  _this.lastMatchedPosition = -1;
   _this.lastMatchedSubstr = undefined;
 
 
@@ -16,11 +16,7 @@ function Lexer(automata, strToTest) {
   }
 
   _this.advance = function () {
-    if (_this.position != _this.strToTest.length) {
-      _this.position++;
-      _this.curr_symbol = strToTest[_this.position];
-    }
-    return _this.position < _this.strToTest;
+    _this.curr_symbol = strToTest[++_this.position];
   }
 
   function isFinalState(states) {
@@ -40,33 +36,65 @@ function Lexer(automata, strToTest) {
   }
 
   _this.getNextToken = function () {
-    if ((_this.curr_symbol = strToTest[_this.position]) == EOF)
-      return false;
+
+    if (_this.curr_symbol == EOF)
+      return EOF;
+
+    _this.current_state = _this.automata.inicial;
+    var lastMatchedPosition;
+    var lastMatchedState;
+    _this.curr_symbol = strToTest[_this.position = _this.lastMatchedPosition + 1];
     while (_this.curr_symbol != EOF) {
-      debugger;
       console.log('curr_symbol ' + _this.curr_symbol);
       console.log(_this.current_state)
       var nextTransitions = _this.current_state.getTransWithSymbol(_this.curr_symbol);
       if (nextTransitions.length > 0) {
         _this.current_state = nextTransitions[0].destino; // assuming it is a DFA
-        _this.advance();
         if (_this.current_state.final) {
-          _this.lastMatchedState = _this.current_state;
-          _this.lastMatchedPosition = _this.position;
+          lastMatchedState = _this.current_state;
+          lastMatchedPosition = _this.position;
         }
+        _this.advance();
       } else {
-        if (_this.lastMatchedState == undefined) {
+        if (lastMatchedState == undefined) {
           _this.current_state = _this.automata.inicial;
           _this.curr_symbol = strToTest[0];
           _this.position = 0;
           return -1;
         } else {
-          _this.lastMatchedSubstr = _this.strToTest.substring(0, _this.lastMatchedPosition);
-          return _this.lastMatchedState.token;
+          _this.lastMatchedSubstr = _this.strToTest.substring(_this.lastMatchedPosition, lastMatchedPosition);
+          _this.lastMatchedPosition = lastMatchedPosition;
+          _this.lastMatchedState = lastMatchedState;
+          return lastMatchedState.token;
         }
       }
     }
-    _this.lastMatchedSubstr = _this.strToTest.substring(0, _this.lastMatchedPosition);
-    return _this.lastMatchedState.token;
+    _this.lastMatchedSubstr = _this.strToTest.substring(_this.lastMatchedPosition, lastMatchedPosition);
+    _this.lastMatchedPosition = lastMatchedPosition;
+    _this.lastMatchedState = lastMatchedState;
+    return lastMatchedState.token;
   }
+}
+
+function lexicalAnalysis(dfa, strToTest) {
+  tokens = [];
+  str = strToTest + '\0'; 
+  console.log('starts lexical analysis');
+  output.innerHTML = '';
+  var lexer = new Lexer(dfa, str);
+  lexerToken = lexer.getNextToken();
+  while (true) {
+      if (lexerToken == EOF) {
+          console.log('fin de cadena');
+          break;
+      }
+      if (lexerToken == -1) {
+          console.log('error');
+          break;
+      }
+      console.log('lexerToken: ' + lexerToken);
+      tokens.push(lexerToken);
+      lexerToken = lexer.getNextToken();
+  }
+  return tokens;
 }
