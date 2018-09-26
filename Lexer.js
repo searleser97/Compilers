@@ -45,8 +45,8 @@ function Lexer(automata, strToTest) {
     var lastMatchedState;
     _this.curr_symbol = strToTest[_this.position = _this.lastMatchedPosition + 1];
     while (_this.curr_symbol != EOF) {
-      console.log('curr_symbol ' + _this.curr_symbol);
-      console.log(_this.current_state)
+      // console.log(_this.current_state);
+      // console.log('curr_symbol ' + _this.curr_symbol);
       var nextTransitions = _this.current_state.getTransWithSymbol(_this.curr_symbol);
       if (nextTransitions.length > 0) {
         _this.current_state = nextTransitions[0].destino; // assuming it is a DFA
@@ -75,12 +75,13 @@ function Lexer(automata, strToTest) {
 function lexicalAnalysis(dfa, strToTest) {
   tokens = [];
   str = strToTest + '\0';
-  console.log('starts lexical analysis');
+  // console.log('starts lexical analysis');
   var lexer = new Lexer(dfa, str);
   lexerToken = lexer.getNextToken();
   while (true) {
     if (lexerToken == EOF) {
-      console.log('fin de cadena');
+      tokens.push(0);
+      // console.log('fin de cadena');
       break;
     }
     if (lexerToken == -1) {
@@ -88,7 +89,7 @@ function lexicalAnalysis(dfa, strToTest) {
       tokens += '\nnear: ' + lexer.lastMatchedSubstr;
       break;
     }
-    console.log('lexerToken: ' + lexerToken);
+    // console.log('lexerToken: ' + lexerToken);
     tokens.push(lexerToken);
     lexerToken = lexer.getNextToken();
   }

@@ -51,6 +51,7 @@
                     <button id="submit" type="submit" class="btn btn-primary">Ejecutar Operacion</button>
                 </div>
             </div>
+<!-- 
             <div class="form-group row">
                 <div class="col-sm">
                     <select class="form-control" id="sel_automata_to_use">
@@ -58,21 +59,32 @@
                     </select>
                 </div>
             </div>
+-->
+<!--
             <div class="form-group row">
                 <div class="col-sm">
                     <textarea id="strToEval" class="form-control"></textarea>
                 </div>
+            </div> 
+-->
+            <div class="form-group row">
+                <div class="col-sm">
+                    <button id="lexicEvalBtn" class="btn btn-info" disabled="true">Evaluar Lexico</button>
+                </div>
             </div>
             <div class="form-group row">
                 <div class="col-sm">
-                    <button id="lexicEvalBtn" class="btn btn-info">Evaluar Lexico</button>
+                    <textarea id="tokensOutput" placeholder="Tokens" class="form-control"></textarea>
                 </div>
             </div>
-            <div class="form-group row">
+            <div id="bdtable">
+                <div class="form-group row">
                     <div class="col-sm">
-                        <textarea id="tokensOutput" placeholder="Tokens" class="form-control"></textarea>
+                        <button id="buttonTable" class="btn btn-primary showTable" disabled="true">Mostrar Tabla</button>
                     </div>
                 </div>
+            </div>
+            <br>
             <div id="mynetwork">
                 <div class="vis-network" tabindex="900" style="position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;">
                     <canvas style="margin-top: 100px; position: relative; touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 90%;"></canvas>
@@ -81,10 +93,13 @@
 
             <script src="CONSTANTS.js"></script>
             <script src="Estructura.js"></script>
+            <script src="Table.js"></script>
+            <script src="EvaluarExpresionAritmetica.js"></script>
             <script src="Lexer.js"></script>
             <script src="vis.min.js"></script>
             <script src="randomColor.js"></script>
             <script src="drawAutomata.js"></script>
+            <script src="test.js"></script>
 
             <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
                 crossorigin="anonymous"></script>
