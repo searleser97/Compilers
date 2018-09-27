@@ -460,4 +460,76 @@ function Automata() {
 				return state;
 		return false;
 	}
+
+
+	_this.F = function(f){
+		var tok;
+		tok=Lexer.getToken();
+		if(tok === Tokens.PAR_I){
+			if(E(f)){
+				tok=Lexer.getToken();
+				if(tok ===Tokens.PAR_D)
+					return true;
+			}
+		}
+		else if(tok === Tokens.SIMB){
+			f = new Automata(Lexema[0]);
+			return true;
+		}
+		return false
+	}
+
+	_this.E = function(f){
+		if(T(f))
+			if(Ep(f))
+				return true;
+		return false;
+	}
+
+	_this.Ep = function(f){
+		var tok;
+		var f2=new Automata();
+		tok=Lexer.getToken();
+		if(tok === Tokens.OR){
+			if(T(f2)){
+				f.unir(f2);
+				if(Ep(f))
+					return true;
+			}
+			return false;
+		}
+		Lexer.RegresaToken();
+		return true;
+	}
+
+	_this.T = function(f){
+		var tok;
+		var f2= new Automata();
+		tok = Lexer.getToken();
+		if(tok === Tokens.CONC){
+			if(C(f2)){
+				f=f.concatenar(f2);
+				if(Tp(f))
+					return true;
+			}
+			return false;
+		}
+		Lexer.RegresaToken();
+		return true;
+	}
+
+	_this.C=function(f){
+		if(F(f))
+			if(Cp(f))
+				return true;
+		return false;
+	}
+
+	_this.Cp = function(f){
+		var token;
+		token = Lexer.getToken();
+		/*
+		NO SE VE
+		*/
+	}
 }
