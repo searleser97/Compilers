@@ -1,4 +1,6 @@
 var automatas = [];
+var strToEval = "";
+var aTokens = [];
 
 /*===================================================================
 =========                 AUTÓMATAS                     =============
@@ -89,10 +91,11 @@ $('#submit').click(function () {
       break;
     case 'transformToAFD':
       var usados = new Set();
+      var value = 0;
       for (var e of automataA.aceptados){
         var nToken = "";
         while (nToken == "" || nToken == null || usados.has(nToken)){
-          nToken = prompt("Ingrese el token del estado "+e.id+": ", "10");
+          nToken = prompt("Ingrese el token del estado "+e.id+": ", value+=10);
         }
         e.token = parseInt(nToken, 10);
         usados.add(nToken);
@@ -106,6 +109,10 @@ $('#submit').click(function () {
 
 $('#sel_automata_1').change(function () {
   let selected = $(this).val();
+  $('#tokensOutput').val('');
+  tokens = [];
+  $('#evalExprBtn').attr("hidden", true);
+  $('#tokensOutput').attr("hidden", true);
   if (automatas[selected].afd === true) {
     $('#buttonTable').attr('disabled', false);
     $('#lexicEvalBtn').attr('disabled', false);
@@ -118,12 +125,14 @@ $('#sel_automata_1').change(function () {
 
 $('#lexicEvalBtn').click(function () {
   let automata = automatas[$('#sel_automata_1').val()];
-  var strToEval = "";
-  while (strToEval == "") {
-    strToEval = prompt("Ingrese la cadena a evaluar: ", "abbacccdsstscababbssabcccaaddabccaddsstss");
-    let tokens = lexicalAnalysis(automata, strToEval);
+  strToEval = "";
+  while (strToEval == "" || strToEval == null) {
+    strToEval = prompt("Ingrese la cadena a evaluar: ", "cadena");
   }
+  var tokens = lexicalAnalysis(automata, strToEval, aTokens);
   $('#tokensOutput').val(tokens);
+  $('#tokensOutput').attr("hidden", false);
+  $('#evalExprBtn').attr("hidden", false);
 });
 
 $(document).on('click', '.showTable', function() {
@@ -137,4 +146,8 @@ $(document).on('click', '.dropTable', function() {
   dropTable();
   $("#buttonTable").html('Mostrar Tabla');
   $(this).removeClass('dropTable').addClass('showTable');
+});
+
+$('#evalExprBtn').click(function () {
+  alert("The result is: "+ new EvalExpAr().AnalizarExp());
 });

@@ -166,37 +166,37 @@ function createThirdAutomaton(){
 	// Autómata 1
 	var a1 = new Automata();
 	a1.basico('+');
-	// a1.setFinalToken(10);
+	a1.setFinalToken(10);
 	// createFSMDiagram(a1);
 
 	// Autómata 2
 	var a2 = new Automata();
 	a2.basico('-');
-	// a2.setFinalToken(20);
+	a2.setFinalToken(20);
 	// createFSMDiagram(a2);
 
 	// Autómata 3
 	var a3 = new Automata();
 	a3.basico('*');
-	// a3.setFinalToken(30);
+	a3.setFinalToken(30);
 	// createFSMDiagram(a3);
 
 	// Autómata 4
 	var a4 = new Automata();
 	a4.basico('/');
-	// a4.setFinalToken(40);
+	a4.setFinalToken(40);
 	// createFSMDiagram(a4);
 
 	// Autómata 5
 	var a5 = new Automata();
 	a5.basico('(');
-	// a5.setFinalToken(50);
+	a5.setFinalToken(50);
 	// createFSMDiagram(a5);
 
 	// Autómata 6
 	var a6 = new Automata();
 	a6.basico(')');
-	// a6.setFinalToken(60);
+	a6.setFinalToken(60);
 	// createFSMDiagram(a6);
 
 	// Autómata 7
@@ -230,7 +230,42 @@ function createThirdAutomaton(){
 	a16.basico('0');
 	a7.unir(a16);
 	a7.cerraduraPositiva();
-	// a7.setFinalToken(70);
+	var a17 = new Automata();
+	a17.basico('.');
+	var a18 = new Automata();
+	a18.basico('1');
+	var a19 = new Automata();
+	a19.basico('2');
+	a18.unir(a19);
+	var a20 = new Automata();
+	a20.basico('3');
+	a18.unir(a20);
+	var a21 = new Automata();
+	a21.basico('4');
+	a18.unir(a21);
+	var a22 = new Automata();
+	a22.basico('5');
+	a18.unir(a22);
+	var a23 = new Automata();
+	a23.basico('6');
+	a18.unir(a23);
+	var a24 = new Automata();
+	a24.basico('7');
+	a18.unir(a24);
+	var a25 = new Automata();
+	a25.basico('8');
+	a18.unir(a25);
+	var a26 = new Automata();
+	a26.basico('9');
+	a18.unir(a26);
+	var a27 = new Automata();
+	a27.basico('0');
+	a18.unir(a27);
+	a18.cerraduraPositiva();
+	a17.concatenar(a18);
+	a17.cerraduraInterrogacion();
+	a7.concatenar(a17);
+	a7.setFinalToken(70);
 	// createFSMDiagram(a7);
 
 	addAutomata(a1);
@@ -242,6 +277,6 @@ function createThirdAutomaton(){
 	addAutomata(a7);
 
 	a1.superUnir();
-	// addAutomata(a1.transformar());
+	addAutomata(a1.transformar());
 	populateSelects();
 }

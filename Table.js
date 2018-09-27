@@ -3,17 +3,16 @@ function generateTable(automata, fsm){
 	for (var key in fsm) {
 		data[key] = {};
 		var index = 0;
-		var trans = Object.keys(fsm[key]);
+		var trans = new Set(Object.keys(fsm[key]));
 		var values = Object.values(fsm[key]);
 		for (var c of automata.alfabeto){
-			if (trans[index] === c) {
+			if (trans.has(c)) {
 				data[key][c] = values[index++][0][0];
 			}else{
 				data[key][c] = null;
 			}
 		}
 	}
-	console.log(data);
 	return data;
 }
 
