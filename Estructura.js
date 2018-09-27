@@ -15,7 +15,7 @@ function Transicion(simbolo, destino) {
 	/*------------------------------------------------
 	****************     VARIABLES    ****************
 	------------------------------------------------*/
-	if (simbolo[0] == '[') {
+	if (simbolo[0] == '[' && simbolo.length > 1) {
 		this.from = simbolo[1];
 		this.to = simbolo[3];
 	} else {
