@@ -129,6 +129,7 @@ $('#lexicEvalBtn').click(function () {
   while (strToEval == "" || strToEval == null) {
     strToEval = prompt("Ingrese la cadena a evaluar: ", "cadena");
   }
+  aTokens = [];
   var tokens = lexicalAnalysis(automata, strToEval, aTokens);
   $('#tokensOutput').val(tokens);
   $('#tokensOutput').attr("hidden", false);
