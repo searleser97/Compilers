@@ -15,6 +15,18 @@ function Transicion(simbolo, destino) {
 	/*------------------------------------------------
 	****************     VARIABLES    ****************
 	------------------------------------------------*/
+	if (simbolo[0] == '[') {
+		this.from = simbolo[1];
+		this.to = simbolo[3];
+	} else {
+		this.from = simbolo[0];
+		this.to = simbolo[0];
+	}
+
+	this.hasSymbol = function (symbol) {
+		return symbol >= this.from && symbol <= this.to
+	}
+
 	this.simbolo = simbolo;
 	this.destino = destino;
 }
@@ -46,7 +58,7 @@ function Estado(final) {
 	_this.getTransWithSymbol = function (symbol) {
 		var transitions = [];
 		for (transition of _this.transiciones)
-			if (transition.simbolo == symbol)
+			if (transition.hasSymbol(symbol))
 				transitions.push(transition);
 		return transitions;
 	}
@@ -151,15 +163,15 @@ function Automata() {
 		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
 		console.log(_this.idAutomata);
 
-		for (var automata of automatas){
+		for (var automata of automatas) {
 			if (automata !== null) {
 				console.log(automata.idAutomata);
 				if (automata.idAutomata !== _this.idAutomata) {
 					console.log(2);
 					nodo1.addTrans(new Transicion(epsilon, automata.inicial));
 					//automata.inicial = false;
-					for (var e of automata.aceptados) 
-						_this.aceptadosID.push(e.id);{
+					for (var e of automata.aceptados)
+						_this.aceptadosID.push(e.id); {
 						_this.aceptados.push(e);
 					}
 					console.log(3);
@@ -172,7 +184,7 @@ function Automata() {
 				}
 			}
 		}
-		
+
 		_this.estados.push(nodo1);
 		_this.inicial = false;
 		_this.inicial = nodo1;
@@ -307,23 +319,23 @@ function Automata() {
 		return _this.cerradura(_this.mover(e, simbolo));
 	}*/
 
-	_this.findIndex=function(E,conjunto){
-		var index=-1;
+	_this.findIndex = function (E, conjunto) {
+		var index = -1;
 		//var bandera = false;
-		if(!conjunto.size)
+		if (!conjunto.size)
 			return index;
 		for (var i = E.length - 1; i >= 0; i--) {
 			//if(E[i].size === conjunto.size){
 			var bandera = true;
-			for (var elemento of conjunto){
+			for (var elemento of conjunto) {
 				//console.log(elemento);
-				if(!E[i].has(elemento)){
+				if (!E[i].has(elemento)) {
 					bandera = false;
 					break;
 				}
 			}
-			if(bandera){
-				if(E[i].size === conjunto.size)
+			if (bandera) {
+				if (E[i].size === conjunto.size)
 					index = i;
 				//break;
 			}
@@ -332,17 +344,17 @@ function Automata() {
 		return index;
 	}
 
-	_this.findAccepted=function(e){
-		var index=-1;
+	_this.findAccepted = function (e) {
+		var index = -1;
 		var bandera = false;
 		for (var i = _this.aceptados.length - 1; i >= 0; i--) {
-			if(_this.aceptados[i] === e)
+			if (_this.aceptados[i] === e)
 				index = _this.aceptados[i].token;
 		}
 		return index;
 	}
 
-	
+
 
 	_this.transformar = function () {
 		var E = [{}];//Arreglo que contiene conjuntos de estados del AFND despues de hacer las operaciones correspondientes
@@ -360,17 +372,17 @@ function Automata() {
 		E[contador] = _this.cerradura(auxiliar);
 		en_cola.push(E[contador]);//Se introduce un CONJUNTO a la cola
 		console.log("La primera cerradura da ");
-		for(var iterator of E[contador]){
+		for (var iterator of E[contador]) {
 			console.log(iterator);
 		}
 		//Se crea el nodo del nuevo AFD
 		Ei[contador] = new Estado(false);
-		var analizados =0;
+		var analizados = 0;
 		while (analizados < en_cola.length) {
 			var e = new Set();
 			e = en_cola[analizados];//Se saca el conjunto correspondiente
-			
-			var nodo_creado = _this.findIndex(E,e);//El nodo que fue creado se encuentra mediante una busqueda
+
+			var nodo_creado = _this.findIndex(E, e);//El nodo que fue creado se encuentra mediante una busqueda
 			//realizada en E con el conjunto que sacamos de la cola. El conjunto que se encuentra comparte
 			//indice con el nodo creado con tal informacion.
 			console.log("Sacamos a ");
@@ -378,16 +390,16 @@ function Automata() {
 			console.log("en el indice ");
 			console.log(nodo_creado);
 			for (var c of _this.alfabeto) {//Por cada letra de nuestro alfabeto
-				var res_mover =_this.mover(e, c);
-				console.log("Nuestro resultado del mover con la letra "+c+" es");
-				for(var it of res_mover){
+				var res_mover = _this.mover(e, c);
+				console.log("Nuestro resultado del mover con la letra " + c + " es");
+				for (var it of res_mover) {
 					console.log(it);
 				}
 				var res = _this.cerradura(res_mover);//Se hace la operacion Ir_A
 				console.log("Nuestro res es de ");
 				console.log(res);
-				var contar=0;
-				for(var it of res){
+				var contar = 0;
+				for (var it of res) {
 					console.log(it);
 					contar++;
 				}
@@ -395,8 +407,8 @@ function Automata() {
 				console.log(res.size);
 				//var encontrar=-1;
 				//if(res.size){
-				var encontrar = _this.findIndex(E,res);//El find regresa una posicion del arreglo E si es que encuentra el elemento res en este mismo.
-					//Si ya lo habiamos creado entonces solo agregamos la arista
+				var encontrar = _this.findIndex(E, res);//El find regresa una posicion del arreglo E si es que encuentra el elemento res en este mismo.
+				//Si ya lo habiamos creado entonces solo agregamos la arista
 				//}				
 				console.log("El encontrar es de ");
 				console.log(encontrar);
@@ -404,7 +416,7 @@ function Automata() {
 					Ei[nodo_creado].addTrans(new Transicion(c, Ei[encontrar]));
 					//nuevasTransiciones.push(new TransicionTotal(Ei[nodo_creado], c, Ei[encontrar]));
 				}
-				else if(contar >0){
+				else if (contar > 0) {
 					//Si no lo teniamos, entonces se agrega el conjunto a E (aumentando el indice) y tambien se crea un estado en Ei.
 					contador++;
 					E[contador] = res;
@@ -431,7 +443,7 @@ function Automata() {
 			for (var e of conjunto) {
 				var aux = _this.findAccepted(e);
 				console.log(aux);
-				if (aux >=0) {
+				if (aux >= 0) {
 					Ei[index].final = true;
 					Ei[index].token = aux;
 					resultado.aceptados.push(Ei[index]);
@@ -448,13 +460,13 @@ function Automata() {
 		return resultado;
 	}
 
-	_this.setFinalToken = function(token) {
+	_this.setFinalToken = function (token) {
 		for (acceptedState of _this.aceptados) {
 			acceptedState.token = token;
 		}
 	}
 
-	_this.getStateFromId = function(stateId) {
+	_this.getStateFromId = function (stateId) {
 		for (state of _this.estados)
 			if (state.id == stateId)
 				return state;
@@ -462,54 +474,38 @@ function Automata() {
 	}
 
 
-	_this.F = function(f){
+	_this.F = function (f) {
 		var tok;
-		tok=Lexer.getToken();
-		if(tok === Tokens.PAR_I){
-			if(E(f)){
-				tok=Lexer.getToken();
-				if(tok ===Tokens.PAR_D)
+		tok = Lexer.getToken();
+		if (tok === Tokens.PAR_I) {
+			if (E(f)) {
+				tok = Lexer.getToken();
+				if (tok === Tokens.PAR_D)
 					return true;
 			}
 		}
-		else if(tok === Tokens.SIMB){
+		else if (tok === Tokens.SIMB) {
 			f = new Automata(Lexema[0]);
 			return true;
 		}
 		return false
 	}
 
-	_this.E = function(f){
-		if(T(f))
-			if(Ep(f))
+	_this.E = function (f) {
+		if (T(f))
+			if (Ep(f))
 				return true;
 		return false;
 	}
 
-	_this.Ep = function(f){
+	_this.Ep = function (f) {
 		var tok;
-		var f2=new Automata();
-		tok=Lexer.getToken();
-		if(tok === Tokens.OR){
-			if(T(f2)){
-				f.unir(f2);
-				if(Ep(f))
-					return true;
-			}
-			return false;
-		}
-		Lexer.RegresaToken();
-		return true;
-	}
-
-	_this.T = function(f){
-		var tok;
-		var f2= new Automata();
+		var f2 = new Automata();
 		tok = Lexer.getToken();
-		if(tok === Tokens.CONC){
-			if(C(f2)){
-				f=f.concatenar(f2);
-				if(Tp(f))
+		if (tok === Tokens.OR) {
+			if (T(f2)) {
+				f.unir(f2);
+				if (Ep(f))
 					return true;
 			}
 			return false;
@@ -518,14 +514,30 @@ function Automata() {
 		return true;
 	}
 
-	_this.C=function(f){
-		if(F(f))
-			if(Cp(f))
+	_this.T = function (f) {
+		var tok;
+		var f2 = new Automata();
+		tok = Lexer.getToken();
+		if (tok === Tokens.CONC) {
+			if (C(f2)) {
+				f = f.concatenar(f2);
+				if (Tp(f))
+					return true;
+			}
+			return false;
+		}
+		Lexer.RegresaToken();
+		return true;
+	}
+
+	_this.C = function (f) {
+		if (F(f))
+			if (Cp(f))
 				return true;
 		return false;
 	}
 
-	_this.Cp = function(f){
+	_this.Cp = function (f) {
 		var token;
 		token = Lexer.getToken();
 		/*
