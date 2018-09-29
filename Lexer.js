@@ -9,6 +9,8 @@ function Lexer(automata, strToTest) {
   _this.curr_symbol = strToTest[0];
   _this.lastMatchedPosition = -1;
   _this.lastMatchedSubstr = undefined;
+  _this.collectedTokens = [];
+  _this.tokensPosition = -1;
 
 
   _this.reset = function () {
@@ -67,8 +69,24 @@ function Lexer(automata, strToTest) {
       _this.lastMatchedSubstr = _this.strToTest.substring(_this.lastMatchedPosition, lastMatchedPosition);
       _this.lastMatchedPosition = lastMatchedPosition;
       _this.lastMatchedState = lastMatchedState;
-      return lastMatchedState.token;
+      _this.collectedTokens[++_this.tokensPosition] = {
+        token: _this.lastMatchedState.token,
+        str: _this.lastMatchedSubstr,
+        position: _this.lastMatchedPosition,
+        state: _this.lastMatchedState
+      };
+      key = lastMatchedState.token
+      return {key : _this.lastMatchedSubstr};
     }
+  }
+
+  _this.returnToPrevToken = function () {
+    token = _this.collectedTokens[--tokensPosition]
+    _this.position = token.position + 1;
+    _this.lastMatchedSubstr = token.str;
+    _this.lastMatchedState = token.state;
+    key = token.token;
+    return {key : token.str};
   }
 }
 
