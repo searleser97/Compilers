@@ -6,7 +6,10 @@ var aTokens = [];
 =========                 AUTÓMATAS                     =============
 ===================================================================*/
 
-createThirdAutomaton();
+// createFirstAutomaton();
+// createSecondAutomaton();
+// createThirdAutomaton();
+createFourthAutomaton();
 
 $( document ).ready(function() {
     let selected = $('#sel_automata_1').val();
@@ -150,5 +153,8 @@ $(document).on('click', '.dropTable', function() {
 });
 
 $('#evalExprBtn').click(function () {
-  alert("The result is: "+ new EvalExpAr().AnalizarExp());
+  // alert("El resultado es: "+ new EvalRegex().AnalizarExp());
+  addAutomata(new EvalRegex().AnalizarExp());
+  populateSelects();
+  // console.log(new EvalRegex().AnalizarExp());
 });

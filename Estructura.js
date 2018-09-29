@@ -15,7 +15,17 @@ function Transicion(simbolo, destino) {
 	/*------------------------------------------------
 	****************     VARIABLES    ****************
 	------------------------------------------------*/
-	this.simbolo = simbolo;
+	if (simbolo[0] == '[' && simbolo.length > 1) {
+		this.from = simbolo[1];
+		this.to = simbolo[3];
+	} else {
+		this.from = simbolo[0];
+		this.to = simbolo[0];
+	}
+ 	this.hasSymbol = function (symbol) {
+		return symbol >= this.from && symbol <= this.to
+	}
+ 	this.simbolo = simbolo;
 	this.destino = destino;
 }
 
@@ -46,7 +56,7 @@ function Estado(final) {
 	_this.getTransWithSymbol = function (symbol) {
 		var transitions = [];
 		for (transition of _this.transiciones)
-			if (transition.simbolo == symbol)
+			if (transition.hasSymbol(symbol))
 				transitions.push(transition);
 		return transitions;
 	}
