@@ -128,7 +128,7 @@ function Automata() {
 	}
 
 	// Función que unirá dos autómatas que será la operación a|b
-	this.unir = function (automata) {
+	_this.unir = function (automata) {
 		var nodo1 = new Estado(false);
 		var nodo2 = new Estado(true);
 		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
@@ -157,7 +157,7 @@ function Automata() {
 	}
 
 	// Última función que pidió el profesor, une los autómatas pero sin converger los estados finales
-	this.superUnir = function () {
+	_this.superUnir = function () {
 		var nodo1 = new Estado(false);
 		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
 

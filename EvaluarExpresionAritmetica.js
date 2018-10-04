@@ -1,15 +1,17 @@
-function EvalExpAr(){
+function EvalExpAr(automata, string){
 	var _this = this;
 
 	_this.indexToken = 0;
 	_this.result;
+	_this.lexer = new Lexer(automata, string+'\0');
 
 	_this.AnalizarExp = function (){
 		var r;
 		let v = {r:0.0};
 		r = _this.E(v);
 		if (r) {
-			if (tokens[_this.indexToken] === Token_FIN) {
+			// console.log("Asking for token");
+			if (_this.lexer.getNextToken().token === Token_FIN) {
 				_this.result = v.r;
 				return _this.result;
 			}else{
@@ -26,17 +28,21 @@ function EvalExpAr(){
 	_this.Ep = function (v){
 		var t;
 		let v2 = {r:0.0};
-		t = tokens[_this.indexToken++];
-		if (t === Token_MAS || t === Token_MENOS) {
+		// console.log("Asking for token");
+		t = _this.lexer.getNextToken();
+		// console.log(t);
+		if (t.token === Tokens_Aritmetico.MAS || t.token === Tokens_Aritmetico.MENOS) {
 			if (_this.T(v2)) {
-				v.r = (t === Token_MAS)?(v.r + v2.r):(v.r - v2.r);
+				// console.log("Prev value = "+v.r+" and "+v2.r);
+				v.r = (t.token === Tokens_Aritmetico.MAS)?(v.r + v2.r):(v.r - v2.r);
+				// console.log("Next value = "+v.r+" and "+v2.r);
 				if (_this.Ep(v)) {
 					return true;
 				}
 			}
 			return false;
 		}
-		_this.indexToken--;
+		_this.lexer.returnToPrevToken()
 		return true;
 	}
 
@@ -47,35 +53,44 @@ function EvalExpAr(){
 	_this.Tp = function (v){
 		var t;
 		let v2 = {r:0.0};
-		t = tokens[_this.indexToken++];
-		if (t === Token_PROD || t === Token_DIV) {
+		// console.log("Asking for token");
+		t = _this.lexer.getNextToken();
+		// console.log(t);
+		if (t.token === Tokens_Aritmetico.PROD || t.token === Tokens_Aritmetico.DIV) {
 			if (_this.F(v2)) {
-				v.r = (t === Token_PROD)?(v.r * v2.r):(v.r / v2.r);
+				// console.log("Prev value = "+v.r+" and "+v2.r);
+				v.r = (t.token === Tokens_Aritmetico.PROD)?(v.r * v2.r):(v.r / v2.r);
+				// console.log("Next value = "+v.r+" and "+v2.r);
 				if (_this.Tp(v)) {
 					return true;
 				}
 			}
 			return false;
 		}
-		_this.indexToken--;
+		_this.lexer.returnToPrevToken();
 		return true;
 	}
 
 	_this.F = function (v){
 		var t;
-		t = tokens[_this.indexToken++];
-		switch(t) {
-			case Token_PAR_I:
+		// console.log("Asking for token");
+		t = _this.lexer.getNextToken();
+		// console.log(t);
+		switch(t.token) {
+			case Tokens_Aritmetico.PAR_I:
 				if (_this.E(v)) {
-					t = tokens[_this.indexToken++];
-					if (t === Token_PAR_D) {
+					// console.log("Asking for token");
+					t = _this.lexer.getNextToken();
+					// console.log(t);
+					if (t.token === Tokens_Aritmetico.PAR_D) {
 						return true;
 					}
 					return false;
 				}
 				break;
-			case Token_NUM:
-				v.r = parseFloat(aTokens[_this.indexToken-1][Token_NUM]);
+			case Tokens_Aritmetico.NUM:
+				v.r = parseFloat(t.value);
+				// console.log("Value = "+v.r);
 				return true;
 				break;
 			default:

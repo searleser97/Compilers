@@ -1,16 +1,18 @@
-function EvalRegex(){
+function EvalRegex(automata, string){
 	var _this = this;
 
 	_this.indexToken = 0;
 	_this.result;
+	_this.lexer = new Lexer(automata, string+'\0');
 
 	_this.AnalizarExp = function (){
 		var r;
 		let f = {r:new Automata()};
-		r = _this.E(f);
 		// console.log(f);
+		r = _this.E(f);
 		if (r) {
-			if (tokens[_this.indexToken] === Token_FIN) {
+			// console.log("Asking for token");
+			if (_this.lexer.getNextToken().token === Token_FIN) {
 				_this.result = f.r;
 				return _this.result;
 			}else{
@@ -27,10 +29,12 @@ function EvalRegex(){
 
 	_this.Ep = function(f){
 		// console.log(f);
-		var tok;
+		// let tok;
 		let f2 = {r:new Automata()};
-		tok = tokens[_this.indexToken++];
-		if(tok === Token_OR){
+		// console.log("Asking for token");
+		tok = _this.lexer.getNextToken();
+		// console.log(tok);
+		if(tok.token === Tokens_Regex.OR){
 			if(_this.T(f2)){
 				// console.log(f2);
 				f.r.unir(f2.r);
@@ -41,7 +45,7 @@ function EvalRegex(){
 			}
 			return false;
 		}
-		_this.indexToken--;
+		_this.lexer.returnToPrevToken();
 		return true;
 	}
 
@@ -52,10 +56,12 @@ function EvalRegex(){
 
 	_this.Tp = function(f){
 		// console.log(f);
-		var tok;
+		// let tok;
 		let f2 = {r:new Automata()};
-		tok = tokens[_this.indexToken++];
-		if(tok === Token_CONC){
+		// console.log("Asking for token");
+		tok = _this.lexer.getNextToken();
+		// console.log(tok);
+		if(tok.token === Tokens_Regex.CONC){
 			if(_this.C(f2)){
 				// console.log(f2);
 				f.r.concatenar(f2.r);
@@ -66,7 +72,7 @@ function EvalRegex(){
 			}
 			return false;
 		}
-		_this.indexToken--;
+		_this.lexer.returnToPrevToken();
 		return true;
 	}
 
@@ -77,10 +83,12 @@ function EvalRegex(){
 
 	_this.Cp = function(f){
 		// console.log(f);
-		var tok;
-		tok = tokens[_this.indexToken++];
-		switch(tok) {
-			case Token_CERRPOS:
+		// let tok;
+		// console.log("Asking for token");
+		tok = _this.lexer.getNextToken();
+		// console.log(tok);
+		switch(tok.token) {
+			case Tokens_Regex.CERRPOS:
 				if(_this.Cp(f)){
 					// console.log(f);
 					f.r.cerraduraPositiva();
@@ -88,7 +96,7 @@ function EvalRegex(){
 				}
 				return false;
 				break;
-			case Token_CERREST:
+			case Tokens_Regex.CERREST:
 				if(_this.Cp(f)){
 					// console.log(f);
 					f.r.cerraduraKleene();
@@ -96,7 +104,7 @@ function EvalRegex(){
 				}
 				return false;
 				break;
-			case Token_CERRINT:
+			case Tokens_Regex.CERRINT:
 				if(_this.Cp(f)){
 					// console.log(f);
 					f.r.cerraduraInterrogacion();
@@ -105,7 +113,7 @@ function EvalRegex(){
 				return false;
 				break;
 			default:
-				_this.indexToken--;
+				_this.lexer.returnToPrevToken();
 				return true;
 				break;
 		}
@@ -113,22 +121,26 @@ function EvalRegex(){
 
 	_this.F = function (f){
 		// console.log(f);
-		var tok;
-		tok = tokens[_this.indexToken++];
-		switch(tok) {
-			case Token_PAR_I:
+		// let tok;
+		// console.log("Asking for token");
+		tok = _this.lexer.getNextToken();
+		// console.log(tok);
+		switch(tok.token) {
+			case Tokens_Regex.PAR_I:
 				if (_this.E(f)) {
 					// console.log(f);
-					tok = tokens[_this.indexToken++];
-					if (tok === Token_PAR_D) {
+					// console.log("Asking for token");
+					tok = _this.lexer.getNextToken();
+					// console.log(tok);
+					if (tok.token === Tokens_Regex.PAR_D) {
 						return true;
 					}
 					return false;
 				}
 				break;
-			case Token_SIMB:
-				// console.log(aTokens[_this.indexToken-1][Token_SIMB]);
-				var a = aTokens[_this.indexToken-1][Token_SIMB];
+			case Tokens_Regex.SIMB:
+				// console.log(tok.value);
+				var a = tok.value;
 				a = a.substring(1, a.length-1);
 				// console.log(a);
 				f.r.basico(a);

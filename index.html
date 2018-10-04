@@ -1,16 +1,76 @@
 <html>
 
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
     <title>Finite State Machines</title>
+
+    <!-- Our Custom CSS -->
     <link rel="stylesheet" type="text/css" href="main.css">
     <link rel="stylesheet" href="vis.min.css">
+
+    <!-- Bootstrap CSS CDN -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
         crossorigin="anonymous">
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
+
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
 </head>
 
 <body>
+    <div class="wrapper">
+
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+            <div id="dismiss">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+
+            <div class="sidebar-header">
+                <h3>Acciones</h3>
+            </div>
+
+            <ul class="list-unstyled components">
+                <p>Autómatas</p>
+                <li class="active">
+                    <a id="HomeSide" href="#">Inicio</a>
+                </li>
+                <li>
+                    <a id="CalcSide" href="#">Calculadora</a>
+                </li>
+                <li>
+                    <a id="RegexSide" href="#">Regex to DFA</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-align-left"></i>
+                        <span>Menú</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <div class="overlay"></div>
+
     <div class="container">
+
         <div id="title" style="width: max-content;">
             <h2>Compiladores</h2>
         </div>
@@ -24,14 +84,14 @@
                 <div class="col-sm">
                     <select class="form-control" id="operations">
                         <option selected disabled>Seleccione Operacion</option>
-                        <option value="basic">Crear Basico</option>
-                        <option value="join">Unir</option>
-                        <option value="superJoin">Super Unir</option>
-                        <option value="concatenate">Concatenar</option>
-                        <option value="kleene">Cerradura Kleene</option>
-                        <option value="positive">Cerradura Positiva</option>
-                        <option value="quantifier">Cerradura Interrogacion</option>
-                        <option value="transformToAFD">Transformar a AFD</option>
+                        <option id="BasicOption" value="basic">Crear Basico</option>
+                        <option id="JoinOption" value="join">Unir</option>
+                        <option id="SuperJoinOption" value="superJoin">Super Unir</option>
+                        <option id="ConcatenateOption" value="concatenate">Concatenar</option>
+                        <option id="KleeneOption" value="kleene">Cerradura Kleene</option>
+                        <option id="PositiveOption" value="positive">Cerradura Positiva</option>
+                        <option id="InterrogativeOption" value="quantifier">Cerradura Interrogacion</option>
+                        <option id="TransformOption" value="transformToAFD">Transformar a AFD</option>
                     </select>
                 </div>
                 <div class="col-sm">
@@ -51,7 +111,7 @@
                     <button id="submit" type="submit" class="btn btn-primary">Ejecutar Operacion</button>
                 </div>
             </div>
-<!-- 
+ 
             <div class="form-group row">
                 <div class="col-sm">
                     <select class="form-control" id="sel_automata_to_use">
@@ -59,7 +119,7 @@
                     </select>
                 </div>
             </div>
--->
+
 <!--
             <div class="form-group row">
                 <div class="col-sm">
@@ -72,14 +132,19 @@
                     <button id="lexicEvalBtn" class="btn btn-info" disabled="true">Evaluar Lexico</button>
                 </div>
             </div>
-            <div class="form-group row">
+            <div id="strBox" class="form-group row" hidden>
                 <div class="col-sm">
-                    <textarea id="tokensOutput" placeholder="Tokens" class="form-control" hidden></textarea>
+                    <div id="strOutput" class="text-info bg-light blockquote text-center"></div>
                 </div>
             </div>
-            <div class="form-group row">
+            <div id="tokensBox" class="form-group row" hidden>
                 <div class="col-sm">
-                    <button id="evalExprBtn" class="btn btn-info showEvaluate" hidden>Evaluar Expresión</button>
+                    <textarea id="tokensOutput" placeholder="Tokens" class="form-control"></textarea>
+                </div>
+            </div>
+            <div id="evalExprBox" class="form-group row" hidden>
+                <div class="col-sm">
+                    <button id="evalExprBtn" class="btn btn-info showEvaluate">Evaluar Expresión</button>
                 </div>
             </div>
             <div id="bdtable">
@@ -89,7 +154,8 @@
                     </div>
                 </div>
             </div>
-            <br>
+            <!-- <br> -->
+            <hr>
             <div id="mynetwork">
                 <div class="vis-network" tabindex="900" style="position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;">
                     <canvas style="margin-top: 100px; position: relative; touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 90%;"></canvas>
@@ -107,13 +173,43 @@
             <script src="drawAutomata.js"></script>
             <script src="test.js"></script>
 
+            <!-- jQuery CDN - Slim version -->
+            <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
             <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
                 crossorigin="anonymous"></script>
+            <!-- Popper.JS -->
+            <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script> -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
                 crossorigin="anonymous"></script>
+            <!-- Bootstrap JS -->
+            <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script> -->
             <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
                 crossorigin="anonymous"></script>
             <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
+
+            <!-- jQuery Custom Scroller CDN -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $("#sidebar").mCustomScrollbar({
+                        theme: "minimal"
+                    });
+
+                    $('#dismiss, .overlay').on('click', function () {
+                        $('#sidebar').removeClass('active');
+                        $('.overlay').removeClass('active');
+                    });
+
+                    $('#sidebarCollapse').on('click', function () {
+                        $('#sidebar').addClass('active');
+                        $('.overlay').addClass('active');
+                        $('.collapse.in').toggleClass('in');
+                        $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+                    });
+                });
+            </script>
+            
             <script src="main.js"></script>
         </div>
 

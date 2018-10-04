@@ -9,25 +9,35 @@ var aTokens = [];
 // createFirstAutomaton();
 // createSecondAutomaton();
 // createThirdAutomaton();
-createFourthAutomaton();
+// createFourthAutomaton();
 
 $( document ).ready(function() {
     let selected = $('#sel_automata_1').val();
-    createFSMDiagram(automatas[selected]);
+    if (selected != null || selected != undefined) {
+    	createFSMDiagram(automatas[selected]);
+    }
 });
 
 function populateSelects() {
-  // $('#sel_automata_1').html('');
+	var indexLast = 0;
+  $('#sel_automata_to_use').html('');
   $('#sel_automata_1').html('');
   $('#sel_automata_2').html('');
   for (let i = 0; i < automatas.length; i++) {
     let opt = new Option(i, i);
-    if (automatas[i] == null || automatas[i] == undefined)
+    opt.id = "Option"+i;
+    if (automatas[i] == null || automatas[i] == undefined){
       $(opt).attr('disabled', true);
-    // $('#sel_automata_1').append($(opt).clone());
+      $(opt).addClass('opt'+i);
+    }else{
+    	indexLast = i;
+    }
+    $('#sel_automata_to_use').append($(opt).clone());
     $('#sel_automata_1').append($(opt).clone());
     $('#sel_automata_2').append($(opt).clone());
   }
+  $('#sel_automata_to_use').val(indexLast);
+  createFSMDiagram(automatas[indexLast]);
 }
 
 function addAutomata(automata) {
@@ -95,6 +105,11 @@ $('#submit').click(function () {
     case 'transformToAFD':
       var usados = new Set();
       var value = 0;
+      if($( "#evalExprBtn" ).hasClass( "regexToDFA" )){
+      	console.log("Hola")
+      	console.log($('#sel_automata_to_use').val());
+      	automataA = automatas[$('#sel_automata_to_use').val()];
+      }
       for (var e of automataA.aceptados){
         var nToken = "";
         while (nToken == "" || nToken == null || usados.has(nToken)){
@@ -107,15 +122,15 @@ $('#submit').click(function () {
       break;
   }
   populateSelects();
-  createFSMDiagram(automataA);
+  // createFSMDiagram(automataA);
 });
 
-$('#sel_automata_1').change(function () {
+$('#sel_automata_to_use').change(function () {
   let selected = $(this).val();
   $('#tokensOutput').val('');
   tokens = [];
-  $('#evalExprBtn').attr("hidden", true);
-  $('#tokensOutput').attr("hidden", true);
+  $('#evalExprBox').attr("hidden", true);
+  $('#tokensBox').attr("hidden", true);
   if (automatas[selected].afd === true) {
     $('#buttonTable').attr('disabled', false);
     $('#lexicEvalBtn').attr('disabled', false);
@@ -127,20 +142,25 @@ $('#sel_automata_1').change(function () {
 });
 
 $('#lexicEvalBtn').click(function () {
-  let automata = automatas[$('#sel_automata_1').val()];
+  let automata = automatas[$('#sel_automata_to_use').val()];
   strToEval = "";
   while (strToEval == "" || strToEval == null) {
     strToEval = prompt("Ingrese la cadena a evaluar: ", "cadena");
   }
   aTokens = [];
-  var tokens = lexicalAnalysis(automata, strToEval, aTokens);
+  var tokens = lexicalAnalysis(automata, strToEval);
+  // console.log(tokens);
   $('#tokensOutput').val(tokens);
-  $('#tokensOutput').attr("hidden", false);
-  $('#evalExprBtn').attr("hidden", false);
+  $('#tokensBox').attr("hidden", false);
+  $('#strBox').attr("hidden", false);
+  $('#strOutput').text(strToEval);
+  if($( "#evalExprBtn" ).hasClass( "evalArit" ) || $( "#evalExprBtn" ).hasClass( "regexToDFA" )){
+  	$('#evalExprBox').attr("hidden", false);
+  }
 });
 
 $(document).on('click', '.showTable', function() {
-  let automata = automatas[$('#sel_automata_1').val()];
+  let automata = automatas[$('#sel_automata_to_use').val()];
   showTable(generateTable(automata, fsm));
   $("#buttonTable").html('Ocultar Tabla');
   $(this).removeClass('showTable').addClass('dropTable');
@@ -153,8 +173,97 @@ $(document).on('click', '.dropTable', function() {
 });
 
 $('#evalExprBtn').click(function () {
-  // alert("El resultado es: "+ new EvalRegex().AnalizarExp());
-  addAutomata(new EvalRegex().AnalizarExp());
-  populateSelects();
-  // console.log(new EvalRegex().AnalizarExp());
+	let vSelected = $('#sel_automata_to_use').val();
+	console.log($('#sel_automata_to_use').val())
+	if($( "#evalExprBtn" ).hasClass( "evalArit" )){
+		console.log("Here");
+		alert("El resultado es: "+ new EvalExpAr(automatas[vSelected], strToEval).AnalizarExp());	
+		populateSelects();
+		$("#sel_automata_to_use option").each(function(index){
+			if ($(this).val() == vSelected) {
+				$(this).attr('selected', 'selected');
+			}
+		});
+	}else if($( "#evalExprBtn" ).hasClass( "regexToDFA" )){
+		console.log("There");
+		addAutomata(new EvalRegex(automatas[$('#sel_automata_to_use').val()], strToEval).AnalizarExp());
+		populateSelects();
+		$("#sel_automata_to_use option").each(function(index){
+			if ($(this).val() == vSelected) {
+				$(this).attr('selected', 'selected');
+			}
+		});
+	}
+});
+
+$(document).on('click', '#HomeSide', function() {
+	alert("Podrás crear autómatas y realizar operaciones con ellos, así como evaluar expresiones con los AFD.");
+	automatas = [];
+	contador = 0;
+	contAutom = 0;
+	createSecondAutomaton();
+	$('#sel_automata_1').attr("hidden", false);
+	$('#sel_automata_2').attr("hidden", false);
+    $('#operations').attr('hidden', false);
+	$('#submit').attr("hidden", false);
+	$('#tokensBox').attr("hidden", true);
+	$('#strBox').attr("hidden", true);
+	$('#evalExprBox').attr("hidden", true);
+	$('#strOutput').text("");
+    $('#BasicOption').attr('disabled', false);
+    $('#JoinOption').attr('disabled', false);
+    $('#superJoinOption').attr('disabled', false);
+    $('#ConcatenateOption').attr('disabled', false);
+    $('#KleeneOption').attr('disabled', false);
+    $('#PositiveOption').attr('disabled', false);
+    $('#InterrogativeOption').attr('disabled', false);
+    $('#sidebar').removeClass('active');
+    $('.overlay').removeClass('active');
+});
+
+$(document).on('click', '#CalcSide', function() {
+	alert("Calculadora por medio de un AFD y descenso recursivo.");
+	automatas = [];
+	contador = 0;
+	contAutom = 0;
+	createThirdAutomaton();
+	$('#sel_automata_1').attr("hidden", true);
+	$('#sel_automata_2').attr("hidden", true);
+	$('#submit').attr("hidden", true);
+    $('#operations').attr('hidden', true);
+	$('#tokensBox').attr("hidden", true);
+	$('#strBox').attr("hidden", true);
+	$('#evalExprBox').attr("hidden", true);
+	$('#strOutput').text("");
+    $('#evalExprBtn').removeClass('regexToDFA');
+    $('#evalExprBtn').addClass('evalArit');
+    $('#sidebar').removeClass('active');
+    $('.overlay').removeClass('active');
+});
+
+$(document).on('click', '#RegexSide', function() {
+	alert("Analizador de expresiones regulares por medio de un AFD y descenso recursivo.");
+	automatas = [];
+	contador = 0;
+	contAutom = 0;
+	createFourthAutomaton();
+	$('#sel_automata_1').attr("hidden", true);
+	$('#sel_automata_2').attr("hidden", true);
+	$('#submit').attr("hidden", false);
+    $('#operations').attr('hidden', false);
+	$('#tokensBox').attr("hidden", true);
+	$('#strBox').attr("hidden", true);
+	$('#evalExprBox').attr("hidden", true);
+	$('#strOutput').text("");
+    $('#BasicOption').attr('disabled', true);
+    $('#JoinOption').attr('disabled', true);
+    $('#superJoinOption').attr('disabled', true);
+    $('#ConcatenateOption').attr('disabled', true);
+    $('#KleeneOption').attr('disabled', true);
+    $('#PositiveOption').attr('disabled', true);
+    $('#InterrogativeOption').attr('disabled', true);
+    $('#evalExprBtn').removeClass('evalArit');
+    $('#evalExprBtn').addClass('regexToDFA');
+    $('#sidebar').removeClass('active');
+    $('.overlay').removeClass('active');
 });

@@ -1,4 +1,7 @@
 function Lexer(automata, strToTest) {
+	// console.log("Enter lexer with");
+	// console.log(automata);
+	// console.log(strToTest);
 
   _this = this;
   _this.automata = automata;
@@ -9,6 +12,8 @@ function Lexer(automata, strToTest) {
   _this.curr_symbol = strToTest[0];
   _this.lastMatchedPosition = -1;
   _this.lastMatchedSubstr = undefined;
+  _this.collectedTokens = [];
+  _this.tokensPosition = -1;
 
 
   _this.reset = function () {
@@ -38,8 +43,24 @@ function Lexer(automata, strToTest) {
   _this.getNextToken = function () {
     var sValue = "";
 
-    if (_this.curr_symbol == EOF)
-      return EOF;
+    if (_this.curr_symbol == EOF){
+      _this.collectedTokens[++_this.tokensPosition] = {
+        token: 0,
+        str: EOF,
+        position: _this.position,
+        lastPosition: _this.lastMatchedPosition+1,
+        state: _this.lastMatchedState
+      };
+    	// console.log(_this.collectedTokens);
+    	// (_this.collectedTokens).forEach( function(value){
+    	// 	console.log(value);
+    	// });
+   	   key = {
+        token: 0,
+        value : EOF
+      };
+      return key;
+    }
 
     _this.current_state = _this.automata.inicial;
     var lastMatchedPosition;
@@ -47,8 +68,8 @@ function Lexer(automata, strToTest) {
     _this.curr_symbol = strToTest[_this.position = _this.lastMatchedPosition + 1];
     while (_this.curr_symbol != EOF) {
       sValue += _this.curr_symbol;
-      // console.log(_this.current_state);
       // console.log('curr_symbol ' + _this.curr_symbol);
+      // console.log(_this.current_state)
       var nextTransitions = _this.current_state.getTransWithSymbol(_this.curr_symbol);
       if (nextTransitions.length > 0) {
         _this.current_state = nextTransitions[0].destino; // assuming it is a DFA
@@ -66,47 +87,80 @@ function Lexer(automata, strToTest) {
       _this.current_state = _this.automata.inicial;
       _this.curr_symbol = strToTest[0];
       _this.position = 0;
-      return -1;
+      key = {
+        token: 1000,
+        value : "ERROR"
+      };
+      return key;
     } else {
       _this.lastMatchedSubstr = _this.strToTest.substring(_this.lastMatchedPosition, lastMatchedPosition);
       _this.lastMatchedPosition = lastMatchedPosition;
       _this.lastMatchedState = lastMatchedState;
-      var finalToken = new Object();
-      var nToken = lastMatchedState.token; 
-      finalToken[nToken] = sValue;
-      return finalToken;
+      _this.collectedTokens[++_this.tokensPosition] = {
+        token: _this.lastMatchedState.token,
+        str: sValue,
+        position: _this.position,
+        lastPosition: _this.lastMatchedPosition,
+        state: _this.lastMatchedState
+      };
+    	// console.log(_this.collectedTokens);
+      key = {
+        token: _this.lastMatchedState.token,
+        value : sValue
+      };
+      return key;
     }
+  }
+
+  _this.returnToPrevToken = function () {
+	// console.log("In return token");
+ //    console.log("position: "+_this.position);	
+ //    console.log("lastMatchedState: "+_this.lastMatchedState);
+ //    console.log("lastMatchedPosition: "+_this.lastMatchedPosition);
+ //    console.log("tokensPosition: "+_this.tokensPosition);
+ //    console.log(_this.collectedTokens);
+    token = _this.collectedTokens[--_this.tokensPosition]
+    _this.position = token.position;
+    _this.lastMatchedSubstr = token.str;
+    _this.lastMatchedState = token.state;
+    _this.lastMatchedPosition = token.lastPosition;
+    // console.log("--------------");
+    // console.log("position: "+_this.position);	
+    // console.log("lastMatchedState: "+_this.lastMatchedState);
+    // console.log("lastMatchedPosition: "+_this.lastMatchedPosition);
+    // console.log("tokensPosition: "+_this.tokensPosition);
+    // console.log(_this.collectedTokens);
   }
 }
 
-function lexicalAnalysis(dfa, strToTest, aTokens) {
+function lexicalAnalysis(dfa, strToTest) {
+	// console.log("Enter lexicalAnalysis with");
+	// console.log(dfa);
+	// console.log(strToTest);
   tokens = [];
   str = strToTest + '\0';
   // console.log('starts lexical analysis');
   var lexer = new Lexer(dfa, str);
   lexerToken = lexer.getNextToken();
   while (true) {
-    if (lexerToken == EOF) {
-      var finalToken = new Object();
-      var nToken = 0; 
-      finalToken[nToken] = EOF;
-      aTokens.push(finalToken);
-      tokens.push(0);
+    // console.log('lexerToken: ' + lexerToken);
+    if (lexerToken.token == 0) {
       // console.log('fin de cadena');
+      // console.log("lastMatchedPosition: "+_this.lastMatchedPosition);
+      // console.log("position: "+_this.position);
+      tokens.push(0);
       break;
     }
-    if (lexerToken == -1) {
+    if (lexerToken.token == 1000) {
       tokens = 'Error at position ' + lexer.lastMatchedPosition;
       tokens += '\nnear: ' + lexer.lastMatchedSubstr;
       break;
     }
-    // console.log('lexerToken: ' + lexerToken);
-    aTokens.push(lexerToken);
-    var aux = Object.keys(lexerToken);
-    aux = aux[0];
-    aux = parseInt(aux,10);
-    tokens.push(aux);
+    // console.log("lastMatchedPosition: "+_this.lastMatchedPosition);
+    // console.log("position: "+_this.position);
+    tokens.push(lexerToken.token);
     lexerToken = lexer.getNextToken();
   }
+  // console.log(_this.collectedTokens);
   return tokens;
 }
