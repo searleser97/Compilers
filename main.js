@@ -37,7 +37,9 @@ function populateSelects() {
     $('#sel_automata_2').append($(opt).clone());
   }
   $('#sel_automata_to_use').val(indexLast);
-  createFSMDiagram(automatas[indexLast]);
+  if (automatas[indexLast] != undefined) {
+	  createFSMDiagram(automatas[indexLast]);
+  }
 }
 
 function addAutomata(automata) {
@@ -201,7 +203,7 @@ $(document).on('click', '#HomeSide', function() {
 	automatas = [];
 	contador = 0;
 	contAutom = 0;
-	createSecondAutomaton();
+	populateSelects();
 	$('#sel_automata_1').attr("hidden", false);
 	$('#sel_automata_2').attr("hidden", false);
     $('#operations').attr('hidden', false);
