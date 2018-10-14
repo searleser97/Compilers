@@ -108,8 +108,6 @@ $('#submit').click(function () {
       var usados = new Set();
       var value = 0;
       if($( "#evalExprBtn" ).hasClass( "regexToDFA" )){
-      	console.log("Hola")
-      	console.log($('#sel_automata_to_use').val());
       	automataA = automatas[$('#sel_automata_to_use').val()];
       }
       for (var e of automataA.aceptados){
@@ -140,6 +138,7 @@ $('#sel_automata_to_use').change(function () {
     $('#buttonTable').attr('disabled', true);
     $('#lexicEvalBtn').attr('disabled', true);
   }
+  console.log(automatas[selected]);
   createFSMDiagram(automatas[selected]);
 });
 
@@ -163,7 +162,7 @@ $('#lexicEvalBtn').click(function () {
 
 $(document).on('click', '.showTable', function() {
   let automata = automatas[$('#sel_automata_to_use').val()];
-  showTable(generateTable(automata, fsm));
+  showTable(generateTableFromAFD(automata, fsm));
   $("#buttonTable").html('Ocultar Tabla');
   $(this).removeClass('showTable').addClass('dropTable');
 });
@@ -176,9 +175,7 @@ $(document).on('click', '.dropTable', function() {
 
 $('#evalExprBtn').click(function () {
 	let vSelected = $('#sel_automata_to_use').val();
-	console.log($('#sel_automata_to_use').val())
 	if($( "#evalExprBtn" ).hasClass( "evalArit" )){
-		console.log("Here");
 		alert("El resultado es: "+ new EvalExpAr(automatas[vSelected], strToEval).AnalizarExp());	
 		populateSelects();
 		$("#sel_automata_to_use option").each(function(index){
@@ -187,7 +184,6 @@ $('#evalExprBtn').click(function () {
 			}
 		});
 	}else if($( "#evalExprBtn" ).hasClass( "regexToDFA" )){
-		console.log("There");
 		addAutomata(new EvalRegex(automatas[$('#sel_automata_to_use').val()], strToEval).AnalizarExp());
 		populateSelects();
 		$("#sel_automata_to_use option").each(function(index){
@@ -199,6 +195,9 @@ $('#evalExprBtn').click(function () {
 });
 
 $(document).on('click', '#HomeSide', function() {
+  $(this).addClass('active');
+  $('#CalcSide').removeClass('active');
+  $('#RegexSide').removeClass('active');
 	alert("Podrás crear autómatas y realizar operaciones con ellos, así como evaluar expresiones con los AFD.");
 	automatas = [];
 	contador = 0;
@@ -224,6 +223,9 @@ $(document).on('click', '#HomeSide', function() {
 });
 
 $(document).on('click', '#CalcSide', function() {
+  $(this).addClass('active');
+  $('#HomeSide').removeClass('active');
+  $('#RegexSide').removeClass('active');
 	alert("Calculadora por medio de un AFD y descenso recursivo.");
 	automatas = [];
 	contador = 0;
@@ -244,6 +246,9 @@ $(document).on('click', '#CalcSide', function() {
 });
 
 $(document).on('click', '#RegexSide', function() {
+  $(this).addClass('active');
+  $('#CalcSide').removeClass('active');
+  $('#HomeSide').removeClass('active');
 	alert("Analizador de expresiones regulares por medio de un AFD y descenso recursivo.");
 	automatas = [];
 	contador = 0;
@@ -268,4 +273,41 @@ $(document).on('click', '#RegexSide', function() {
     $('#evalExprBtn').addClass('regexToDFA');
     $('#sidebar').removeClass('active');
     $('.overlay').removeClass('active');
+});
+
+$('#downloadBtn').click(function () {
+  let automata = automatas[$('#sel_automata_to_use').val()];
+  var a = document.createElement("a");
+  console.log(automata);
+  var cache = [];
+  var table = generateTableFromAFD(automata,fsm);
+  console.log(table);
+  var file = new Blob([JSON.stringify(table)], {type: 'text/plain;charset=utf-8'});
+  cache = null;
+  a.href = URL.createObjectURL(file);
+  var d = new Date();
+  var date = d.getDate().toString()+"-";
+  date+=(d.getMonth()+1).toString()+"-";
+  date+=d.getFullYear().toString()+"-";
+  date+=d.getHours().toString()+":";
+  date+=d.getMinutes().toString();
+  a.download = 'automata'+date+'.json';
+  a.click();
+});
+
+$('#loadBtn').change(function () {
+  var file = $('#loadBtn').prop('files')[0];
+  console.log(file.name);
+
+  $.getJSON(myFile.name, function( json ) {
+    console.log( "JSON Data received, name is " + json.name);
+    console.log(json);
+  });
+  
+  // var json_aux = '{"25":{"+":26,"-":27,"*":28,"/":29,"(":30,")":31,"[0-9]":32,".":null,"TOK":-1},"26":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":10},"27":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":20},"28":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":30},"29":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":40},"30":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":50},"31":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":60},"32":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":32,".":33,"TOK":70},"33":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":34,".":null,"TOK":-1},"34":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":34,".":null,"TOK":70}}';
+  // json = JSON.parse(json_aux);
+  // console.log(json);
+
+  addAutomata(generateAFDFromTable(json));
+  populateSelects();
 });

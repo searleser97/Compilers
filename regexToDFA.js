@@ -139,8 +139,8 @@ function EvalRegex(automata, string){
 				}
 				break;
 			case Tokens_Regex.SIMB:
-				// console.log(tok.value);
-				var a = tok.value;
+				// console.log(tok.lexema);
+				var a = tok.lexema;
 				a = a.substring(1, a.length-1);
 				// console.log(a);
 				f.r.basico(a);

@@ -57,7 +57,7 @@ function Lexer(automata, strToTest) {
     	// });
    	   key = {
         token: 0,
-        value : EOF
+        lexema : EOF
       };
       return key;
     }
@@ -89,7 +89,7 @@ function Lexer(automata, strToTest) {
       _this.position = 0;
       key = {
         token: 1000,
-        value : "ERROR"
+        lexema : "ERROR"
       };
       return key;
     } else {
@@ -106,7 +106,7 @@ function Lexer(automata, strToTest) {
     	// console.log(_this.collectedTokens);
       key = {
         token: _this.lastMatchedState.token,
-        value : sValue
+        lexema : sValue
       };
       return key;
     }

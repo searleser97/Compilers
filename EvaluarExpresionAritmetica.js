@@ -89,7 +89,7 @@ function EvalExpAr(automata, string){
 				}
 				break;
 			case Tokens_Aritmetico.NUM:
-				v.r = parseFloat(t.value);
+				v.r = parseFloat(t.lexema);
 				// console.log("Value = "+v.r);
 				return true;
 				break;

@@ -1,19 +1,80 @@
-function generateTable(automata, fsm){
+function generateTableFromAFD(automata, fsm){
 	var data = {};
-	for (var key in fsm) {
-		data[key] = {};
+	for (var key of automata.estados) {
+		data[key.id] = {};
 		var index = 0;
-		var trans = new Set(Object.keys(fsm[key]));
-		var values = Object.values(fsm[key]);
+		var trans;
+		var values;
+		if (fsm[key.id] == undefined || fsm[key.id] == null) {
+			trans = new Set(); 
+			values = [[[]]];
+		}else{
+			trans = new Set(Object.keys(fsm[key.id]));
+			values = Object.values(fsm[key.id]);
+		}
 		for (var c of automata.alfabeto){
 			if (trans.has(c)) {
-				data[key][c] = values[index++][0][0];
+				data[key.id][c] = parseInt(values[index++][0][0]);
 			}else{
-				data[key][c] = null;
+				data[key.id][c] = null;
 			}
 		}
+		data[key.id]["TOK"] = key.token;
 	}
+	// console.log(data);
 	return data;
+}
+
+function generateAFDFromTable(json){
+	var auxAutomata = new Automata();
+
+  var aJson = Object.keys(json);
+  var aStates = {};
+  var aAceptados = {};
+  var aAceptadosID = {};
+  
+  var aSymbols = Object.keys(json[aJson[aJson.length-1]]);
+  for (var i = aJson.length - 1; i >= 0; i--) {
+    aJson[i] = parseInt(aJson[i]);
+    aStates[aJson[i]] = new Estado(json[aJson[i]]["TOK"] != -1);
+    aStates[aJson[i]].token = json[aJson[i]]["TOK"];
+    aStates[aJson[i]].id = aJson[i];
+    if (json[aJson[i]]["TOK"] != -1) {
+      aAceptados[aJson[i]] = aStates[aJson[i]];
+      aAceptadosID[aJson[i]] = aStates[aJson[i]].id;
+    }
+  }
+  // console.log(aStates);
+  var aInicial = {};
+  for (var i = aJson.length - 1; i >= 0; i--) {
+    for (var j = aSymbols.length - 1; j >= 0; j--) {
+      if ((aSymbols[j] != "TOK") && (json[aJson[i]][aSymbols[j]] != null)) {
+        aStates[aJson[i]].addTrans(new Transicion(aSymbols[j], aStates[json[aJson[i]][aSymbols[j]]]));
+        aInicial[aStates[json[aJson[i]][aSymbols[j]]].id] = true;
+      }
+    }
+  }
+  for(var key in aStates){
+    if (!aInicial.hasOwnProperty(key)) {
+        // console.log("Inicial = "+key);
+        // console.log(aStates[key]);
+        auxAutomata.inicial = aStates[key];
+    }
+  }
+  // console.log(Object.values(aStates));
+  // console.log(Object.values(aAceptados));
+  // console.log(Object.values(aAceptadosID));
+  // console.log(new Set(aSymbols));
+
+  auxAutomata.estados = Object.values(aStates);
+  auxAutomata.aceptados = Object.values(aAceptados);
+  auxAutomata.aceptadosID = Object.values(aAceptadosID);
+  auxAutomata.alfabeto = new Set(aSymbols);
+  auxAutomata.afd = true;
+
+  // console.log(auxAutomata);
+
+	return auxAutomata;
 }
 
 function showTable(tableData) {
