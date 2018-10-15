@@ -296,18 +296,24 @@ $('#downloadBtn').click(function () {
 });
 
 $('#loadBtn').change(function () {
-  var file = $('#loadBtn').prop('files')[0];
-  console.log(file.name);
 
-  $.getJSON(myFile.name, function( json ) {
-    console.log( "JSON Data received, name is " + json.name);
-    console.log(json);
-  });
+  const fileToLoad = $('#loadBtn').prop('files')[0];
+    
+  const fileReader = new FileReader();
+  fileReader.readAsText(fileToLoad, "UTF-8");
+  fileReader.onload = function(fileLoadedEvent) {
+      const textFromFileLoaded = fileLoadedEvent.target.result;
+      console.log(textFromFileLoaded);
+      const json = JSON.parse(textFromFileLoaded);
+      console.log(json);
+      addAutomata(generateAFDFromTable(json));
+      populateSelects();
+  }
   
   // var json_aux = '{"25":{"+":26,"-":27,"*":28,"/":29,"(":30,")":31,"[0-9]":32,".":null,"TOK":-1},"26":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":10},"27":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":20},"28":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":30},"29":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":40},"30":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":50},"31":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":60},"32":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":32,".":33,"TOK":70},"33":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":34,".":null,"TOK":-1},"34":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":34,".":null,"TOK":70}}';
   // json = JSON.parse(json_aux);
   // console.log(json);
 
-  addAutomata(generateAFDFromTable(json));
-  populateSelects();
+  // addAutomata(generateAFDFromTable(json));
+  // populateSelects();
 });
