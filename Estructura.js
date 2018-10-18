@@ -15,7 +15,17 @@ function Transicion(simbolo, destino) {
 	/*------------------------------------------------
 	****************     VARIABLES    ****************
 	------------------------------------------------*/
-	this.simbolo = simbolo;
+	if (simbolo[0] == '[' && simbolo.length > 1) {
+		this.from = simbolo[1];
+		this.to = simbolo[3];
+	} else {
+		this.from = simbolo[0];
+		this.to = simbolo[0];
+	}
+ 	this.hasSymbol = function (symbol) {
+		return symbol >= this.from && symbol <= this.to
+	}
+ 	this.simbolo = simbolo;
 	this.destino = destino;
 }
 
@@ -46,7 +56,7 @@ function Estado(final) {
 	_this.getTransWithSymbol = function (symbol) {
 		var transitions = [];
 		for (transition of _this.transiciones)
-			if (transition.simbolo == symbol)
+			if (transition.hasSymbol(symbol))
 				transitions.push(transition);
 		return transitions;
 	}
@@ -75,6 +85,7 @@ function Automata() {
 	_this.inicial = null;
 	_this.alfabeto = new Set();
 	_this.idAutomata = contAutom++;
+	_this.afd = false;
 
 	/*------------------------------------------------
 	****************    , MÉTODOS     ****************
@@ -117,7 +128,7 @@ function Automata() {
 	}
 
 	// Función que unirá dos autómatas que será la operación a|b
-	this.unir = function (automata) {
+	_this.unir = function (automata) {
 		var nodo1 = new Estado(false);
 		var nodo2 = new Estado(true);
 		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
@@ -146,27 +157,21 @@ function Automata() {
 	}
 
 	// Última función que pidió el profesor, une los autómatas pero sin converger los estados finales
-	this.superUnir = function () {
+	_this.superUnir = function () {
 		var nodo1 = new Estado(false);
 		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
-		console.log(_this.idAutomata);
 
 		for (var automata of automatas){
 			if (automata !== null) {
-				console.log(automata.idAutomata);
 				if (automata.idAutomata !== _this.idAutomata) {
-					console.log(2);
 					nodo1.addTrans(new Transicion(epsilon, automata.inicial));
-					//automata.inicial = false;
 					for (var e of automata.aceptados) 
 						_this.aceptadosID.push(e.id);{
 						_this.aceptados.push(e);
 					}
-					console.log(3);
 					for (var f of automata.estados) {
 						_this.estados.push(f);
 					}
-					console.log(4);
 					_this.unirAlfabeto(automata.alfabeto);
 					automatas[automata.idAutomata] = null;
 				}
@@ -281,7 +286,6 @@ function Automata() {
 	// Función que realiza la cerradura epsilon (C_/e)
 	_this.cerradura = function (conjunto) {
 		var r = new Set();
-		//var chec = new Set();
 		var stack = [];
 		for (var e of conjunto) {
 			stack.push(e);
@@ -290,7 +294,6 @@ function Automata() {
 			var e = stack.shift();
 			if (!r.has(e)) {
 				r.add(e);
-				//check.add(e);
 				for (t of e.transiciones) {
 					if (t.simbolo === epsilon)
 						stack.push(t.destino);
@@ -299,13 +302,6 @@ function Automata() {
 		}
 		return r;
 	}
-
-	/*
-	_this.Ir_A = new function (estado, simbolo) {
-		var e = {};
-		e.push(estado);
-		return _this.cerradura(_this.mover(e, simbolo));
-	}*/
 
 	_this.findIndex=function(E,conjunto){
 		var index=-1;
@@ -332,17 +328,20 @@ function Automata() {
 		return index;
 	}
 
+	// Función que devolverá el token si el estado buscado es final
 	_this.findAccepted=function(e){
-		var index=-1;
-		var bandera = false;
 		for (var i = _this.aceptados.length - 1; i >= 0; i--) {
-			if(_this.aceptados[i] === e)
-				index = _this.aceptados[i].token;
+			if(_this.aceptados[i] === e){
+				e.token = _this.aceptados[i].token;
+				return true;
+			}
 		}
-		return index;
+		return false;
 	}
 
-	
+	/*------------------------------------------------
+	**********    CONVERSIÓN AFN -> AFD    ***********
+	------------------------------------------------*/
 
 	_this.transformar = function () {
 		var E = [{}];//Arreglo que contiene conjuntos de estados del AFND despues de hacer las operaciones correspondientes
@@ -354,14 +353,14 @@ function Automata() {
 
 		var auxiliar = new Set();
 		auxiliar.add(_this.inicial);
-		console.log("Agregamos al inicial que es ");
-		console.log(_this.inicial);
+		// console.log("Agregamos al inicial que es ");
+		// console.log(_this.inicial);
 		//Hacemos cerradura del nodo inicial
 		E[contador] = _this.cerradura(auxiliar);
 		en_cola.push(E[contador]);//Se introduce un CONJUNTO a la cola
-		console.log("La primera cerradura da ");
+		// console.log("La primera cerradura da ");
 		for(var iterator of E[contador]){
-			console.log(iterator);
+			// console.log(iterator);
 		}
 		//Se crea el nodo del nuevo AFD
 		Ei[contador] = new Estado(false);
@@ -373,33 +372,33 @@ function Automata() {
 			var nodo_creado = _this.findIndex(E,e);//El nodo que fue creado se encuentra mediante una busqueda
 			//realizada en E con el conjunto que sacamos de la cola. El conjunto que se encuentra comparte
 			//indice con el nodo creado con tal informacion.
-			console.log("Sacamos a ");
-			console.log(e);
-			console.log("en el indice ");
-			console.log(nodo_creado);
+			// console.log("Sacamos a ");
+			// console.log(e);
+			// console.log("en el indice ");
+			// console.log(nodo_creado);
 			for (var c of _this.alfabeto) {//Por cada letra de nuestro alfabeto
 				var res_mover =_this.mover(e, c);
-				console.log("Nuestro resultado del mover con la letra "+c+" es");
+				// console.log("Nuestro resultado del mover con la letra "+c+" es");
 				for(var it of res_mover){
-					console.log(it);
+					// console.log(it);
 				}
 				var res = _this.cerradura(res_mover);//Se hace la operacion Ir_A
-				console.log("Nuestro res es de ");
-				console.log(res);
+				// console.log("Nuestro res es de ");
+				// console.log(res);
 				var contar=0;
 				for(var it of res){
-					console.log(it);
+					// console.log(it);
 					contar++;
 				}
-				console.log("El contar es de ");
-				console.log(res.size);
+				// console.log("El contar es de ");
+				// console.log(res.size);
 				//var encontrar=-1;
 				//if(res.size){
 				var encontrar = _this.findIndex(E,res);//El find regresa una posicion del arreglo E si es que encuentra el elemento res en este mismo.
 					//Si ya lo habiamos creado entonces solo agregamos la arista
 				//}				
-				console.log("El encontrar es de ");
-				console.log(encontrar);
+				// console.log("El encontrar es de ");
+				// console.log(encontrar);
 				if (encontrar >= 0) {
 					Ei[nodo_creado].addTrans(new Transicion(c, Ei[encontrar]));
 					//nuevasTransiciones.push(new TransicionTotal(Ei[nodo_creado], c, Ei[encontrar]));
@@ -412,124 +411,50 @@ function Automata() {
 					Ei[nodo_creado].addTrans(new Transicion(c, Ei[contador]));//Se le agrega la transicion
 					//nuevasTransiciones.push(new TransicionTotal(Ei[nodo_creado], c, Ei[encontrar]));
 					en_cola.push(E[contador]);//Se meta a la cola
-					console.log("Agregamos a la cola a");
-					console.log(E[contador]);
+					// console.log("Agregamos a la cola a");
+					// console.log(E[contador]);
 				}
 
 			}
 			analizados++;
 		}
+
 		//Creamos el nuevo AFD a devolver con sus inicializaciones correspondientes
 		var resultado = new Automata();
 		resultado.estados = Ei;
 		resultado.inicial = Ei[0];
 		resultado.alfabeto = _this.alfabeto;
-		//resultado.totalTransiciones = nuevasTranssiciones;
+		resultado.afd = true;
 		//Checar cuales son finales y agregarlos al conjunto del nuevo AFD
 		var index = 0;
 		for (var conjunto of E) {
 			for (var e of conjunto) {
-				var aux = _this.findAccepted(e);
-				console.log(aux);
-				if (aux >=0) {
+				if (_this.findAccepted(e)) {
 					Ei[index].final = true;
-					Ei[index].token = aux;
+					Ei[index].token = e.token;
 					resultado.aceptados.push(Ei[index]);
 					resultado.aceptadosID.push(Ei[index].id);
-					console.log(Ei[index]);
+					// console.log(Ei[index]);
 					break;
 				}
 			}
 			index++;
 		}
-		console.log("Final...");
-		console.log(Ei);
-		console.log(resultado.aceptados);
 		return resultado;
 	}
 
+	// Función que le asignará un token a todos los estados finales de un AFN
 	_this.setFinalToken = function(token) {
 		for (acceptedState of _this.aceptados) {
 			acceptedState.token = token;
 		}
 	}
 
+	// Función que buscará si existe un estado en este autómata con base en su ID
 	_this.getStateFromId = function(stateId) {
 		for (state of _this.estados)
 			if (state.id == stateId)
 				return state;
 		return false;
-	}
-
-
-	_this.F = function(f){
-		var tok;
-		tok=Lexer.getToken();
-		if(tok === Tokens.PAR_I){
-			if(E(f)){
-				tok=Lexer.getToken();
-				if(tok ===Tokens.PAR_D)
-					return true;
-			}
-		}
-		else if(tok === Tokens.SIMB){
-			f = new Automata(Lexema[0]);
-			return true;
-		}
-		return false
-	}
-
-	_this.E = function(f){
-		if(T(f))
-			if(Ep(f))
-				return true;
-		return false;
-	}
-
-	_this.Ep = function(f){
-		var tok;
-		var f2=new Automata();
-		tok=Lexer.getToken();
-		if(tok === Tokens.OR){
-			if(T(f2)){
-				f.unir(f2);
-				if(Ep(f))
-					return true;
-			}
-			return false;
-		}
-		Lexer.RegresaToken();
-		return true;
-	}
-
-	_this.T = function(f){
-		var tok;
-		var f2= new Automata();
-		tok = Lexer.getToken();
-		if(tok === Tokens.CONC){
-			if(C(f2)){
-				f=f.concatenar(f2);
-				if(Tp(f))
-					return true;
-			}
-			return false;
-		}
-		Lexer.RegresaToken();
-		return true;
-	}
-
-	_this.C=function(f){
-		if(F(f))
-			if(Cp(f))
-				return true;
-		return false;
-	}
-
-	_this.Cp = function(f){
-		var token;
-		token = Lexer.getToken();
-		/*
-		NO SE VE
-		*/
 	}
 }
