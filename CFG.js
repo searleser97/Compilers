@@ -7,11 +7,18 @@ function mapeoRegla(LS, RS){//LS:string RS:Production(Array<string>)
 
 function CFG(){
 	var _this=this;
+
 	_this.terminals=new Set();//Arreglo de strings
 	_this.nonTerminals = new Set();
+	_this.startingNonTerminal;
 	_this.rules = new Map();//Map<String,Array<production>>
 	_this.firsts = new Map();//Mapa de conjuntos tal que Map<String,Set<String>>
 	_this.appRS= new Map();//Right Side Appearances
+	_this.follows= new Map();
+
+	_this.setSNT = function(s){
+		_this.startingNonTerminal = s;
+	}
 
 	_this.union = function(a,b){
 		for(var e of b){
@@ -49,6 +56,13 @@ function CFG(){
 		return finalFirst;
 	}
 
+	_this.setFirsts = function(){
+		for(var c of _this.terminals)
+			_this.firsts.set(c,_this.getFirst(c));
+		for(var c of _this.nonTerminals)
+			_this.firsts.set(c,_this.getFirst(c));
+	}
+	//Set Right Side Appearances
 	_this.setRSApp = function(s){//String s
 		var aux = [];
 		for(var [left,right] of _this.rules){
@@ -66,8 +80,11 @@ function CFG(){
 	}
 
 	_this.getFollow = function(s){//String s
-		var res= new Set();
+		var followSet= new Set();
 		var aux = new Set();
+
+		if(s === _this.startingNonTerminal)
+			followSet.add("$");
 
 		var rightSideApp = _this.appRS.get(s);//Regresa un arreglo de objeto mapeoRegla(String,production)
 		
@@ -79,20 +96,30 @@ function CFG(){
 				//HAY QUE PARAR EL CICLO CUANDO LO ENCUENTRA
 				if(c === s){// Lo encontramos
 					if(i === RHS.length-1){//Ya no tiene nada por delante
-						res=_this.union(res,_this.getFollow(app.LS));
+						if(app.LS !== c)
+							followSet=_this.union(followSet,_this.getFollow(app.LS));
 					}
 					else{//Hay un elemento adelante
-						aux= _this.first(RHS[i+1]);
-						res= _this.union(res,aux);
+						aux= _this.firsts.get(RHS[i+1]);
+						followSet= _this.union(followSet,aux);
 						if(aux.has("ep")){
-							res.delete("ep");
-							res= _this.union(_this.getFollow(app.LS));
+							followSet.delete("ep");
+							followSet= _this.union(followSet,_this.getFollow(app.LS));
 						}
 					}
 					break;
 				}
 			}
 		}
-		return res;
+		return followSet;
+	}
+
+	_this.setFollows = function(){
+		//Gotta set RSApp before getting the follows
+		for(var c of nonTerminals)
+			_this.setRSApp(c);
+		//Setting follows for every non terminal
+		for(var c of nonTerminals)
+			_this.follows.set(c,_this.getFollow(c));
 	}
 }
