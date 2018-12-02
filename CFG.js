@@ -9,7 +9,7 @@ function CFG(){
 
 	_this.terminals=new Set();//Arreglo de strings
 	_this.nonTerminals = new Set();
-	_this.startingNonTerminal;
+	_this.startingNonTerminal="";
 	_this.rules = new Map();//Map<String,Array<production>>
 	_this.firsts = new Map();//Mapa de conjuntos tal que Map<String,Set<String>>
 	_this.appRS= new Map();//Right Side Appearances
