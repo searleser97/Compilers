@@ -240,7 +240,7 @@ function lr0(){
             for(var s of symbols){                               
                 Si = _this.move_to(mainSet, s);                             
                 
-                if(Si.length === 0){                                      
+                if(Si.length !== 0){                                      
                     idS = _this.make_hash(Si);
                     var cadena = "";                                        
                     if(_this.terminals.has(s)){
