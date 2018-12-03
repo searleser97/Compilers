@@ -16,6 +16,13 @@ function lr0(){
     _this.numRule = new Map();
     _this.symbols = new Set();
 
+    _this.constructor = function(rules,terminales,noTerminales,inicioGramatica){
+        _this.rules = reglas;
+        _this.terminals= terminales;
+        _this.nonTerminals=noTerminales;
+        _this.startingNonTerminal=inicioGramatica;
+    }
+
     _this.setRSApp=function(s){//String s
         var aux = [];
         for(var [left,right] of rules){

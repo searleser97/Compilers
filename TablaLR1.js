@@ -10,10 +10,18 @@ function lr1(){
     _this.numRule = new Map();
     _this.symbols = new Set();
 
+    _this.constructor = function(rules,terminales,noTerminales,inicioGramatica){
+        _this.rules = reglas;
+        _this.terminals= terminales;
+        _this.nonTerminals=noTerminales;
+        _this.startingNonTerminal=inicioGramatica;
+    }
+
     _this.initialize = function(){
-        _this.symb = [..._this.terminals];
+        _this.symbols = [..._this.terminals];
         for(var e of _this.nonTerminals)
-            _this.symb.add(e);
+            _this.symbols.add(e);
+
         var cont = 0;
         for(var p of _this.rules){
             for(var right of p[1]){
