@@ -25,6 +25,13 @@ function CFG(){
 		_this.startingNonTerminal = s;
 	}
 
+	_this.constructor = function(rules,terminales,noTerminales,inicioGramatica){
+		_this.rules = reglas;
+		_this.terminals= terminales;
+		_this.nonTerminals=noTerminales;
+		_this.startingNonTerminal=inicioGramatica;
+	}
+
 	_this.union = function(a,b){
 		for(var e of b){
 			if(!a.has(e))
@@ -162,11 +169,14 @@ function CFG(){
 	}
 
 	_this.initializeTable = function(){
+		_this.setFirsts();
+		_this.setFollows();
 		_this.setPreValues();
 		_this.fillTable();
 	}
 
 	_this.checkExpression = function(expression){
+		//_this.initializeTable();
 		var stack =[];
 		stack.push("$");
 		stack.push(_this.startingNonTerminal);
