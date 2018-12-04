@@ -190,7 +190,7 @@ function lr1(){
         }
     }
 
-    _this.tablaLR1 = function(){
+    _this.tablaLR1 = function(importTable){
         _this.initialize();
         var finalTable = new Map();                                          
         var vertical = new Map();                                   
@@ -258,8 +258,70 @@ function lr1(){
                       
         }
 
+        if(importTable !== undefined)
+            return {conjuntos: allSets, idsConjuntos: nonRepeated};
+
         _this.setReductions(allSets,nonRepeated,finalTable)
         return finalTable;
+    }
+
+    _this.checkExpression = function(expression){
+        var tablaResultado=_this.tablaLR1();
+        var stack=[];
+        stack.push('0');
+        var index =0;
+        while(true){
+            console.log("Nuestra pila al iniciar es ");
+            console.log(stack);
+            console.log("NUEVA ITERACION");
+            var e = stack[stack.length-1];
+            console.log("Sacamos a "+e);
+            var c = expression[index];
+            console.log("Analizamos al caracter "+c);
+            var valor = tablaResultado.get(e).get(c);
+            console.log("Nuestro valor obtenido es "+valor);
+            if(valor === undefined){
+                console.log("ERROR");
+                break;
+            }
+            if(valor[0] === 'd'){
+                //console.log("Metemos a "+c);
+                stack.push(c);
+                console.log("Metemos a "+c);
+                stack.push(valor[1]);
+                console.log("Metemos a "+valor[1]);
+                //expression.shift();//Quitar primer elemento
+                index++;
+            }
+            else if(valor[0] === 'r'){
+                if(valor[1] === '0'){
+                    console.log('Cadena valida');
+                    break;
+                }
+                var regla = _this.numRule.get(valor[1]);
+                console.log("Conseguimos a la regla");
+                console.log(regla);
+                
+                var leftSide = regla[0];
+                var tamano = 2*(regla.length-1);
+                console.log("El tamano es "+tamano);
+                console.log("Pila antes");
+                console.log(stack);
+                for(var i =0; i < tamano; i++){
+                    stack.pop();
+                }
+                console.log("Pila despues");
+                console.log(stack);
+
+                var tope = stack[stack.length-1];
+                console.log("Mi tope es "+tope);
+                stack.push(leftSide);
+                console.log("Meto abajo a "+leftSide);
+                var adonde = tablaResultado.get(tope).get(leftSide);
+                console.log("Metemos adonde con "+adonde);
+                stack.push(adonde);
+            }
+        }
     }
 }
 
