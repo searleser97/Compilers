@@ -25,7 +25,7 @@ function CFG(){
 		_this.startingNonTerminal = s;
 	}
 
-	_this.constructor = function(rules,terminales,noTerminales,inicioGramatica){
+	_this.constructor = function(reglas,terminales,noTerminales,inicioGramatica){
 		_this.rules = reglas;
 		_this.terminals= terminales;
 		_this.nonTerminals=noTerminales;
@@ -46,13 +46,15 @@ function CFG(){
 			return finalFirst;
 		}
 		//rules.get(e) debe regresar un arreglo de producciones
-		for(var production of _this.rules.get(e)){
+		console.log("Error con "+ e);
+		console.log((_this.rules).get(e));
+		for(var production of (_this.rules).get(e)){
 			var firstProd = new Set();//Sirve para sacar los first de la produccion en total
 			var i =0;
 			for(; i < production.length; i++){
 				var c= production[i];
 				var firstOfC = new Set();//Set de strings
-				firstOfC= getFirst(c);
+				firstOfC= _this.getFirst(c);
 				if(!firstOfC.has("ep")){
 					firstProd= _this.union(firstOfC,firstProd);
 					break;
@@ -71,8 +73,10 @@ function CFG(){
 	_this.setFirsts = function(){
 		for(var c of _this.terminals)
 			_this.firsts.set(c,_this.getFirst(c));
+
 		for(var c of _this.nonTerminals)
 			_this.firsts.set(c,_this.getFirst(c));
+
 		var auxi = new Set();
 		auxi.add("ep");
 		_this.firsts.set("ep",auxi);
@@ -142,7 +146,7 @@ function CFG(){
 		aux1.set("$",["aceptar"]);
 		_this.tableLL.set("$",aux1);
 
-		for(var c of terminals){
+		for(var c of _this.terminals){
 			var aux2 = new Map();
 			aux2.set(c,["pop"]);
 			_this.tableLL.set(c,aux2);
@@ -176,7 +180,7 @@ function CFG(){
 	}
 
 	_this.checkExpression = function(expression){
-		//_this.initializeTable();
+		_this.initializeTable();
 		var stack =[];
 		stack.push("$");
 		stack.push(_this.startingNonTerminal);
@@ -184,8 +188,8 @@ function CFG(){
 		var validString = false;
 		var iterator = 0;
 
-		while(iterator < this.expression.length){
-			var c = this.expression[iterator];
+		while(iterator < expression.length){
+			var c = expression[iterator];
 			var top = stack.pop();
 			var action = (_this.tableLL.get(top)).get(c);
 			if(action === undefined){

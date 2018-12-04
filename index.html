@@ -47,10 +47,13 @@
                     <a id="CalcSide" href="#">Calculadora</a>
                 </li>
                 <li>
-                    <a id="RegexSide" href="#">Regex to DFA</a>
+                    <a id="RegexSide" href="#">Expresión Regular a AFN</a>
                 </li>
                 <li>
-                    <a id="GenGramSide" href="#">Generate Grammar</a>
+                    <a id="GenGramSide" href="#">Generar Gramática</a>
+                </li>
+                <li>
+                    <a id="TablesSide" href="#">Evaluar por Tablas</a>
                 </li>
             </ul>
         </nav>
@@ -78,116 +81,117 @@
             <h2>Compiladores</h2>
         </div>
         <div id="menu">
-            <div class="form-group row">
-                <div class="col-sm">
-                    <select class="form-control" id="sel_automata_1">
-                        <option selected disabled>Seleccione Automata A</option>
-                    </select>
-                </div>
-                <div class="col-sm">
-                    <select class="form-control" id="operations">
-                        <option selected disabled>Seleccione Operacion</option>
-                        <option id="BasicOption" value="basic">Crear Basico</option>
-                        <option id="JoinOption" value="join">Unir</option>
-                        <option id="SuperJoinOption" value="superJoin">Super Unir</option>
-                        <option id="ConcatenateOption" value="concatenate">Concatenar</option>
-                        <option id="KleeneOption" value="kleene">Cerradura Kleene</option>
-                        <option id="PositiveOption" value="positive">Cerradura Positiva</option>
-                        <option id="InterrogativeOption" value="quantifier">Cerradura Interrogacion</option>
-                        <option id="TransformOption" value="transformToAFD">Transformar a AFD</option>
-                    </select>
-                </div>
-                <div class="col-sm">
-                    <select class="form-control" id="sel_automata_2">
-                        <option selected disabled>Seleccione Automata B</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <div class="col-sm">
-                    <input type="hidden" class="form-control" placeholder="Ingrese simbolo del automata Basico" id="id_nuevo_basico">
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-sm">
-                    <button id="submit" type="submit" class="btn btn-primary">Ejecutar Operacion</button>
-                </div>
-            </div>
- 
-            <div class="form-group row">
-                <div class="col-sm">
-                    <select class="form-control" id="sel_automata_to_use">
-                        <option selected disabled>Seleccione Automata a Utilizar</option>
-                    </select>
-                </div>
-            </div>
-
-<!--
-            <div class="form-group row">
-                <div class="col-sm">
-                    <textarea id="strToEval" class="form-control"></textarea>
-                </div>
-            </div> 
--->
-            <div class="form-group row">
-                <div class="col-sm">
-                    <button id="lexicEvalBtn" class="btn btn-info" disabled="true">Evaluar Lexico</button>
-                </div>
-            </div>
-            <div id="strBox" class="form-group row" hidden>
-                <div class="col-sm">
-                    <div id="strOutput" class="text-info bg-light blockquote text-center"></div>
-                </div>
-            </div>
-            <div id="tokensBox" class="form-group row" hidden>
-                <div class="col-sm">
-                    <textarea id="tokensOutput" placeholder="Tokens" class="form-control"></textarea>
-                </div>
-            </div>
-            <div id="evalExprBox" class="form-group row" hidden>
-                <div class="col-sm">
-                    <button id="evalExprBtn" class="btn btn-info showEvaluate">Evaluar Expresión</button>
-                </div>
-            </div>
-            <hr>
-            <div id="bdtable">
+            <div id="personalizado">
                 <div class="form-group row">
                     <div class="col-sm">
-                        <button id="buttonTable" class="btn btn-primary showTable" disabled="true">Mostrar Tabla</button>
+                        <select class="form-control" id="sel_automata_1">
+                            <option selected disabled>Seleccione Automata A</option>
+                        </select>
+                    </div>
+                    <div class="col-sm">
+                        <select class="form-control" id="operations">
+                            <option selected disabled>Seleccione Operacion</option>
+                            <option id="BasicOption" value="basic">Crear Basico</option>
+                            <option id="JoinOption" value="join">Unir</option>
+                            <option id="SuperJoinOption" value="superJoin">Super Unir</option>
+                            <option id="ConcatenateOption" value="concatenate">Concatenar</option>
+                            <option id="KleeneOption" value="kleene">Cerradura Kleene</option>
+                            <option id="PositiveOption" value="positive">Cerradura Positiva</option>
+                            <option id="InterrogativeOption" value="quantifier">Cerradura Interrogacion</option>
+                            <option id="TransformOption" value="transformToAFD">Transformar a AFD</option>
+                        </select>
+                    </div>
+                    <div class="col-sm">
+                        <select class="form-control" id="sel_automata_2">
+                            <option selected disabled>Seleccione Automata B</option>
+                        </select>
                     </div>
                 </div>
-            </div>
-            <br>
-            <div id="mynetwork">
-                <div class="vis-network" tabindex="900" style="position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;">
-                    <canvas style="margin-top: 100px; position: relative; touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 90%;"></canvas>
-                </div>
-            </div>
 
-            <hr>
-            <div class="row" id="automatonFile">
-                <button id="downloadBtn" class="btn btn-primary col-4">Descargar autómata</button>
-                <div class="col-4"></div>
-                <label for="loadBtn" class="btn btn-primary col-4">Cargar autómata</label>
-                <input type="file" id="loadBtn" name="loadBtn" accept=".json" hidden/>
+                <div class="form-group row">
+                    <div class="col-sm">
+                        <input type="hidden" class="form-control" placeholder="Ingrese simbolo del automata Basico" id="id_nuevo_basico">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm">
+                        <button id="submit" type="submit" class="btn btn-primary">Ejecutar Operacion</button>
+                    </div>
+                </div>
+     
+                <div class="form-group row">
+                    <div class="col-sm">
+                        <select class="form-control" id="sel_automata_to_use">
+                            <option selected disabled>Seleccione Automata a Utilizar</option>
+                        </select>
+                    </div>
+                </div>
+
+    <!--
+                <div class="form-group row">
+                    <div class="col-sm">
+                        <textarea id="strToEval" class="form-control"></textarea>
+                    </div>
+                </div> 
+    -->
+                <div class="form-group row">
+                    <div class="col-sm">
+                        <button id="lexicEvalBtn" class="btn btn-info" disabled="true">Evaluar Lexico</button>
+                    </div>
+                </div>
+                <div id="strBox" class="form-group row" hidden>
+                    <div class="col-sm">
+                        <div id="strOutput" class="text-info bg-light blockquote text-center"></div>
+                    </div>
+                </div>
+                <div id="tokensBox" class="form-group row" hidden>
+                    <div class="col-sm">
+                        <textarea id="tokensOutput" placeholder="Tokens" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div id="evalExprBox" class="form-group row" hidden>
+                    <div class="col-sm">
+                        <button id="evalExprBtn" class="btn btn-info showEvaluate">Evaluar Expresión</button>
+                    </div>
+                </div>
+                <hr>
+                <div id="bdtable">
+                    <div class="form-group row">
+                        <div class="col-sm">
+                            <button id="buttonTable" class="btn btn-primary showTable" disabled="true">Mostrar Tabla</button>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div id="mynetwork">
+                    <div class="vis-network" tabindex="900" style="position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;">
+                        <canvas style="margin-top: 100px; position: relative; touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 90%;"></canvas>
+                    </div>
+                </div>
+
+                <hr>
+                <div class="row" id="automatonFile">
+                    <button id="downloadBtn" class="btn btn-primary col-4">Descargar autómata</button>
+                    <div class="col-4"></div>
+                    <label for="loadBtn" class="btn btn-primary col-4">Cargar autómata</label>
+                    <input type="file" id="loadBtn" name="loadBtn" accept=".json" hidden/>
+                </div>
+                <br>
+                <div class="row" id="grammarFile" hidden>
+                    <button id="downloadGrammarBtn" class="btn btn-primary col-4">Descargar Gramática</button>
+                    <div class="col-4"></div>
+                    <label for="loadGrammarBtn" class="btn btn-primary col-4">Cargar Gramática</label>
+                    <input type="file" id="loadGrammarBtn" name="loadGrammarBtn" accept=".json" hidden/>
+                </div>
+                <hr>
             </div>
-            <br>
-            <div class="row" id="rulesFile" hidden>
-                <label for="loadRulesBtn" class="btn btn-primary col-4">Cargar Reglas</label>
-                <input type="file" id="loadRulesBtn" name="loadRulesBtn" accept=".txt" hidden/>
+            <div class="row justify-content-center" id="rulesFile" hidden>
+                    <label for="loadRulesBtn" class="btn btn-primary col-4">Cargar Reglas</label>
+                    <input type="file" id="loadRulesBtn" name="loadRulesBtn" accept=".txt" hidden/>
             </div>
-            <hr>
-            <br>
-            <div class="row" id="grammarFile" hidden>
-                <button id="downloadGrammarBtn" class="btn btn-primary col-4">Descargar Gramática</button>
-                <div class="col-4"></div>
-                <label for="loadGrammarBtn" class="btn btn-primary col-4">Cargar Gramática</label>
-                <input type="file" id="loadGrammarBtn" name="loadGrammarBtn" accept=".json" hidden/>
-            </div>
-            <hr>
 
             <script src="CONSTANTS.js"></script>
+            
             <script src="Estructura.js"></script>
             <script src="TableAutomaton.js"></script>
             <script src="EvaluarExpresionAritmetica.js"></script>
@@ -198,7 +202,10 @@
             <script src="vis.min.js"></script>
             <script src="randomColor.js"></script>
             <script src="drawAutomata.js"></script>
+            <script src="TablaLR0.js"></script>
+            <script src="TablaLR1.js"></script>
             <script src="test.js"></script>
+            <script src="CFG.js"></script>
 
             <!-- jQuery CDN - Slim version -->
             <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
