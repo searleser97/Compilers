@@ -288,8 +288,9 @@ function lr1(){
                 //console.log("Metemos a "+c);
                 stack.push(c);
                 console.log("Metemos a "+c);
-                stack.push(valor[1]);
-                console.log("Metemos a "+valor[1]);
+                var aux_val = valor.slice(1);
+                stack.push(aux_val);
+                console.log("Metemos a "+aux_val);
                 //expression.shift();//Quitar primer elemento
                 index++;
             }
