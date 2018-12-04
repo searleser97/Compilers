@@ -109,7 +109,7 @@ function lr1(){
         return result;
     }
 
-    function closure1(rulesSetT){                            
+    _this.closure1 = function(rulesSetT){                            
         var stack = [];                                 
         var processed = new Set();                               
 

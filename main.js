@@ -463,12 +463,15 @@ $('#loadRulesBtn').change(function () {
       console.log(grammar);
       grammar.constructor(grammarMap);
       console.log(grammar);
-      //grammar.increase();
+      grammar.increase();
       //console.log(grammar);
       globalGrammar = grammar;
-      let tablaLL = new CFG();
-      tablaLL.constructor(grammar.rules,grammar.terminales,grammar.noTerminales,grammar.inicioGramatica);
-      tablaLL.checkExpression(["(","num","+","num",")","$"]);
+      //let tablaLL = new CFG();
+      //tablaLL.constructor(grammar.rules,grammar.terminales,grammar.noTerminales,grammar.inicioGramatica);
+      //tablaLL.checkExpression(["(","num","+","num",")","$"]);
+      let tabla1 = new lr0();
+      tabla1.constructor(grammar.rules,grammar.terminales,grammar.noTerminales,grammar.inicioGramatica);
+      console.log(tabla1.tablaLR());
     }
   }
 });
