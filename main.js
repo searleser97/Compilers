@@ -1,6 +1,7 @@
 var automatas = [];
 var strToEval = "";
 var aTokens = [];
+var globalGrammar = null;
 
 /*===================================================================
 =========                 AUTÓMATAS                     =============
@@ -155,7 +156,7 @@ $('#lexicEvalBtn').click(function () {
   $('#tokensBox').attr("hidden", false);
   $('#strBox').attr("hidden", false);
   $('#strOutput').text(strToEval);
-  if($( "#evalExprBtn" ).hasClass( "evalArit" ) || $( "#evalExprBtn" ).hasClass( "regexToDFA" )){
+  if($( "#evalExprBtn" ).hasClass( "evalArit" ) || $( "#evalExprBtn" ).hasClass( "regexToDFA" ) || $( "#evalExprBtn" ).hasClass( "generateGrammar" )){
   	$('#evalExprBox').attr("hidden", false);
   }
 });
@@ -184,20 +185,41 @@ $('#evalExprBtn').click(function () {
 			}
 		});
 	}else if($( "#evalExprBtn" ).hasClass( "regexToDFA" )){
-		addAutomata(new EvalRegex(automatas[$('#sel_automata_to_use').val()], strToEval).AnalizarExp());
-		populateSelects();
-		$("#sel_automata_to_use option").each(function(index){
-			if ($(this).val() == vSelected) {
-				$(this).attr('selected', 'selected');
-			}
-		});
-	}
+    addAutomata(new EvalRegex(automatas[$('#sel_automata_to_use').val()], strToEval).AnalizarExp());
+    populateSelects();
+    $("#sel_automata_to_use option").each(function(index){
+      if ($(this).val() == vSelected) {
+        $(this).attr('selected', 'selected');
+      }
+    });
+  }else if($( "#evalExprBtn" ).hasClass( "generateGrammar" )){
+    let grammarMap = new GenGramaticas(automatas[$('#sel_automata_to_use').val()], strToEval).AnalizarExp();
+    if (grammarMap == null) {
+      alert("ERROR");
+    }else{
+      console.log(grammarMap);
+      let grammar = new Grammar();
+      console.log(grammar);
+      grammar.constructor(grammarMap);
+      console.log(grammar);
+      grammar.increase();
+      console.log(grammar);
+      globalGrammar = grammar;
+    }
+    populateSelects();
+    $("#sel_automata_to_use option").each(function(index){
+      if ($(this).val() == vSelected) {
+        $(this).attr('selected', 'selected');
+      }
+    });
+  }
 });
 
 $(document).on('click', '#HomeSide', function() {
   $(this).addClass('active');
   $('#CalcSide').removeClass('active');
   $('#RegexSide').removeClass('active');
+  $('#GenGramSideSide').removeClass('active');
 	alert("Podrás crear autómatas y realizar operaciones con ellos, así como evaluar expresiones con los AFD.");
 	automatas = [];
 	contador = 0;
@@ -220,12 +242,15 @@ $(document).on('click', '#HomeSide', function() {
     $('#InterrogativeOption').attr('disabled', false);
     $('#sidebar').removeClass('active');
     $('.overlay').removeClass('active');
+  $('#grammarFile').attr("hidden", true);
+  $('#automatonFile').attr("hidden", false);
 });
 
 $(document).on('click', '#CalcSide', function() {
   $(this).addClass('active');
   $('#HomeSide').removeClass('active');
   $('#RegexSide').removeClass('active');
+  $('#GenGramSideSide').removeClass('active');
 	alert("Calculadora por medio de un AFD y descenso recursivo.");
 	automatas = [];
 	contador = 0;
@@ -240,28 +265,32 @@ $(document).on('click', '#CalcSide', function() {
 	$('#evalExprBox').attr("hidden", true);
 	$('#strOutput').text("");
     $('#evalExprBtn').removeClass('regexToDFA');
+    $('#evalExprBtn').removeClass('generateGrammar');
     $('#evalExprBtn').addClass('evalArit');
     $('#sidebar').removeClass('active');
     $('.overlay').removeClass('active');
+  $('#grammarFile').attr("hidden", true);
+  $('#automatonFile').attr("hidden", false);
 });
 
 $(document).on('click', '#RegexSide', function() {
   $(this).addClass('active');
   $('#CalcSide').removeClass('active');
   $('#HomeSide').removeClass('active');
-	alert("Analizador de expresiones regulares por medio de un AFD y descenso recursivo.");
-	automatas = [];
-	contador = 0;
-	contAutom = 0;
-	createFourthAutomaton();
-	$('#sel_automata_1').attr("hidden", true);
-	$('#sel_automata_2').attr("hidden", true);
-	$('#submit').attr("hidden", false);
+  $('#GenGramSideSide').removeClass('active');
+  alert("Analizador de expresiones regulares por medio de un AFD y descenso recursivo.");
+  automatas = [];
+  contador = 0;
+  contAutom = 0;
+  createFourthAutomaton();
+  $('#sel_automata_1').attr("hidden", true);
+  $('#sel_automata_2').attr("hidden", true);
+  $('#submit').attr("hidden", false);
     $('#operations').attr('hidden', false);
-	$('#tokensBox').attr("hidden", true);
-	$('#strBox').attr("hidden", true);
-	$('#evalExprBox').attr("hidden", true);
-	$('#strOutput').text("");
+  $('#tokensBox').attr("hidden", true);
+  $('#strBox').attr("hidden", true);
+  $('#evalExprBox').attr("hidden", true);
+  $('#strOutput').text("");
     $('#BasicOption').attr('disabled', true);
     $('#JoinOption').attr('disabled', true);
     $('#superJoinOption').attr('disabled', true);
@@ -270,9 +299,46 @@ $(document).on('click', '#RegexSide', function() {
     $('#PositiveOption').attr('disabled', true);
     $('#InterrogativeOption').attr('disabled', true);
     $('#evalExprBtn').removeClass('evalArit');
+    $('#evalExprBtn').removeClass('generateGrammar');
     $('#evalExprBtn').addClass('regexToDFA');
     $('#sidebar').removeClass('active');
     $('.overlay').removeClass('active');
+  $('#grammarFile').attr("hidden", true);
+  $('#automatonFile').attr("hidden", false);
+});
+
+$(document).on('click', '#GenGramSide', function() {
+  $(this).addClass('active');
+  $('#CalcSide').removeClass('active');
+  $('#HomeSide').removeClass('active');
+  $('#RegexSide').removeClass('active');
+  alert("Analizador de gramáticas por medio de un AFD y descenso recursivo.");
+  automatas = [];
+  contador = 0;
+  contAutom = 0;
+  createFifthAutomaton();
+  $('#sel_automata_1').attr("hidden", true);
+  $('#sel_automata_2').attr("hidden", true);
+  $('#submit').attr("hidden", true);
+    $('#operations').attr('hidden', true);
+  $('#tokensBox').attr("hidden", true);
+  $('#strBox').attr("hidden", true);
+  $('#evalExprBox').attr("hidden", true);
+  $('#strOutput').text("");
+    $('#BasicOption').attr('disabled', true);
+    $('#JoinOption').attr('disabled', true);
+    $('#superJoinOption').attr('disabled', true);
+    $('#ConcatenateOption').attr('disabled', true);
+    $('#KleeneOption').attr('disabled', true);
+    $('#PositiveOption').attr('disabled', true);
+    $('#InterrogativeOption').attr('disabled', true);
+    $('#evalExprBtn').removeClass('evalArit');
+    $('#evalExprBtn').removeClass('regexToDFA');
+    $('#evalExprBtn').addClass('generateGrammar');
+    $('#sidebar').removeClass('active');
+    $('.overlay').removeClass('active');
+  $('#grammarFile').attr("hidden", false);
+  $('#automatonFile').attr("hidden", true);
 });
 
 $('#downloadBtn').click(function () {
@@ -316,4 +382,41 @@ $('#loadBtn').change(function () {
 
   // addAutomata(generateAFDFromTable(json));
   // populateSelects();
+});
+
+$('#downloadGrammarBtn').click(function () {
+  if (globalGrammar == null) { 
+    alert("No se encontró gramática para descargar");
+  } else {
+    console.log(globalGrammar);
+    var a = document.createElement("a");
+    var cache = [];
+    var file = new Blob([JSON.stringify(globalGrammar)], {type: 'text/plain;charset=utf-8'});
+    cache = null;
+    a.href = URL.createObjectURL(file);
+    var d = new Date();
+    var date = d.getDate().toString()+"-";
+    date+=(d.getMonth()+1).toString()+"-";
+    date+=d.getFullYear().toString()+"-";
+    date+=d.getHours().toString()+":";
+    date+=d.getMinutes().toString();
+    a.download = 'gramatica'+date+'.json';
+    a.click();
+  }
+});
+
+$('#loadGrammarBtn').change(function () {
+
+  const fileToLoad = $('#loadGrammarBtn').prop('files')[0];
+    
+  const fileReader = new FileReader();
+  fileReader.readAsText(fileToLoad, "UTF-8");
+  fileReader.onload = function(fileLoadedEvent) {
+      const textFromFileLoaded = fileLoadedEvent.target.result;
+      console.log(textFromFileLoaded);
+      const json = JSON.parse(textFromFileLoaded);
+      console.log(json);
+      globalGrammar = new Grammar(json);
+      console.log(globalGrammar);
+  }
 });

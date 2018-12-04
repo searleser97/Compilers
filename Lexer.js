@@ -43,13 +43,18 @@ function Lexer(automata, strToTest) {
   _this.getNextToken = function () {
     var sValue = "";
 
+    if (_this.tokensPosition != -1) {
+      _this.collectedTokens[_this.tokensPosition].curr_symbol = _this.curr_symbol;
+    }
+
     if (_this.curr_symbol == EOF){
       _this.collectedTokens[++_this.tokensPosition] = {
         token: 0,
         str: EOF,
         position: _this.position,
         lastPosition: _this.lastMatchedPosition+1,
-        state: _this.lastMatchedState
+        state: _this.lastMatchedState,
+        curr_symbol: null
       };
     	// console.log(_this.collectedTokens);
     	// (_this.collectedTokens).forEach( function(value){
@@ -101,7 +106,8 @@ function Lexer(automata, strToTest) {
         str: sValue,
         position: _this.position,
         lastPosition: _this.lastMatchedPosition,
-        state: _this.lastMatchedState
+        state: _this.lastMatchedState,
+        curr_symbol: null
       };
     	// console.log(_this.collectedTokens);
       key = {
@@ -113,8 +119,8 @@ function Lexer(automata, strToTest) {
   }
 
   _this.returnToPrevToken = function () {
-	// console.log("In return token");
- //    console.log("position: "+_this.position);	
+  // console.log("In return token");
+ //    console.log("position: "+_this.position);  
  //    console.log("lastMatchedState: "+_this.lastMatchedState);
  //    console.log("lastMatchedPosition: "+_this.lastMatchedPosition);
  //    console.log("tokensPosition: "+_this.tokensPosition);
@@ -124,12 +130,25 @@ function Lexer(automata, strToTest) {
     _this.lastMatchedSubstr = token.str;
     _this.lastMatchedState = token.state;
     _this.lastMatchedPosition = token.lastPosition;
+    _this.curr_symbol = token.curr_symbol;
     // console.log("--------------");
-    // console.log("position: "+_this.position);	
+    // console.log("position: "+_this.position);  
     // console.log("lastMatchedState: "+_this.lastMatchedState);
     // console.log("lastMatchedPosition: "+_this.lastMatchedPosition);
     // console.log("tokensPosition: "+_this.tokensPosition);
     // console.log(_this.collectedTokens);
+  }
+
+  _this.returnPoint = function () {
+    return _this.tokensPosition;
+  }
+
+  _this.setPoint = function (point) {
+    token = _this.collectedTokens[point]
+    _this.position = token.position;
+    _this.lastMatchedSubstr = token.str;
+    _this.lastMatchedState = token.state;
+    _this.lastMatchedPosition = token.lastPosition;
   }
 }
 

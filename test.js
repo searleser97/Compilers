@@ -306,3 +306,55 @@ function createFourthAutomaton(){
 	addAutomata(a1.transformar());
 	populateSelects();
 }
+
+// Autómata Grammar
+function createFifthAutomaton(){
+	// Autómata 1
+	var a1 = new Automata();
+	a1.basico(';');
+	a1.setFinalToken(10);
+	// createFSMDiagram(a1);
+
+	// Autómata 2
+	var a2 = new Automata();
+	a2.basico('-');
+	var a3 = new Automata();
+	a3.basico('>');
+	a2.concatenar(a3);
+	a2.setFinalToken(20);
+	// createFSMDiagram(a2);
+
+	// Autómata 3
+	var a4 = new Automata();
+	a4.basico('|');
+	a4.setFinalToken(30);
+	// createFSMDiagram(a4);
+
+	// Autómata 4
+	var a5 = new Automata();
+	a5.basico(' ');
+	var a6 = new Automata();
+	a6.basico('¿');
+	var a7 = new Automata();
+	a7.basico('¡');
+	a6.unir(a7);
+	var a8 = new Automata();
+	a8.basico('[!-~]');
+	a6.unir(a8);
+	a6.cerraduraPositiva();
+	a5.concatenar(a6);
+	var a9 = new Automata();
+	a9.basico(' ');
+	a5.concatenar(a9);
+	a5.setFinalToken(40);
+	// createFSMDiagram(a5);
+
+	addAutomata(a1);
+	addAutomata(a2);
+	addAutomata(a4);
+	addAutomata(a5);
+
+	a1.superUnir();
+	addAutomata(a1.transformar());
+	populateSelects();
+}

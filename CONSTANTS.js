@@ -37,4 +37,11 @@ var Tokens_Regex = {
 	SIMB : 80
 };
 
+var Tokens_Grammar = {
+	P_Y_C : 10,
+	FLECHA : 20,
+	OR : 30,
+	SIMB : 40
+};
+
 var Token_ERROR = 1000;
