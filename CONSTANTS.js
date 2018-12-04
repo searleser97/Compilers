@@ -1,14 +1,14 @@
 // Símbolo que usaremos como epsilon
-var epsilon = '\\e';
+const epsilon = '\\e';
 // Símbolo que usaremos como espacio
-var spaceSymbol = '\\s';
+const spaceSymbol = '\\s';
 // Fin de cadena
-var EOF = '\0';
+const EOF = '\0';
 
 // Valor de los Tokens esperados
-var Token_FIN = 0;
+const Token_FIN = 0;
 
-var Tokens_Aritmetico = {
+const Tokens_Aritmetico = {
 	MAS : 10,
 	MENOS : 20,
 	PROD : 30,
@@ -26,7 +26,7 @@ var Tokens_Aritmetico = {
 	VAR : 150
 };
 
-var Tokens_Regex = {
+const Tokens_Regex = {
 	OR : 10,
 	CONC : 20,
 	CERRPOS : 30,
@@ -37,11 +37,30 @@ var Tokens_Regex = {
 	SIMB : 80
 };
 
-var Tokens_Grammar = {
+const Tokens_Grammar = {
 	P_Y_C : 10,
 	FLECHA : 20,
 	OR : 30,
 	SIMB : 40
 };
 
-var Token_ERROR = 1000;
+const Token_ERROR = 1000;
+
+const TOKEN = {
+	0 : "$",
+	10 : "+",
+	20 : "-",
+	30 : "*",
+	40 : "/",
+	50 : "(",
+	60 : ")",
+	70 : "num",
+	80 : "^",
+	90 : "sin",
+	100 : "cos",
+	110 : "tan",
+	120 : "e",
+	130 : "ln",
+	140 : "log",
+	150 : "var"
+}

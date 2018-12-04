@@ -81,7 +81,7 @@
             <h2>Compiladores</h2>
         </div>
         <div id="menu">
-            <div id="personalizado">
+            <div id="groupAutomaton">
                 <div class="form-group row">
                     <div class="col-sm">
                         <select class="form-control" id="sel_automata_1">
@@ -185,13 +185,35 @@
                 </div>
                 <hr>
             </div>
-            <div class="row justify-content-center" id="rulesFile" hidden>
+            <div id="groupGrammar" hidden>
+                <div class="row justify-content-center">
+                    <div class="col-sm-8 form-group">
+                        <label for="selectTable">Selecctionar Tabla</label>
+                        <select class="form-control" id="selectTable">
+                            <option selected id="CFG">CFG</option>
+                            <option id="LR0">LR0</option>
+                            <option id="LR1">LR1</option>
+                            <option id="LALR">LALR</option>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <div class="row justify-content-center" id="rulesFile">
                     <label for="loadRulesBtn" class="btn btn-primary col-4">Cargar Reglas</label>
                     <input type="file" id="loadRulesBtn" name="loadRulesBtn" accept=".txt" hidden/>
+                    <div class="col-2"></div>
+                    <label for="loadAutomatonBtn" class="btn btn-primary col-4">Cargar Autómata</label>
+                    <input type="file" id="loadAutomatonBtn" name="loadAutomatonBtn" accept=".json" hidden/>
+                </div>
+                <br>
+                <div class="justify-content-center row">
+                    <div class="col-sm-4">
+                        <button id="evalGrammarExprBtn" class="btn btn-info showEvaluateGrammar">Evaluar Expresión</button>
+                    </div>
+                </div>
             </div>
 
             <script src="CONSTANTS.js"></script>
-            
             <script src="Estructura.js"></script>
             <script src="TableAutomaton.js"></script>
             <script src="EvaluarExpresionAritmetica.js"></script>
@@ -202,10 +224,10 @@
             <script src="vis.min.js"></script>
             <script src="randomColor.js"></script>
             <script src="drawAutomata.js"></script>
-            <script src="TablaLR0.js"></script>
-            <script src="TablaLR1.js"></script>
             <script src="test.js"></script>
             <script src="CFG.js"></script>
+            <script src="TablaLR0.js"></script>
+            <script src="TablaLR1.js"></script>
 
             <!-- jQuery CDN - Slim version -->
             <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->

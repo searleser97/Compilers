@@ -1,0 +1,1 @@
+{"terminales":["+","-","ep","*","/","(",")","num"],"noTerminales":["E","Ed","T","Td","F"],"rules":[["E",[["T","Ed"]]],["Ed",[["+","T","Ed"],["-","T","Ed"],["ep"]]],["T",[["F","Td"]]],["Td",[["*","F","Td"],["/","F","Td"],["ep"]]],["F",[["(","E",")"],["num"]]]],"inicioGramatica":"E","increased":false,"__type":"Grammar"}
