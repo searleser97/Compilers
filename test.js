@@ -316,7 +316,7 @@ function createFifthAutomaton(){
 	a2.basico("\r");
 	var a3 = new Automata();
 	a3.basico("\n");
-	a2.concatenar(a3);
+	a2.unir(a3);
 	a2.cerraduraKleene();
 	a1.concatenar(a2);
 	a1.setFinalToken(10);
