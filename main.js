@@ -530,7 +530,6 @@ $('#evalGrammarExprBtn').click(function () {
       case 'LALR':
         // Do something
         break;
->>>>>>> Manuel
     }
   }
 });
