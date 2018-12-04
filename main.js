@@ -442,9 +442,16 @@ $('#loadRulesBtn').change(function () {
       console.log(grammar);
       grammar.constructor(grammarMap);
       console.log(grammar);
-      grammar.increase();
-      console.log(grammar);
+      //grammar.increase();
+      //console.log(grammar);
       globalGrammar = grammar;
+
+      //Prueba para la clase CFG que es LL1
+      let tablall = new CFG();
+      tablall.constructor(grammar.rules,grammar.terminales,grammar.noTerminales,grammar.inicioGramatica);
+      console.log(tablall.rules);
+      tablall.initializeTable();
+      tablall.checkExpression(["(","num","+","num",")","$"]);
     }
   }
 });
