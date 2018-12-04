@@ -217,6 +217,8 @@ $('#evalExprBtn').click(function () {
 
 $(document).on('click', '#HomeSide', function() {
   $(this).addClass('active');
+  $('#personalizado').attr("hidden", false);
+  $('#TablesSide').removeClass('active');
   $('#CalcSide').removeClass('active');
   $('#RegexSide').removeClass('active');
   $('#GenGramSideSide').removeClass('active');
@@ -249,6 +251,8 @@ $(document).on('click', '#HomeSide', function() {
 
 $(document).on('click', '#CalcSide', function() {
   $(this).addClass('active');
+  $('#personalizado').attr("hidden", false);
+  $('#TablesSide').removeClass('active');
   $('#HomeSide').removeClass('active');
   $('#RegexSide').removeClass('active');
   $('#GenGramSideSide').removeClass('active');
@@ -277,6 +281,8 @@ $(document).on('click', '#CalcSide', function() {
 
 $(document).on('click', '#RegexSide', function() {
   $(this).addClass('active');
+  $('#personalizado').attr("hidden", false);
+  $('#TablesSide').removeClass('active');
   $('#CalcSide').removeClass('active');
   $('#HomeSide').removeClass('active');
   $('#GenGramSideSide').removeClass('active');
@@ -312,6 +318,8 @@ $(document).on('click', '#RegexSide', function() {
 
 $(document).on('click', '#GenGramSide', function() {
   $(this).addClass('active');
+  $('#personalizado').attr("hidden", false);
+  $('#TablesSide').removeClass('active');
   $('#CalcSide').removeClass('active');
   $('#HomeSide').removeClass('active');
   $('#RegexSide').removeClass('active');
@@ -341,8 +349,21 @@ $(document).on('click', '#GenGramSide', function() {
     $('#sidebar').removeClass('active');
     $('.overlay').removeClass('active');
   $('#grammarFile').attr("hidden", false);
-  $('#rulesFile').attr("hidden", false);
+  $('#rulesFile').attr("hidden", true);
   $('#automatonFile').attr("hidden", true);
+});
+
+$(document).on('click', '#TablesSide', function() {
+  $(this).addClass('active');
+  $('#personalizado').attr("hidden", true);
+  $('#CalcSide').removeClass('active');
+  $('#HomeSide').removeClass('active');
+  $('#RegexSide').removeClass('active');
+  $('#GenGramSide').removeClass('active');
+  $('#sidebar').removeClass('active');
+  $('.overlay').removeClass('active');
+  alert("Analizador de expresiones por medio de una gramática y tablas.");
+  $('#rulesFile').attr("hidden", false);
 });
 
 $('#downloadBtn').click(function () {
