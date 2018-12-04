@@ -463,9 +463,12 @@ $('#loadRulesBtn').change(function () {
       console.log(grammar);
       grammar.constructor(grammarMap);
       console.log(grammar);
-      grammar.increase();
-      console.log(grammar);
+      //grammar.increase();
+      //console.log(grammar);
       globalGrammar = grammar;
+      let tablaLL = new CFG();
+      tablaLL.constructor(grammar.rules,grammar.terminales,grammar.noTerminales,grammar.inicioGramatica);
+      tablaLL.checkExpression(["(","num","+","num",")","$"]);
     }
   }
 });
