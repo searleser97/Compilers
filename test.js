@@ -312,49 +312,60 @@ function createFifthAutomaton(){
 	// Autómata 1
 	var a1 = new Automata();
 	a1.basico(';');
+	var a2 = new Automata();
+	a2.basico("\r");
+	var a3 = new Automata();
+	a3.basico("\n");
+	a2.concatenar(a3);
+	a2.cerraduraKleene();
+	a1.concatenar(a2);
 	a1.setFinalToken(10);
 	// createFSMDiagram(a1);
 
 	// Autómata 2
-	var a2 = new Automata();
-	a2.basico('-');
-	var a3 = new Automata();
-	a3.basico('>');
-	a2.concatenar(a3);
-	a2.setFinalToken(20);
-	// createFSMDiagram(a2);
-
-	// Autómata 3
 	var a4 = new Automata();
-	a4.basico('|');
-	a4.setFinalToken(30);
+	a4.basico('-');
+	var a5 = new Automata();
+	a5.basico('>');
+	a4.concatenar(a5);
+	a4.setFinalToken(20);
 	// createFSMDiagram(a4);
 
-	// Autómata 4
-	var a5 = new Automata();
-	a5.basico(' ');
+	// Autómata 3
 	var a6 = new Automata();
-	a6.basico('¿');
+	a6.basico('|');
+	a6.setFinalToken(30);
+	// createFSMDiagram(a6);
+
+	// Autómata 4
 	var a7 = new Automata();
-	a7.basico('¡');
-	a6.unir(a7);
+	a7.basico(' ');
 	var a8 = new Automata();
-	a8.basico('[!-~]');
-	a6.unir(a8);
-	a6.cerraduraPositiva();
-	a5.concatenar(a6);
+	a8.basico('¿');
 	var a9 = new Automata();
-	a9.basico(' ');
-	a5.concatenar(a9);
-	a5.setFinalToken(40);
-	// createFSMDiagram(a5);
+	a9.basico('¡');
+	a8.unir(a9);
+	var a10 = new Automata();
+	a10.basico('[!-~]');
+	a8.unir(a10);
+	a8.cerraduraPositiva();
+	a7.concatenar(a8);
+	var a11 = new Automata();
+	a11.basico(' ');
+	a7.concatenar(a11);
+	a7.setFinalToken(40);
+	// createFSMDiagram(a7);
+
 
 	addAutomata(a1);
-	addAutomata(a2);
 	addAutomata(a4);
-	addAutomata(a5);
+	addAutomata(a6);
+	addAutomata(a7);
 
 	a1.superUnir();
-	addAutomata(a1.transformar());
+	let result = a1.transformar();
+	addAutomata(result);
 	populateSelects();
+
+	return result;
 }

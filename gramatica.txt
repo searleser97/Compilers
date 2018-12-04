@@ -1,0 +1,5 @@
+ E -> T  Ed ;
+ Ed -> +  T  Ed | -  T  Ed | ep ;
+ T -> F  Td ;
+ Td -> *  F  Td | /  F  Td | ep ;
+ F -> (  E  ) | num ;

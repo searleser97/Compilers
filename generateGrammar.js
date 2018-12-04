@@ -43,6 +43,7 @@ function GenGramaticas(automata, string){
             tok = _this.lexer.getNextToken();
             console.log(tok);
             if (tok.token === Tokens_Grammar.P_Y_C) {
+                console.log("CONSEGUIMOS UNA REGLA");
                 if (_this.ListaReglasP(f)) {
                     console.log(f);
                     return true;

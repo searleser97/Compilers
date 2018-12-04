@@ -243,6 +243,7 @@ $(document).on('click', '#HomeSide', function() {
     $('#sidebar').removeClass('active');
     $('.overlay').removeClass('active');
   $('#grammarFile').attr("hidden", true);
+  $('#rulesFile').attr("hidden", true);
   $('#automatonFile').attr("hidden", false);
 });
 
@@ -270,6 +271,7 @@ $(document).on('click', '#CalcSide', function() {
     $('#sidebar').removeClass('active');
     $('.overlay').removeClass('active');
   $('#grammarFile').attr("hidden", true);
+  $('#rulesFile').attr("hidden", true);
   $('#automatonFile').attr("hidden", false);
 });
 
@@ -304,6 +306,7 @@ $(document).on('click', '#RegexSide', function() {
     $('#sidebar').removeClass('active');
     $('.overlay').removeClass('active');
   $('#grammarFile').attr("hidden", true);
+  $('#rulesFile').attr("hidden", true);
   $('#automatonFile').attr("hidden", false);
 });
 
@@ -338,6 +341,7 @@ $(document).on('click', '#GenGramSide', function() {
     $('#sidebar').removeClass('active');
     $('.overlay').removeClass('active');
   $('#grammarFile').attr("hidden", false);
+  $('#rulesFile').attr("hidden", false);
   $('#automatonFile').attr("hidden", true);
 });
 
@@ -418,5 +422,29 @@ $('#loadGrammarBtn').change(function () {
       console.log(json);
       globalGrammar = new Grammar(json);
       console.log(globalGrammar);
+  }
+});
+
+$('#loadRulesBtn').change(function () {
+
+  const fileToLoad = $('#loadRulesBtn').prop('files')[0];
+    
+  const fileReader = new FileReader();
+  fileReader.readAsText(fileToLoad, "UTF-8");
+  fileReader.onload = function(fileLoadedEvent) {
+    const textFromFileLoaded = fileLoadedEvent.target.result;
+    let grammarMap = new GenGramaticas(createFifthAutomaton(), textFromFileLoaded).AnalizarExp();
+    if (grammarMap == null) {
+      alert("ERROR");
+    }else{
+      console.log(grammarMap);
+      let grammar = new Grammar();
+      console.log(grammar);
+      grammar.constructor(grammarMap);
+      console.log(grammar);
+      grammar.increase();
+      console.log(grammar);
+      globalGrammar = grammar;
+    }
   }
 });
