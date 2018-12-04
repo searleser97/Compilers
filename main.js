@@ -513,7 +513,7 @@ $('#evalGrammarExprBtn').click(function () {
     let selected = $('#selectTable').find(":selected").text();
     console.log(selected);
     switch (selected) {
-      case 'CFG':
+      case 'LL1':
         let tablaLL = new CFG();
         tablaLL.constructor(globalGrammar.rules,globalGrammar.terminales,globalGrammar.noTerminales,globalGrammar.inicioGramatica);
         tablaLL.checkExpression(aToken);
