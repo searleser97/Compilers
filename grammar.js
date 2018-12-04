@@ -11,7 +11,7 @@ function Grammar(json){
 	if (typeof json === 'object') {
 		_this.terminales = json.terminales;
 		_this.noTerminales = json.noTerminales;
-		_this.rules = json.rules = new Map();
+		_this.rules = json.rules;
 		_this.inicioGramatica = json.inicioGramatica;
 		_this.increased = json.increased;
 		_this.__type = json.__type;
