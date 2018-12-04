@@ -15,6 +15,8 @@ function CFG(){
 	_this.appRS= new Map();//Right Side Appearances
 	_this.follows= new Map();//Mapa de conjuntos tal que Map<String,Set<String>>
 	_this.tableLL = new Map()//Sera un mapa de mapas.
+	_this.lexer = null;
+	_this.flag = true;
 	//En las columnas van los terminales y el $. En las filas van todos (No terminales y terminales)
 	//Adentro de la tabla habra una produccion.
 	//Primer mapa son filas.
@@ -25,11 +27,12 @@ function CFG(){
 		_this.startingNonTerminal = s;
 	}
 
-	_this.constructor = function(reglas,terminales,noTerminales,inicioGramatica){
+	_this.constructor = function(reglas,terminales,noTerminales,inicioGramatica, lexer){
 		_this.rules = reglas;
 		_this.terminals= terminales;
 		_this.nonTerminals=noTerminales;
 		_this.startingNonTerminal=inicioGramatica;
+		_this.lexer = lexer;
 	}
 
 	_this.union = function(a,b){
@@ -46,8 +49,8 @@ function CFG(){
 			return finalFirst;
 		}
 		//rules.get(e) debe regresar un arreglo de producciones
-		console.log("Error con "+ e);
-		console.log((_this.rules).get(e));
+		// console.log("Error con "+ e);
+		// console.log((_this.rules).get(e));
 		for(var production of (_this.rules).get(e)){
 			var firstProd = new Set();//Sirve para sacar los first de la produccion en total
 			var i =0;
@@ -179,31 +182,41 @@ function CFG(){
 		_this.fillTable();
 	}
 
-	_this.checkExpression = function(expression){
+	_this.checkExpression = function(){
 		_this.initializeTable();
 		var stack =[];
 		stack.push("$");
 		stack.push(_this.startingNonTerminal);
 
 		var validString = false;
-		var iterator = 0;
+		let nextToken = _this.lexer.getNextToken();
 
-		while(iterator < expression.length){
-			var c = expression[iterator];
+		while(_this.flag){
+			// console.log("Next token is " + nextToken.token + " with " + nextToken.lexema);
+			// console.log("Copying " + TOKEN[nextToken.token]);
+			var c = TOKEN[nextToken.token];
 			var top = stack.pop();
 			var action = (_this.tableLL.get(top)).get(c);
 			if(action === undefined){
-				console.log("Cadena no valida");
+				alert("Cadena no valida");
 				break;
 			}
 			for(var i = action.length-1; i >= 0; i--){
 				if(action[i] === "aceptar"){
 					validString=true;
-					iterator++;
+					if (nextToken.token == Token_FIN) {
+						_this.flag = false;
+					}else{
+						nextToken = _this.lexer.getNextToken();
+					}
 					break;
 				}
 				if(action[i] === "pop"){
-					iterator++;
+					if (nextToken.token == Token_FIN) {
+						_this.flag = false;
+					}else{
+						nextToken = _this.lexer.getNextToken();
+					}
 				}
 				else{
 					if(action[i] !== "ep"){
@@ -213,7 +226,7 @@ function CFG(){
 			}
 		}
 		if(validString){
-			console.log("Cadena valida");
+			alert("Cadena valida");
 		}
 	}
 }

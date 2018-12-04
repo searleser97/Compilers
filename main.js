@@ -503,20 +503,21 @@ $('#evalGrammarExprBtn').click(function () {
     while (strToEval == "" || strToEval == null) {
       strToEval = prompt("Ingrese la cadena a evaluar: ", "cadena");
     }
-    let aToken = [];
-    let tokens = lexicalAnalysis(globalAutomaton, strToEval);
-    console.log(tokens);
-    tokens.forEach(function(token) {
-      aToken.push(TOKEN[token]);
-    });
-    console.log(aToken);
+    strToEval = strToEval + '\0';
+    // let aToken = [];
+    // let tokens = lexicalAnalysis(globalAutomaton, strToEval);
+    // console.log(tokens);
+    // tokens.forEach(function(token) {
+    //   aToken.push(TOKEN[token]);
+    // });
+    // console.log(aToken);
     let selected = $('#selectTable').find(":selected").text();
     console.log(selected);
     switch (selected) {
       case 'LL1':
         let tablaLL = new CFG();
-        tablaLL.constructor(globalGrammar.rules,globalGrammar.terminales,globalGrammar.noTerminales,globalGrammar.inicioGramatica);
-        tablaLL.checkExpression(aToken);
+        tablaLL.constructor(globalGrammar.rules,globalGrammar.terminales,globalGrammar.noTerminales,globalGrammar.inicioGramatica, new Lexer(globalAutomaton, strToEval));
+        tablaLL.checkExpression();
         break;
       case 'LR0':
         globalGrammar.increase();
