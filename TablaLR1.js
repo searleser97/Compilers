@@ -58,9 +58,9 @@ function lr1(){
     }
 
     _this.swapElements = function(array,pos1,pos2){
-        var aux = array[pos1];     
-        array[pos1] = array[pos2];
-        array[pos2] = aux;
+        var aux = array.rule[pos1];     
+        array.rule[pos1] = array.rule[pos2];
+        array.rule[pos2] = aux;
         return array;
     }
 
