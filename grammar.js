@@ -43,7 +43,7 @@ function Grammar(json){
 
     _this.increase = function(){
     	if (!(_this.increased)) {
-			let firstKey = _this.rules.keys().next().value;
+			let firstKey = _this.inicioGramatica;
 			let increasedGrammar = firstKey + "p";
 
 	    	let auxRules = new Map();
@@ -57,6 +57,8 @@ function Grammar(json){
 			_this.inicioGramatica = increasedGrammar;
 
 			_this.increased = true;
+
+			_this.rules = auxRules;
     	}
     }
 }
