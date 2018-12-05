@@ -15,12 +15,14 @@ function lr0(){
     _this.ruleNum = new Map();
     _this.numRule = new Map();
     _this.symbols = new Set();
+    _this.lexer = null;
 
-    _this.constructor = function(reglas,terminales,noTerminales,inicioGramatica){
+    _this.constructor = function(reglas,terminales,noTerminales,inicioGramatica, lexer){
         _this.rules = reglas;
         _this.terminals= terminales;
         _this.nonTerminals=noTerminales;
         _this.startingNonTerminal=inicioGramatica;
+        _this.lexer = lexer;
     }
 
     _this.setRSApp=function(s){//String s
@@ -307,18 +309,20 @@ function lr0(){
         return finalTable;
     }
 
-    _this.checkExpression = function(expression){
+    _this.checkExpression = function(){
         var tablaResultado=_this.tablaLR();
         var stack=[];
         stack.push('0');
-        var index =0;
+        // var index =0;
+        let nextToken = _this.lexer.getNextToken();
         while(true){
             console.log("Nuestra pila al iniciar es ");
             console.log(stack);
             console.log("NUEVA ITERACION");
             var e = stack[stack.length-1];
             console.log("Sacamos a "+e);
-            var c = expression[index];
+            // var c = expression[index];
+            var c = TOKEN[nextToken.token];
             console.log("Analizamos al caracter "+c);
             var valor = tablaResultado.get(e).get(c);
             console.log("Nuestro valor obtenido es "+valor);
@@ -334,7 +338,8 @@ function lr0(){
                 stack.push(aux_val);
                 console.log("Metemos a "+aux_val);
                 //expression.shift();//Quitar primer elemento
-                index++;
+                // index++;
+                nextToken = _this.lexer.getNextToken();
             }
             else if(valor[0] === 'r'){
                 if(valor[1] === '0'){

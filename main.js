@@ -504,33 +504,34 @@ $('#evalGrammarExprBtn').click(function () {
       strToEval = prompt("Ingrese la cadena a evaluar: ", "cadena");
     }
     strToEval = strToEval + '\0';
-    // let aToken = [];
-    // let tokens = lexicalAnalysis(globalAutomaton, strToEval);
-    // console.log(tokens);
-    // tokens.forEach(function(token) {
-    //   aToken.push(TOKEN[token]);
-    // });
-    // console.log(aToken);
+    let aToken = [];
+    let tokens = lexicalAnalysis(globalAutomaton, strToEval);
+    console.log(tokens);
+    tokens.forEach(function(token) {
+      aToken.push(TOKEN[token]);
+    });
+    console.log(aToken);
     let selected = $('#selectTable').find(":selected").text();
+    let auxLexic = new Lexer(globalAutomaton, strToEval);
     console.log(selected);
+    let increasedGrammar = globalGrammar;
     switch (selected) {
       case 'LL1':
         let tablaLL = new CFG();
-        tablaLL.constructor(globalGrammar.rules,globalGrammar.terminales,globalGrammar.noTerminales,globalGrammar.inicioGramatica, new Lexer(globalAutomaton, strToEval));
+        tablaLL.constructor(globalGrammar.rules,globalGrammar.terminales,globalGrammar.noTerminales,globalGrammar.inicioGramatica, auxLexic);
         tablaLL.checkExpression();
         break;
       case 'LR0':
-        let aux_grammar= globalGrammar;
-        aux_grammar.increase();
+        increasedGrammar.increase();
         let tablaLR0 = new lr0();
-        tablaLR0.constructor(aux_grammar.rules,aux_grammar.terminales,aux_grammar.noTerminales,aux_grammar.inicioGramatica);
+        tablaLR0.constructor(increasedGrammar.rules,increasedGrammar.terminales,increasedGrammar.noTerminales,increasedGrammar.inicioGramatica, auxLexic);
         console.log(tablaLR0.tablaLR());
+        tablaLR0.checkExpression(aToken);
         break;
       case 'LR1':
-        let aux_grammar2= globalGrammar;
-        aux_grammar2.increase();
+        increasedGrammar.increase();
         let tablaLR1 = new lr1();
-        tablaLR1.constructor(aux_grammar2.rules,aux_grammar2.terminales,aux_grammar2.noTerminales,aux_grammar2.inicioGramatica);
+        tablaLR1.constructor(increasedGrammar.rules,increasedGrammar.terminales,increasedGrammar.noTerminales,increasedGrammar.inicioGramatica, auxLexic);
         console.log(tablaLR1.tablaLR1());
         break;
       case 'LALR':
