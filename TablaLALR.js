@@ -263,6 +263,9 @@ function lalr(){
                         tableValue += contador;                                       
                         vertical.set(s, tableValue);
                     }
+                }
+                else{
+                    vertical.set(s,"");
                 }   
 
                 
@@ -317,7 +320,7 @@ function lalr(){
         
         for(var conjunto of _this.setsLALR){
             var idKernel = _this.identificaKernel(conjunto);
-            var idSet = _this.idSetLALR.get(make_hash(conjunto)) + "";
+            var idSet = _this.idSetLALR.get(objectHash.sha1(conjunto)) + "";
             if(!unique.has(idKernel)){
                 unique.set(idKernel, idSet);
                 newStates.set(idSet, idSet);
@@ -371,7 +374,7 @@ function lalr(){
     }
 
     _this.checkExpression = function(){
-        var tablaResultado=_this.tablaLR();
+        var tablaResultado=_this.tablaLALR();
         var stack=[];
         stack.push('0');
         // var index =0;
