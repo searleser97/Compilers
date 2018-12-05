@@ -1,0 +1,7 @@
+ E -> T  E' ;
+ E' -> +  T  E' | -  T  E' | ep ;
+ T -> P  T'  ;
+ T' -> *  P  T' | / P  T' | ep ;
+ P -> F  P' ;
+ P' -> ^  F  P' | ep ;
+ F -> (  E  ) | NUM ;
