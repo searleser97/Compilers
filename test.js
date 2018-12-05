@@ -217,6 +217,12 @@ function createThirdAutomaton(){
 	a7.setFinalToken(70);
 	// createFSMDiagram(a7);
 
+	// Autómata 8
+	var a10 = new Automata();
+	a10.basico('^');
+	a10.setFinalToken(80);
+	// createFSMDiagram(a10);
+
 	addAutomata(a1);
 	addAutomata(a2);
 	addAutomata(a3);
@@ -224,6 +230,7 @@ function createThirdAutomaton(){
 	addAutomata(a5);
 	addAutomata(a6);
 	addAutomata(a7);
+	addAutomata(a10);
 
 	a1.superUnir();
 	addAutomata(a1.transformar());
