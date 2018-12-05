@@ -537,10 +537,10 @@ $('#evalGrammarExprBtn').click(function () {
         break;
       case 'LALR':
         increasedGrammar.increase();
-        let tabLALR = new lalr();
-        tabLALR.constructor(increasedGrammar.rules,increasedGrammar.terminales,increasedGrammar.noTerminales,increasedGrammar.inicioGramatica, auxLexic);
-        console.log(tabLALR.tablaLALR());
-        tabLALR.checkExpression(aToken);
+        let tabla = new lalr();
+        tabla.constructor(increasedGrammar.rules,increasedGrammar.terminales,increasedGrammar.noTerminales,increasedGrammar.inicioGramatica, auxLexic);
+        console.log(tabla.tablaLALR());
+        tabla.checkExpression(aToken);
         break;
     }
   }
