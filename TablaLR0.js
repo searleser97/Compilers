@@ -346,7 +346,8 @@ function lr0(){
                     console.log('Cadena valida');
                     break;
                 }
-                var regla = _this.numRule.get(valor[1]);
+                var aux_arr = valor.slice(1);
+                var regla = _this.numRule.get(aux_arr);
                 console.log("Conseguimos a la regla");
                 console.log(regla);
                 
