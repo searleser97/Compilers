@@ -9,6 +9,7 @@ function lr1(){
     _this.ruleNum = new Map();
     _this.numRule = new Map();
     _this.symbols = new Set();
+    _this.appRS= new Map();
 
     _this.constructor = function(reglas,terminales,noTerminales,inicioGramatica){
         _this.rules = reglas;
@@ -58,9 +59,9 @@ function lr1(){
     }
 
     _this.swapElements = function(array,pos1,pos2){
-        var aux = array[pos1];     
-        array[pos1] = array[pos2];
-        array[pos2] = aux;
+        var aux = array.rule[pos1];     
+        array.rule[pos1] = array.rule[pos2];
+        array.rule[pos2] = aux;
         return array;
     }
 
@@ -187,7 +188,7 @@ function lr1(){
                     var row = nonRepeated.get(objectHash.sha1(currentSet));
                     var column = finalTable.get("" + row);               
                     aux.pop();                                      
-                    column.set(rTerminal.terminal,"r"+ruleNum.get(aux.toString()));
+                    column.set(rTerminal.terminal,"r"+_this.ruleNum.get(aux.toString()));
                 }
             }
         }
