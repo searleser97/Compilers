@@ -278,6 +278,9 @@ function lr0(){
                         c.set(s, cadena);          
                     }
                 }
+                else{
+                	c.set(s,"");
+                }
             }
             var idCurrent = "";
             idCurrent += nonRepeated.get(objectHash.sha1(mainSet));
