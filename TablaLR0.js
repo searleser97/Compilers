@@ -6,7 +6,7 @@ function mapeoRegla(LS, RS){//LS:string RS:Production(Array<string>)
 function lr0(){
     var _this = this;
 
-    _this.make_hash = require('object-hash');
+    // _this.make_hash = require('object-hash');
     _this.rules = new Map();
     _this.terminals = new Set();
     _this.nonTerminals= new Set();
@@ -161,7 +161,7 @@ function lr0(){
 
         for(var r of rulesSet){
             stack.push(r);                                             
-            processed.add(_this.make_hash(r));                          
+            processed.add(objectHash.sha1(r));                          
         }
         var final = [];
         while(stack.length > 0){                        
@@ -178,7 +178,7 @@ function lr0(){
                         newRule.push(nextE);      
                         newRule.push(".");                       
                         newRule= newRule.concat(rs);
-                        var new_hash = _this.make_hash(newRule);
+                        var new_hash = objectHash.sha1(newRule);
                         if(!processed.has(new_hash)){    
                             stack.push(newRule);             
                             processed.add(new_hash);      
@@ -233,7 +233,7 @@ function lr0(){
         computeFirst.push(ruleWDot);                            
         mainSet = _this.closure(computeFirst);    
        
-        idS = _this.make_hash(mainSet);         
+        idS = objectHash.sha1(mainSet);         
         nonRepeated.set(idS, contador);        
 
         stack.push(mainSet);                                                      
@@ -248,7 +248,7 @@ function lr0(){
                 Si = _this.move_to(mainSet, s);                             
                 
                 if(Si.length !== 0){                                      
-                    idS = _this.make_hash(Si);
+                    idS = objectHash.sha1(Si);
                     var cadena = "";                                        
                     if(_this.terminals.has(s)){
                             cadena += "d";                                  
@@ -268,7 +268,7 @@ function lr0(){
                 }
             }
             var idCurrent = "";
-            idCurrent += nonRepeated.get(_this.make_hash(mainSet));
+            idCurrent += nonRepeated.get(objectHash.sha1(mainSet));
             finalTable.set(idCurrent, new Map([...c]));        
         }
 
@@ -280,7 +280,7 @@ function lr0(){
                     aux.pop();                                      
                     var redux = "r";                             
                     redux += _this.ruleNum.get(aux.toString());
-                    var row = nonRepeated.get(_this.make_hash(currentSet));
+                    var row = nonRepeated.get(objectHash.sha1(currentSet));
 
                     var memo = new Map();                               
                     var terminalsFollow = _this.Follow('.', aux[0], memo);

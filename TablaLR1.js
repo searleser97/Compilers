@@ -1,7 +1,7 @@
 function lr1(){
     var _this = this;
 
-    _this.make_hash = require('object-hash');
+    // _this.make_hash = require('object-hash');
     _this.rules = new Map();
     _this.terminals = new Set();
     _this.nonTerminals= new Set();
@@ -181,7 +181,7 @@ function lr1(){
             for(var rTerminal of currentSet){                               
                 var aux = [...rTerminal.rule];
                 if(aux[aux.length - 1] === '.'){
-                    var row = nonRepeated.get(_this.make_hash(currentSet));
+                    var row = nonRepeated.get(objectHash.sha1(currentSet));
                     var column = finalTable.get("" + row);               
                     aux.pop();                                      
                     column.set(rTerminal.terminal,"r"+ruleNum.get(aux.toString()));
@@ -213,7 +213,7 @@ function lr1(){
         mainSet = _this.closure1(computeFirst);
 
         var hashSet="";
-        hashSet = _this.make_hash(mainSet);
+        hashSet = objectHash.sha1(mainSet);
        
         nonRepeated.set(hashSet, contador);        
 
@@ -231,7 +231,7 @@ function lr1(){
 
                 if(analisis.length !== 0){                                      
                     var tableValue = "";
-                    hashSet = _this.make_hash(analisis);
+                    hashSet = objectHash.sha1(analisis);
                     if(_this.terminals.has(s))//Checar
                             tableValue += "d";
 
@@ -253,7 +253,7 @@ function lr1(){
                 
             }
             var idCurrent = "";
-            idCurrent += nonRepeated.get(_this.make_hash(mainSet));
+            idCurrent += nonRepeated.get(objectHash.sha1(mainSet));
             finalTable.set(idCurrent, new Map([...vertical]));
                       
         }
