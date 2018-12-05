@@ -10,7 +10,7 @@ function lr1(){
     _this.numRule = new Map();
     _this.symbols = new Set();
 
-    _this.constructor = function(rules,terminales,noTerminales,inicioGramatica){
+    _this.constructor = function(reglas,terminales,noTerminales,inicioGramatica){
         _this.rules = reglas;
         _this.terminals= terminales;
         _this.nonTerminals=noTerminales;
@@ -18,7 +18,9 @@ function lr1(){
     }
 
     _this.initialize = function(){
-        _this.symbols = [..._this.terminals];
+        for(var e of _this.terminals)
+            _this.symbols.add(e);
+
         for(var e of _this.nonTerminals)
             _this.symbols.add(e);
 
@@ -160,7 +162,7 @@ function lr1(){
                             var hash_terminal = aux_rule.toString();
                             hash_terminal = hash_terminal+","+aux_terminal;
                             if(!processed.has(hash_terminal)){
-                                stack.push(returnRuleTerminal(aux_rule,aux_terminal));//CHECAR ESTA PARTE       
+                                stack.push(_this.returnRuleTerminal(aux_rule,aux_terminal));//CHECAR ESTA PARTE       
                                 processed.add(hash_terminal);
                             }  
 

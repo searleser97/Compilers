@@ -16,7 +16,7 @@ function lr0(){
     _this.numRule = new Map();
     _this.symbols = new Set();
 
-    _this.constructor = function(rules,terminales,noTerminales,inicioGramatica){
+    _this.constructor = function(reglas,terminales,noTerminales,inicioGramatica){
         _this.rules = reglas;
         _this.terminals= terminales;
         _this.nonTerminals=noTerminales;
@@ -25,7 +25,7 @@ function lr0(){
 
     _this.setRSApp=function(s){//String s
         var aux = [];
-        for(var [left,right] of rules){
+        for(var [left,right] of _this.rules){
             for(var production of right){
                 for(var e of production){
                     if(e === s){
@@ -39,16 +39,20 @@ function lr0(){
     }
 
     _this.initialize = function(){
-        symbols = [...terminals];
-        for(var e of nonTerminals)
-            symbols.add(e);
+        //_this.symbols = [..._this.terminals];
 
-        for(var c of nonTerminals){
-            setRSApp(c);
+        for(var e of _this.terminals)
+            (_this.symbols).add(e);
+
+        for(var e of _this.nonTerminals)
+            (_this.symbols).add(e);
+
+        for(var c of _this.nonTerminals){
+            _this.setRSApp(c);
         }
 
         var cont = 0;
-        for(var p of rules){
+        for(var p of _this.rules){
             for(var right of p[1]){
                 var string = p[0] + "," + right.toString();
                 _this.ruleNum.set(string, "" + cont);
@@ -228,6 +232,9 @@ function lr0(){
 
         ruleWDot.push(_this.startingNonTerminal);                            
         ruleWDot.push(".");
+        console.log("Terminal inicial = "+_this.startingNonTerminal);
+        console.log("Lo otro es ");
+        console.log(_this.rules);
         ruleWDot.push(_this.rules.get(_this.startingNonTerminal)[0][0]);
         
         computeFirst.push(ruleWDot);                            
