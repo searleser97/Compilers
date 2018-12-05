@@ -84,8 +84,6 @@ function lr1(){
                 }
             }
             else{
-                //console.log("firstElement");
-                //console.log(firstElement);
                 var rightSides = _this.rules.get(firstElement); 
                 for(var rs of rightSides){  
                     var aux = [...cad];             
@@ -215,11 +213,14 @@ function lr1(){
         ruleA.push((_this.rules).get(_this.startingNonTerminal)[0][0]);
 
         computeFirst.push(_this.returnRuleTerminal(ruleA,"$"));
-        //console.log(computeFirst);
+        console.log("computeFirst");
+        console.log(computeFirst);
+        
         var mainSet = [];
         mainSet = _this.closure1(computeFirst);
-
-        console.log(mainSet);
+        console.log("mainSet");
+        console.log(mainSet)
+        //console.log(mainSet);
 
         var hashSet="";
         hashSet = objectHash.sha1(mainSet);
@@ -241,11 +242,9 @@ function lr1(){
                 if(analisis.length !== 0){                                      
                     var tableValue = "";
                     hashSet = objectHash.sha1(analisis);
-                    if(_this.terminals.has(s))//Checar
-                            tableValue += "d";
-
                     if(nonRepeated.has(hashSet)){
-                                 
+                        if(_this.terminals.has(s))//Checar
+                            tableValue += "d";
                         tableValue += nonRepeated.get(hashSet);
                         vertical.set(s, tableValue);                         
                     }
@@ -253,7 +252,9 @@ function lr1(){
                         contador += 1;                                        
                         nonRepeated.set(hashSet, contador);
                         stack.push(analisis);                                         
-                        allSets.push(analisis); 
+                        allSets.push(analisis);
+                        if(_this.terminals.has(s))//Checar
+                            tableValue += "d"; 
                         tableValue += contador;                                       
                         vertical.set(s, tableValue);
                     }
