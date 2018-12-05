@@ -296,7 +296,7 @@ function lr1(){
             var valor = tablaResultado.get(e).get(c);
             console.log("Nuestro valor obtenido es "+valor);
             if(valor === undefined){
-                console.log("ERROR");
+                alert("ERROR");
                 break;
             }
             if(valor[0] === 'd'){
@@ -312,10 +312,11 @@ function lr1(){
             }
             else if(valor[0] === 'r'){
                 if(valor[1] === '0'){
-                    console.log('Cadena valida');
+                    alert('Cadena valida');
                     break;
                 }
-                var regla = _this.numRule.get(valor[1]);
+                var aux_arr = valor.slice(1);
+                var regla = _this.numRule.get(aux_arr);
                 console.log("Conseguimos a la regla");
                 console.log(regla);
                 
