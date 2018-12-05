@@ -187,7 +187,7 @@ function lr1(){
                     var row = nonRepeated.get(objectHash.sha1(currentSet));
                     var column = finalTable.get("" + row);               
                     aux.pop();                                      
-                    column.set(rTerminal.terminal,"r"+ruleNum.get(aux.toString()));
+                    column.set(rTerminal.terminal,"r"+_this.ruleNum.get(aux.toString()));
                 }
             }
         }
