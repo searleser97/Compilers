@@ -543,7 +543,7 @@ $('#evalGrammarExprBtn').click(function () {
       case 'LALR':
         increasedGrammar.increase();
         let tabla = new lalr();
-        tabla.constructor(increasedGrammar.rules,increasedGrammar.terminales,increasedGrammar.noTerminales,increasedGrammar.inicioGramatica, auxLexic);
+        tabla.constructor(increasedGrammar.rules, increasedGrammar.terminales, increasedGrammar.noTerminales, increasedGrammar.inicioGramatica, auxLexic);
         console.log(tabla.tablaLALR());
         tabla.checkExpression(aToken);
         break;
@@ -552,15 +552,26 @@ $('#evalGrammarExprBtn').click(function () {
 });
 
 function createTable(obj) {
+  console.log('AAAA', obj);
   var keysArr = [...obj.keys()].sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+  var subkeys;
   for (key of keysArr) {
-    var subkeys = [...(obj.get(key).keys())].sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+    subkeys = [...(obj.get(key).keys())].sort();
+    row = [];
     for (subkey of subkeys) {
-      tablaDeTablas.push(obj.get(key).get(subkey));
+      row.push(obj.get(key).get(subkey));
     }
+    tablaDeTablas.push(row);
   }
   console.log(tablaDeTablas);
-  var table = $('<table class="table"></table>');
+  debugger;
+  var table = $('<table style="margin-top: 50px;" class="table"></table>');
+  row = $('<tr><td>-</td></tr>');
+  for (var j = 0; j < subkeys.length; j++) {
+    var rowData = $('<td></td>').text(subkeys[j]);
+    row.append(rowData);
+  }
+  table.append(row);
   for (var i = 0; i < tablaDeTablas.length; i++) {
     row = $('<tr><td>' + i + '</td></tr>');
     for (var j = 0; j < tablaDeTablas[i].length; j++) {
