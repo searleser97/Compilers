@@ -4,4 +4,4 @@
  T' -> *  P  T' | / P  T' | ep ;
  P -> F  P' ;
  P' -> ^  F  P' | ep ;
- F -> (  E  ) | NUM ;
+ F -> (  E  ) | num ;

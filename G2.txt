@@ -1,4 +1,4 @@
  E -> E  +  T | E  -  T | T ;
  T -> T  *  P | T  /  P | P ;
  P -> P  ^  F | F ;
- F -> (  E  ) | NUM ;
+ F -> (  E  ) | num ;
