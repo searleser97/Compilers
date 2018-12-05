@@ -533,6 +533,7 @@ $('#evalGrammarExprBtn').click(function () {
         let tablaLR1 = new lr1();
         tablaLR1.constructor(increasedGrammar.rules,increasedGrammar.terminales,increasedGrammar.noTerminales,increasedGrammar.inicioGramatica, auxLexic);
         console.log(tablaLR1.tablaLR1());
+        tablaLR1.checkExpression(aToken);
         break;
       case 'LALR':
         // Do something
