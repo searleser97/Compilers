@@ -536,7 +536,11 @@ $('#evalGrammarExprBtn').click(function () {
         tablaLR1.checkExpression(aToken);
         break;
       case 'LALR':
-        // Do something
+        increasedGrammar.increase();
+        let tabLALR = new lalr();
+        tabLALR.constructor(increasedGrammar.rules,increasedGrammar.terminales,increasedGrammar.noTerminales,increasedGrammar.inicioGramatica, auxLexic);
+        console.log(tabLALR.tablaLALR());
+        tabLALR.checkExpression(aToken);
         break;
     }
   }
