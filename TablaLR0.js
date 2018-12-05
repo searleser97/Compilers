@@ -42,7 +42,7 @@ function lr0(){
 
     _this.initialize = function(){
         //_this.symbols = [..._this.terminals];
-
+        //_this.terminals.add('$');
         for(var e of _this.terminals)
             (_this.symbols).add(e);
 
