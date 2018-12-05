@@ -18,6 +18,7 @@ function lr1(){
     }
 
     _this.initialize = function(){
+        _this.terminals.add('$');
         for(var e of _this.terminals)
             _this.symbols.add(e);
 
@@ -83,6 +84,8 @@ function lr1(){
                 }
             }
             else{
+                //console.log("firstElement");
+                //console.log(firstElement);
                 var rightSides = _this.rules.get(firstElement); 
                 for(var rs of rightSides){  
                     var aux = [...cad];             
@@ -194,6 +197,15 @@ function lr1(){
 
     _this.tablaLR1 = function(importTable){
         _this.initialize();
+
+
+        console.log(_this.rules);
+        console.log(_this.terminals);
+        console.log(_this.nonTerminals);
+        console.log(_this.startingNonTerminal);
+        console.log(_this.symbols);
+
+
         var finalTable = new Map();                                          
         var vertical = new Map();                                   
 
@@ -207,10 +219,9 @@ function lr1(){
 
         ruleA.push(_this.startingNonTerminal);                            
         ruleA.push(".");
-        ruleA.push(_this.rules.get(_this.startingNonTerminal)[0][0]);
+        ruleA.push((_this.rules).get(_this.startingNonTerminal)[0][0]);
 
         computeFirst.push(_this.returnRuleTerminal(ruleA,"$"));
-
         var mainSet = [];
         mainSet = _this.closure1(computeFirst);
 
@@ -263,7 +274,17 @@ function lr1(){
         if(importTable !== undefined)
             return {conjuntos: allSets, idsConjuntos: nonRepeated};
 
-        _this.setReductions(allSets,nonRepeated,finalTable)
+        for(var currentSet of allSets){                                             
+            for(var rTerminal of currentSet){                               
+                var aux = [...rTerminal.rule];
+                if(aux[aux.length - 1] === '.'){
+                    var row = nonRepeated.get(objectHash.sha1(currentSet));
+                    var column = finalTable.get("" + row);               
+                    aux.pop();                                      
+                    column.set(rTerminal.terminal,"r"+ruleNum.get(aux.toString()));
+                }
+            }
+        }
         return finalTable;
     }
 

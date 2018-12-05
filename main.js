@@ -520,13 +520,18 @@ $('#evalGrammarExprBtn').click(function () {
         tablaLL.checkExpression();
         break;
       case 'LR0':
-        globalGrammar.increase();
+        let aux_grammar= globalGrammar;
+        aux_grammar.increase();
         let tablaLR0 = new lr0();
-        tablaLR0.constructor(globalGrammar.rules,globalGrammar.terminales,globalGrammar.noTerminales,globalGrammar.inicioGramatica);
+        tablaLR0.constructor(aux_grammar.rules,aux_grammar.terminales,aux_grammar.noTerminales,aux_grammar.inicioGramatica);
         console.log(tablaLR0.tablaLR());
         break;
       case 'LR1':
-        // Do something
+        let aux_grammar2= globalGrammar;
+        aux_grammar2.increase();
+        let tablaLR1 = new lr1();
+        tablaLR1.constructor(aux_grammar2.rules,aux_grammar2.terminales,aux_grammar2.noTerminales,aux_grammar2.inicioGramatica);
+        console.log(tablaLR1.tablaLR1());
         break;
       case 'LALR':
         // Do something

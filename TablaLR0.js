@@ -218,7 +218,13 @@ function lr0(){
     _this.tablaLR = function(){
         _this.initialize();
         var finalTable = new Map();                                          
-        var c = new Map();                                   
+        var c = new Map();
+
+        console.log(_this.rules);
+        console.log(_this.terminals);
+        console.log(_this.nonTerminals);
+        console.log(_this.startingNonTerminal);
+        console.log(_this.symbols);                                   
 
         var contador = 0;                                             
         var mainSet = [];                                                           
@@ -232,9 +238,6 @@ function lr0(){
 
         ruleWDot.push(_this.startingNonTerminal);                            
         ruleWDot.push(".");
-        console.log("Terminal inicial = "+_this.startingNonTerminal);
-        console.log("Lo otro es ");
-        console.log(_this.rules);
         ruleWDot.push(_this.rules.get(_this.startingNonTerminal)[0][0]);
         
         computeFirst.push(ruleWDot);                            
@@ -251,7 +254,7 @@ function lr0(){
             
             c.clear();                                      
 
-            for(var s of symbols){                               
+            for(var s of _this.symbols){                               
                 Si = _this.move_to(mainSet, s);                             
                 
                 if(Si.length !== 0){                                      
