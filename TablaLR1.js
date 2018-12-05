@@ -199,13 +199,6 @@ function lr1(){
         _this.initialize();
 
 
-        console.log(_this.rules);
-        console.log(_this.terminals);
-        console.log(_this.nonTerminals);
-        console.log(_this.startingNonTerminal);
-        console.log(_this.symbols);
-
-
         var finalTable = new Map();                                          
         var vertical = new Map();                                   
 
@@ -222,8 +215,11 @@ function lr1(){
         ruleA.push((_this.rules).get(_this.startingNonTerminal)[0][0]);
 
         computeFirst.push(_this.returnRuleTerminal(ruleA,"$"));
+        //console.log(computeFirst);
         var mainSet = [];
         mainSet = _this.closure1(computeFirst);
+
+        console.log(mainSet);
 
         var hashSet="";
         hashSet = objectHash.sha1(mainSet);
@@ -274,17 +270,7 @@ function lr1(){
         if(importTable !== undefined)
             return {conjuntos: allSets, idsConjuntos: nonRepeated};
 
-        for(var currentSet of allSets){                                             
-            for(var rTerminal of currentSet){                               
-                var aux = [...rTerminal.rule];
-                if(aux[aux.length - 1] === '.'){
-                    var row = nonRepeated.get(objectHash.sha1(currentSet));
-                    var column = finalTable.get("" + row);               
-                    aux.pop();                                      
-                    column.set(rTerminal.terminal,"r"+ruleNum.get(aux.toString()));
-                }
-            }
-        }
+        _this.setReductions(allSets,nonRepeated,finalTable);
         return finalTable;
     }
 
