@@ -183,6 +183,35 @@ function Automata() {
 		_this.inicial = nodo1;
 	}
 
+
+
+	// Última función que pidió el profesor, une los autómatas pero sin converger los estados finales
+	_this.superUnirAux = function (aIndex) {
+		var nodo1 = new Estado(false);
+		nodo1.addTrans(new Transicion(epsilon, _this.inicial));
+
+		for (var automata of aIndex){
+			if (automatas[automata] !== null) {
+				if (automatas[automata].idAutomata !== _this.idAutomata) {
+					nodo1.addTrans(new Transicion(epsilon, automatas[automata].inicial));
+					for (var e of automatas[automata].aceptados) 
+						_this.aceptadosID.push(e.id);{
+						_this.aceptados.push(e);
+					}
+					for (var f of automatas[automata].estados) {
+						_this.estados.push(f);
+					}
+					_this.unirAlfabeto(automatas[automata].alfabeto);
+					automatas[automata] = null;
+				}
+			}
+		}
+		
+		_this.estados.push(nodo1);
+		_this.inicial = false;
+		_this.inicial = nodo1;
+	}
+
 	// Función que concatena dos autómatas como la operación ab
 	_this.concatenar = function (automata) {
 		for (var e of _this.aceptados) {

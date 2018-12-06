@@ -310,8 +310,11 @@ function createFourthAutomaton(){
 	addAutomata(a8);
 
 	a1.superUnir();
-	addAutomata(a1.transformar());
+	let result = a1.transformar();
+	addAutomata(result);
 	populateSelects();
+
+	return result;
 }
 
 // Autómata Grammar
