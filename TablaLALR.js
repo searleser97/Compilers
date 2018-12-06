@@ -390,7 +390,7 @@ function lalr(){
             console.log("Analizamos al caracter "+c);
             var valor = tablaResultado.get(e).get(c);
             console.log("Nuestro valor obtenido es "+valor);
-            if(valor === undefined){
+            if(valor === ""){
                 alert("ERROR");
                 break;
             }
