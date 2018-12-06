@@ -536,7 +536,7 @@ $('#evalGrammarExprBtn').click(function () {
         tablaLL.constructor(globalGrammar.rules, globalGrammar.terminales, globalGrammar.noTerminales, globalGrammar.inicioGramatica, auxLexic);
         tablaLL.checkExpression();
         console.log(tablaLL.tableLL);
-        createTable(tablaLL.tableLL);
+        createTable2(tablaLL.tableLL, tablaLL.terminals);
         break;
       case 'LR0':
         increasedGrammar.increase();
@@ -611,17 +611,27 @@ function createTable(obj) {
   }
 }
 
-function createTable2(obj) {
+function createTable2(obj, terminals) {
+  terminals.add("$");
   console.log('AAAA', obj);
   var keysArr = [...obj.keys()].sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
   maxx = 0;
   var subkeys;
   for (key of keysArr) {
-    subkeys = [...(obj.get(key).keys())].sort();
+    subkeys = [];
+    console.log(terminals);
+    debugger;
+    for (terminal of terminals)
+      subkeys.push(terminal);
+    subkeys.sort();
     row = [];
     row.push(key);
     for (subkey of subkeys) {
-      row.push(obj.get(key).get(subkey));
+      if (obj.get(key).get(subkey)) {
+        row.push(obj.get(key).get(subkey));
+      } else {
+        row.push("");
+      }
     }
     tablaDeTablas.push(row);
   }
@@ -635,8 +645,8 @@ function createTable2(obj) {
   }
   table.append(row);
   for (var i = 0; i < tablaDeTablas.length; i++) {
-    row = $('<tr><td>' + i + '</td></tr>');
-    for (var j = 0; j < tablaDeTablas[i].length; j++) {
+    row = $('<tr><td>' + tablaDeTablas[i][0] + '</td></tr>');
+    for (var j = 1; j < tablaDeTablas[i].length; j++) {
       var rowData = $('<td></td>').text(tablaDeTablas[i][j]);
       row.append(rowData);
     }
