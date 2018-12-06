@@ -92,7 +92,18 @@ $('#submit').click(function () {
       automataA.unir(automataB);
       break;
     case 'superJoin':
-      automataA.superUnir();
+      let idAux = 0;
+      let aId = [];
+      while(true){
+        idAux = prompt("Ingrese el id del autómata para unir (-1 para salir): ");
+        if (idAux != -1) {
+          aId.push(idAux)
+        }else{
+          break;
+        }
+      }
+      automataA.superUnirAux(aId);
+      // automataA.superUnir();
       break;
     case 'concatenate':
       automataA.concatenar(automataB);
@@ -404,7 +415,7 @@ $('#loadBtn').change(function () {
 
   // var json_aux = '{"25":{"+":26,"-":27,"*":28,"/":29,"(":30,")":31,"[0-9]":32,".":null,"TOK":-1},"26":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":10},"27":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":20},"28":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":30},"29":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":40},"30":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":50},"31":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":60},"32":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":32,".":33,"TOK":70},"33":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":34,".":null,"TOK":-1},"34":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":34,".":null,"TOK":70}}';
   // json = JSON.parse(json_aux);
-  console.log(json);
+  // console.log(json);
 
   // addAutomata(generateAFDFromTable(json));
   // populateSelects();
