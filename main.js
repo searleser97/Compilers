@@ -554,10 +554,17 @@ $('#evalGrammarExprBtn').click(function () {
 function createTable(obj) {
   console.log('AAAA', obj);
   var keysArr = [...obj.keys()].sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+  maxx = 0;
+  for (key of keysArr) {
+    curLength = [...(obj.get(key).keys())].length;
+    maxx = curLength > maxx ? curLength : maxx;
+  }
   var subkeys;
   for (key of keysArr) {
     subkeys = [...(obj.get(key).keys())].sort();
     row = [];
+    if (maxx > subkeys.length)
+      row.push("");
     for (subkey of subkeys) {
       row.push(obj.get(key).get(subkey));
     }
