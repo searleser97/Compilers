@@ -102,6 +102,7 @@ $('#submit').click(function () {
           break;
         }
       }
+      automataA = automatas[$('#sel_automata_to_use').val()];
       automataA.superUnirAux(aId);
       // automataA.superUnir();
       break;
