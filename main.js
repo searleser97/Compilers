@@ -586,7 +586,6 @@ function createTable(obj) {
     tablaDeTablas.push(row);
   }
   console.log(tablaDeTablas);
-  debugger;
   var table = $('<table style="margin-top: 50px;" class="table"></table>');
   row = $('<tr><td>-</td></tr>');
   for (var j = 0; j < subkeys.length; j++) {
@@ -620,7 +619,6 @@ function createTable2(obj, terminals) {
   for (key of keysArr) {
     subkeys = [];
     console.log(terminals);
-    debugger;
     for (terminal of terminals)
       subkeys.push(terminal);
     subkeys.sort();
