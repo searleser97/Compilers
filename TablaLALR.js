@@ -1,4 +1,4 @@
-function lr1(){
+function lalr(){
     var _this = this;
 
     // _this.make_hash = require('object-hash');
@@ -10,6 +10,8 @@ function lr1(){
     _this.numRule = new Map();
     _this.symbols = new Set();
     _this.appRS= new Map();
+    _this.setsLALR=[];
+    _this.idSetLALR=new Map();
     _this.lexer = null;
 
     _this.constructor = function(reglas,terminales,noTerminales,inicioGramatica, lexer){
@@ -196,7 +198,7 @@ function lr1(){
         }
     }
 
-    _this.tablaLR1 = function(importTable){
+    _this.tablaLR1 = function(){
         _this.initialize();
 
 
@@ -261,6 +263,9 @@ function lr1(){
                         tableValue += contador;                                       
                         vertical.set(s, tableValue);
                     }
+                }
+                else{
+                    vertical.set(s,"");
                 }   
 
                 
@@ -271,15 +276,105 @@ function lr1(){
                       
         }
 
-        if(importTable !== undefined)
-            return {conjuntos: allSets, idsConjuntos: nonRepeated};
+        _this.setsLALR = [...allSets];
+        _this.idSetLALR = nonRepeated;
 
         _this.setReductions(allSets,nonRepeated,finalTable);
         return finalTable;
     }
 
-    _this.checkExpression = function(expression){
-        var tablaResultado=_this.tablaLR1();
+    _this.identificaKernel = function(conjunto){
+        var identificadoresParciales = [];
+        var identicadorConjuntoKernel = "";
+        for(var elemento of conjunto)
+            identificadoresParciales.push(elemento.rule.toString());
+        identificadoresParciales.sort();
+        identicadorConjuntoKernel = identificadoresParciales.toString();
+        return identicadorConjuntoKernel;
+    }
+
+    _this.reductionsLALR= function(stateElement,resultlr1){
+        for(var edoConElementos of stateElement){
+            for(var elemento of edoConElementos[1]){
+                var arr_aux = [...elemento.rule];
+                if(arr_aux[arr_aux.length - 1] === '.'){                
+                    arr_aux.pop();                                      
+                    var numReduccion = "r";                             
+                    numReduccion += _this.ruleNum.get(arr_aux.toString());
+                    var filaTabla = edoConElementos[0];
+                    var colTabla = resultlr1.get("" + filaTabla);           
+
+                    colTabla.set(elemento.terminal, numReduccion);          
+                }
+            }
+        }
+    }
+
+    _this.tablaLALR= function(){
+        var resultlr1 = _this.tablaLR1();
+
+        var stateElement = new Map()
+        var newStates = new Map();
+        var unique = new Map();
+        //var idKernel = "";
+        
+        for(var conjunto of _this.setsLALR){
+            var idKernel = _this.identificaKernel(conjunto);
+            var idSet = _this.idSetLALR.get(objectHash.sha1(conjunto)) + "";
+            if(!unique.has(idKernel)){
+                unique.set(idKernel, idSet);
+                newStates.set(idSet, idSet);
+                stateElement.set(idSet, conjunto);
+            }else{
+                var getKernel = unique.get(idKernel);
+                newStates.set(idSet, getKernel);
+                var aux_e = stateElement.get(getKernel);
+                for(var e of conjunto){
+                    aux_e.push(e);
+                }
+                resultlr1.delete(idSet + "");
+            }
+        }
+
+        for(var row of resultlr1){
+            for(var vertical of row[1]){
+                if(vertical[1].length === 0){
+                    continue;
+                }else if(vertical[1][0] === "r"){
+
+                    var aux_space = resultlr1.get(row[0]);
+                    aux_space.set(vertical[0], "");
+
+                }else if(vertical[1][0] === "d"){
+
+                    var aux_space = resultlr1.get(row[0]);
+                    var pastState="";
+                    for(var s = 1; s < vertical[1].length; s++){
+                        pastState = pastState + vertical[1][s] + "";
+                    }
+                    var nuevoDesplazamiento = "d" + newStates.get(pastState + "");
+
+                    aux_space.set(vertical[0], nuevoDesplazamiento);
+                }else{
+                    var aux_space = resultlr1.get(row[0]);
+                    var pastState = "";
+                    var newState = "";
+                    for(var s = 0; s < vertical[1].length; s++){
+                        pastState += vertical[1][s] + "";
+                    }
+                    newState = newStates.get(pastState + "");
+                    aux_space.set(vertical[0], newState);
+                }
+            }
+        }
+
+        //var gramaticaNumerada = numeraReglasGramatica(producciones);
+        _this.reductionsLALR(stateElement,resultlr1); 
+        return resultlr1;
+    }
+
+    _this.checkExpression = function(){
+        var tablaResultado=_this.tablaLALR();
         var stack=[];
         stack.push('0');
         // var index =0;

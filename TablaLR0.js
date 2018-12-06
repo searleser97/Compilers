@@ -42,7 +42,7 @@ function lr0(){
 
     _this.initialize = function(){
         //_this.symbols = [..._this.terminals];
-
+        //_this.terminals.add('$');
         for(var e of _this.terminals)
             (_this.symbols).add(e);
 
@@ -278,6 +278,9 @@ function lr0(){
                         c.set(s, cadena);          
                     }
                 }
+                else{
+                	c.set(s,"");
+                }
             }
             var idCurrent = "";
             idCurrent += nonRepeated.get(objectHash.sha1(mainSet));
@@ -327,7 +330,7 @@ function lr0(){
             var valor = tablaResultado.get(e).get(c);
             console.log("Nuestro valor obtenido es "+valor);
             if(valor === undefined){
-                console.log("ERROR");
+                alert("ERROR");
                 break;
             }
             if(valor[0] === 'd'){
@@ -343,10 +346,11 @@ function lr0(){
             }
             else if(valor[0] === 'r'){
                 if(valor[1] === '0'){
-                    console.log('Cadena valida');
+                    alert('Cadena valida');
                     break;
                 }
-                var regla = _this.numRule.get(valor[1]);
+                var aux_arr = valor.slice(1);
+                var regla = _this.numRule.get(aux_arr);
                 console.log("Conseguimos a la regla");
                 console.log(regla);
                 

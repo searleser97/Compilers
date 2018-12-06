@@ -13,11 +13,11 @@ var globalAutomaton = null;
 // createThirdAutomaton();
 // createFourthAutomaton();
 
-$( document ).ready(function() {
-    let selected = $('#sel_automata_1').val();
-    if (selected != null || selected != undefined) {
-      createFSMDiagram(automatas[selected]);
-    }
+$(document).ready(function () {
+  let selected = $('#sel_automata_1').val();
+  if (selected != null || selected != undefined) {
+    createFSMDiagram(automatas[selected]);
+  }
 });
 
 function populateSelects() {
@@ -27,11 +27,11 @@ function populateSelects() {
   $('#sel_automata_2').html('');
   for (let i = 0; i < automatas.length; i++) {
     let opt = new Option(i, i);
-    opt.id = "Option"+i;
-    if (automatas[i] == null || automatas[i] == undefined){
+    opt.id = "Option" + i;
+    if (automatas[i] == null || automatas[i] == undefined) {
       $(opt).attr('disabled', true);
-      $(opt).addClass('opt'+i);
-    }else{
+      $(opt).addClass('opt' + i);
+    } else {
       indexLast = i;
     }
     $('#sel_automata_to_use').append($(opt).clone());
@@ -120,13 +120,13 @@ $('#submit').click(function () {
     case 'transformToAFD':
       var usados = new Set();
       var value = 0;
-      if($( "#evalExprBtn" ).hasClass( "regexToDFA" )){
+      if ($("#evalExprBtn").hasClass("regexToDFA")) {
         automataA = automatas[$('#sel_automata_to_use').val()];
       }
-      for (var e of automataA.aceptados){
+      for (var e of automataA.aceptados) {
         var nToken = "";
-        while (nToken == "" || nToken == null || usados.has(nToken)){
-          nToken = prompt("Ingrese el token del estado "+e.id+": ", value+=10);
+        while (nToken == "" || nToken == null || usados.has(nToken)) {
+          nToken = prompt("Ingrese el token del estado " + e.id + ": ", value += 10);
         }
         e.token = parseInt(nToken, 10);
         usados.add(nToken);
@@ -147,7 +147,7 @@ $('#sel_automata_to_use').change(function () {
   if (automatas[selected].afd === true) {
     $('#buttonTable').attr('disabled', false);
     $('#lexicEvalBtn').attr('disabled', false);
-  }else{
+  } else {
     $('#buttonTable').attr('disabled', true);
     $('#lexicEvalBtn').attr('disabled', true);
   }
@@ -168,19 +168,19 @@ $('#lexicEvalBtn').click(function () {
   $('#tokensBox').attr("hidden", false);
   $('#strBox').attr("hidden", false);
   $('#strOutput').text(strToEval);
-  if($( "#evalExprBtn" ).hasClass( "evalArit" ) || $( "#evalExprBtn" ).hasClass( "regexToDFA" ) || $( "#evalExprBtn" ).hasClass( "generateGrammar" )){
+  if ($("#evalExprBtn").hasClass("evalArit") || $("#evalExprBtn").hasClass("regexToDFA") || $("#evalExprBtn").hasClass("generateGrammar")) {
     $('#evalExprBox').attr("hidden", false);
   }
 });
 
-$(document).on('click', '.showTable', function() {
+$(document).on('click', '.showTable', function () {
   let automata = automatas[$('#sel_automata_to_use').val()];
   showTable(generateTableFromAFD(automata, fsm));
   $("#buttonTable").html('Ocultar Tabla');
   $(this).removeClass('showTable').addClass('dropTable');
 });
 
-$(document).on('click', '.dropTable', function() {
+$(document).on('click', '.dropTable', function () {
   dropTable();
   $("#buttonTable").html('Mostrar Tabla');
   $(this).removeClass('dropTable').addClass('showTable');
@@ -188,27 +188,27 @@ $(document).on('click', '.dropTable', function() {
 
 $('#evalExprBtn').click(function () {
   let vSelected = $('#sel_automata_to_use').val();
-  if($( "#evalExprBtn" ).hasClass( "evalArit" )){
-    alert("El resultado es: "+ new EvalExpAr(automatas[vSelected], strToEval).AnalizarExp()); 
+  if ($("#evalExprBtn").hasClass("evalArit")) {
+    alert("El resultado es: " + new EvalExpAr(automatas[vSelected], strToEval).AnalizarExp());
     populateSelects();
-    $("#sel_automata_to_use option").each(function(index){
+    $("#sel_automata_to_use option").each(function (index) {
       if ($(this).val() == vSelected) {
         $(this).attr('selected', 'selected');
       }
     });
-  }else if($( "#evalExprBtn" ).hasClass( "regexToDFA" )){
+  } else if ($("#evalExprBtn").hasClass("regexToDFA")) {
     addAutomata(new EvalRegex(automatas[$('#sel_automata_to_use').val()], strToEval).AnalizarExp());
     populateSelects();
-    $("#sel_automata_to_use option").each(function(index){
+    $("#sel_automata_to_use option").each(function (index) {
       if ($(this).val() == vSelected) {
         $(this).attr('selected', 'selected');
       }
     });
-  }else if($( "#evalExprBtn" ).hasClass( "generateGrammar" )){
+  } else if ($("#evalExprBtn").hasClass("generateGrammar")) {
     let grammarMap = new GenGramaticas(automatas[$('#sel_automata_to_use').val()], strToEval).AnalizarExp();
     if (grammarMap == null) {
       alert("ERROR");
-    }else{
+    } else {
       console.log(grammarMap);
       let grammar = new Grammar();
       console.log(grammar);
@@ -219,7 +219,7 @@ $('#evalExprBtn').click(function () {
       globalGrammar = grammar;
     }
     populateSelects();
-    $("#sel_automata_to_use option").each(function(index){
+    $("#sel_automata_to_use option").each(function (index) {
       if ($(this).val() == vSelected) {
         $(this).attr('selected', 'selected');
       }
@@ -227,7 +227,7 @@ $('#evalExprBtn').click(function () {
   }
 });
 
-$(document).on('click', '#HomeSide', function() {
+$(document).on('click', '#HomeSide', function () {
   $(this).addClass('active');
   $('#groupAutomaton').attr("hidden", false);
   $('#TablesSide').removeClass('active');
@@ -241,27 +241,27 @@ $(document).on('click', '#HomeSide', function() {
   populateSelects();
   $('#sel_automata_1').attr("hidden", false);
   $('#sel_automata_2').attr("hidden", false);
-    $('#operations').attr('hidden', false);
+  $('#operations').attr('hidden', false);
   $('#submit').attr("hidden", false);
   $('#tokensBox').attr("hidden", true);
   $('#strBox').attr("hidden", true);
   $('#evalExprBox').attr("hidden", true);
   $('#strOutput').text("");
-    $('#BasicOption').attr('disabled', false);
-    $('#JoinOption').attr('disabled', false);
-    $('#superJoinOption').attr('disabled', false);
-    $('#ConcatenateOption').attr('disabled', false);
-    $('#KleeneOption').attr('disabled', false);
-    $('#PositiveOption').attr('disabled', false);
-    $('#InterrogativeOption').attr('disabled', false);
-    $('#sidebar').removeClass('active');
-    $('.overlay').removeClass('active');
+  $('#BasicOption').attr('disabled', false);
+  $('#JoinOption').attr('disabled', false);
+  $('#superJoinOption').attr('disabled', false);
+  $('#ConcatenateOption').attr('disabled', false);
+  $('#KleeneOption').attr('disabled', false);
+  $('#PositiveOption').attr('disabled', false);
+  $('#InterrogativeOption').attr('disabled', false);
+  $('#sidebar').removeClass('active');
+  $('.overlay').removeClass('active');
   $('#grammarFile').attr("hidden", true);
   $('#groupGrammar').attr("hidden", true);
   $('#automatonFile').attr("hidden", false);
 });
 
-$(document).on('click', '#CalcSide', function() {
+$(document).on('click', '#CalcSide', function () {
   $(this).addClass('active');
   $('#groupAutomaton').attr("hidden", false);
   $('#TablesSide').removeClass('active');
@@ -276,22 +276,22 @@ $(document).on('click', '#CalcSide', function() {
   $('#sel_automata_1').attr("hidden", true);
   $('#sel_automata_2').attr("hidden", true);
   $('#submit').attr("hidden", true);
-    $('#operations').attr('hidden', true);
+  $('#operations').attr('hidden', true);
   $('#tokensBox').attr("hidden", true);
   $('#strBox').attr("hidden", true);
   $('#evalExprBox').attr("hidden", true);
   $('#strOutput').text("");
-    $('#evalExprBtn').removeClass('regexToDFA');
-    $('#evalExprBtn').removeClass('generateGrammar');
-    $('#evalExprBtn').addClass('evalArit');
-    $('#sidebar').removeClass('active');
-    $('.overlay').removeClass('active');
+  $('#evalExprBtn').removeClass('regexToDFA');
+  $('#evalExprBtn').removeClass('generateGrammar');
+  $('#evalExprBtn').addClass('evalArit');
+  $('#sidebar').removeClass('active');
+  $('.overlay').removeClass('active');
   $('#grammarFile').attr("hidden", true);
   $('#groupGrammar').attr("hidden", true);
   $('#automatonFile').attr("hidden", false);
 });
 
-$(document).on('click', '#RegexSide', function() {
+$(document).on('click', '#RegexSide', function () {
   $(this).addClass('active');
   $('#groupAutomaton').attr("hidden", false);
   $('#TablesSide').removeClass('active');
@@ -306,29 +306,29 @@ $(document).on('click', '#RegexSide', function() {
   $('#sel_automata_1').attr("hidden", true);
   $('#sel_automata_2').attr("hidden", true);
   $('#submit').attr("hidden", false);
-    $('#operations').attr('hidden', false);
+  $('#operations').attr('hidden', false);
   $('#tokensBox').attr("hidden", true);
   $('#strBox').attr("hidden", true);
   $('#evalExprBox').attr("hidden", true);
   $('#strOutput').text("");
-    $('#BasicOption').attr('disabled', true);
-    $('#JoinOption').attr('disabled', true);
-    $('#superJoinOption').attr('disabled', true);
-    $('#ConcatenateOption').attr('disabled', true);
-    $('#KleeneOption').attr('disabled', true);
-    $('#PositiveOption').attr('disabled', true);
-    $('#InterrogativeOption').attr('disabled', true);
-    $('#evalExprBtn').removeClass('evalArit');
-    $('#evalExprBtn').removeClass('generateGrammar');
-    $('#evalExprBtn').addClass('regexToDFA');
-    $('#sidebar').removeClass('active');
-    $('.overlay').removeClass('active');
+  $('#BasicOption').attr('disabled', true);
+  $('#JoinOption').attr('disabled', true);
+  $('#superJoinOption').attr('disabled', true);
+  $('#ConcatenateOption').attr('disabled', true);
+  $('#KleeneOption').attr('disabled', true);
+  $('#PositiveOption').attr('disabled', true);
+  $('#InterrogativeOption').attr('disabled', true);
+  $('#evalExprBtn').removeClass('evalArit');
+  $('#evalExprBtn').removeClass('generateGrammar');
+  $('#evalExprBtn').addClass('regexToDFA');
+  $('#sidebar').removeClass('active');
+  $('.overlay').removeClass('active');
   $('#grammarFile').attr("hidden", true);
   $('#groupGrammar').attr("hidden", true);
   $('#automatonFile').attr("hidden", false);
 });
 
-$(document).on('click', '#GenGramSide', function() {
+$(document).on('click', '#GenGramSide', function () {
   $(this).addClass('active');
   $('#groupAutomaton').attr("hidden", false);
   $('#TablesSide').removeClass('active');
@@ -343,29 +343,29 @@ $(document).on('click', '#GenGramSide', function() {
   $('#sel_automata_1').attr("hidden", true);
   $('#sel_automata_2').attr("hidden", true);
   $('#submit').attr("hidden", true);
-    $('#operations').attr('hidden', true);
+  $('#operations').attr('hidden', true);
   $('#tokensBox').attr("hidden", true);
   $('#strBox').attr("hidden", true);
   $('#evalExprBox').attr("hidden", true);
   $('#strOutput').text("");
-    $('#BasicOption').attr('disabled', true);
-    $('#JoinOption').attr('disabled', true);
-    $('#superJoinOption').attr('disabled', true);
-    $('#ConcatenateOption').attr('disabled', true);
-    $('#KleeneOption').attr('disabled', true);
-    $('#PositiveOption').attr('disabled', true);
-    $('#InterrogativeOption').attr('disabled', true);
-    $('#evalExprBtn').removeClass('evalArit');
-    $('#evalExprBtn').removeClass('regexToDFA');
-    $('#evalExprBtn').addClass('generateGrammar');
-    $('#sidebar').removeClass('active');
-    $('.overlay').removeClass('active');
+  $('#BasicOption').attr('disabled', true);
+  $('#JoinOption').attr('disabled', true);
+  $('#superJoinOption').attr('disabled', true);
+  $('#ConcatenateOption').attr('disabled', true);
+  $('#KleeneOption').attr('disabled', true);
+  $('#PositiveOption').attr('disabled', true);
+  $('#InterrogativeOption').attr('disabled', true);
+  $('#evalExprBtn').removeClass('evalArit');
+  $('#evalExprBtn').removeClass('regexToDFA');
+  $('#evalExprBtn').addClass('generateGrammar');
+  $('#sidebar').removeClass('active');
+  $('.overlay').removeClass('active');
   $('#grammarFile').attr("hidden", false);
   $('#groupGrammar').attr("hidden", true);
   $('#automatonFile').attr("hidden", true);
 });
 
-$(document).on('click', '#TablesSide', function() {
+$(document).on('click', '#TablesSide', function () {
   $(this).addClass('active');
   $('#groupAutomaton').attr("hidden", true);
   $('#CalcSide').removeClass('active');
@@ -383,36 +383,36 @@ $('#downloadBtn').click(function () {
   var a = document.createElement("a");
   // console.log(automata);
   var cache = [];
-  var table = generateTableFromAFD(automata,fsm);
+  var table = generateTableFromAFD(automata, fsm);
   // console.log(table);
-  var file = new Blob([JSON.stringify(table)], {type: 'text/plain;charset=utf-8'});
+  var file = new Blob([JSON.stringify(table)], { type: 'text/plain;charset=utf-8' });
   cache = null;
   a.href = URL.createObjectURL(file);
   var d = new Date();
-  var date = d.getDate().toString()+"-";
-  date+=(d.getMonth()+1).toString()+"-";
-  date+=d.getFullYear().toString()+"-";
-  date+=d.getHours().toString()+":";
-  date+=d.getMinutes().toString();
-  a.download = 'automata'+date+'.json';
+  var date = d.getDate().toString() + "-";
+  date += (d.getMonth() + 1).toString() + "-";
+  date += d.getFullYear().toString() + "-";
+  date += d.getHours().toString() + ":";
+  date += d.getMinutes().toString();
+  a.download = 'automata' + date + '.json';
   a.click();
 });
 
 $('#loadBtn').change(function () {
 
   const fileToLoad = $('#loadBtn').prop('files')[0];
-    
+
   const fileReader = new FileReader();
   fileReader.readAsText(fileToLoad, "UTF-8");
-  fileReader.onload = function(fileLoadedEvent) {
-      const textFromFileLoaded = fileLoadedEvent.target.result;
-      // console.log(textFromFileLoaded);
-      const json = JSON.parse(textFromFileLoaded);
-      // console.log(json);
-      addAutomata(generateAFDFromTable(json));
-      populateSelects();
+  fileReader.onload = function (fileLoadedEvent) {
+    const textFromFileLoaded = fileLoadedEvent.target.result;
+    // console.log(textFromFileLoaded);
+    const json = JSON.parse(textFromFileLoaded);
+    // console.log(json);
+    addAutomata(generateAFDFromTable(json));
+    populateSelects();
   }
-  
+
   // var json_aux = '{"25":{"+":26,"-":27,"*":28,"/":29,"(":30,")":31,"[0-9]":32,".":null,"TOK":-1},"26":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":10},"27":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":20},"28":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":30},"29":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":40},"30":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":50},"31":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":null,".":null,"TOK":60},"32":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":32,".":33,"TOK":70},"33":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":34,".":null,"TOK":-1},"34":{"+":null,"-":null,"*":null,"/":null,"(":null,")":null,"[0-9]":34,".":null,"TOK":70}}';
   // json = JSON.parse(json_aux);
   // console.log(json);
@@ -422,7 +422,7 @@ $('#loadBtn').change(function () {
 });
 
 $('#downloadGrammarBtn').click(function () {
-  if (globalGrammar == null) { 
+  if (globalGrammar == null) {
     alert("No se encontró gramática para descargar");
   } else {
     // console.log(globalGrammar);
@@ -433,16 +433,16 @@ $('#downloadGrammarBtn').click(function () {
         return [...value];
       }
       return value;
-    })], {type: 'text/plain;charset=utf-8'});
+    })], { type: 'text/plain;charset=utf-8' });
     cache = null;
     a.href = URL.createObjectURL(file);
     var d = new Date();
-    var date = d.getDate().toString()+"-";
-    date+=(d.getMonth()+1).toString()+"-";
-    date+=d.getFullYear().toString()+"-";
-    date+=d.getHours().toString()+":";
-    date+=d.getMinutes().toString();
-    a.download = 'gramatica'+date+'.json';
+    var date = d.getDate().toString() + "-";
+    date += (d.getMonth() + 1).toString() + "-";
+    date += d.getFullYear().toString() + "-";
+    date += d.getHours().toString() + ":";
+    date += d.getMinutes().toString();
+    a.download = 'gramatica' + date + '.json';
     a.click();
   }
 });
@@ -450,31 +450,31 @@ $('#downloadGrammarBtn').click(function () {
 $('#loadGrammarBtn').change(function () {
 
   const fileToLoad = $('#loadGrammarBtn').prop('files')[0];
-    
+
   const fileReader = new FileReader();
   fileReader.readAsText(fileToLoad, "UTF-8");
-  fileReader.onload = function(fileLoadedEvent) {
-      const textFromFileLoaded = fileLoadedEvent.target.result;
-      // console.log(textFromFileLoaded);
-      const json = JSON.parse(textFromFileLoaded);
-      // console.log(json);
-      globalGrammar = new Grammar(json);
-      // console.log(globalGrammar);
+  fileReader.onload = function (fileLoadedEvent) {
+    const textFromFileLoaded = fileLoadedEvent.target.result;
+    // console.log(textFromFileLoaded);
+    const json = JSON.parse(textFromFileLoaded);
+    // console.log(json);
+    globalGrammar = new Grammar(json);
+    // console.log(globalGrammar);
   }
 });
 
 $('#loadRulesBtn').change(function () {
 
   const fileToLoad = $('#loadRulesBtn').prop('files')[0];
-    
+
   const fileReader = new FileReader();
   fileReader.readAsText(fileToLoad, "UTF-8");
-  fileReader.onload = function(fileLoadedEvent) {
+  fileReader.onload = function (fileLoadedEvent) {
     const textFromFileLoaded = fileLoadedEvent.target.result;
     let grammarMap = new GenGramaticas(createFifthAutomaton(), textFromFileLoaded).AnalizarExp();
     if (grammarMap == null) {
       alert("ERROR");
-    }else{
+    } else {
       // console.log(grammarMap);
       let grammar = new Grammar();
       // console.log(grammar);
@@ -490,10 +490,10 @@ $('#loadRulesBtn').change(function () {
 $('#loadAutomatonBtn').change(function () {
 
   const fileToLoad = $('#loadAutomatonBtn').prop('files')[0];
-    
+
   const fileReader = new FileReader();
   fileReader.readAsText(fileToLoad, "UTF-8");
-  fileReader.onload = function(fileLoadedEvent) {
+  fileReader.onload = function (fileLoadedEvent) {
     const textFromFileLoaded = fileLoadedEvent.target.result;
     // console.log(textFromFileLoaded);
     const json = JSON.parse(textFromFileLoaded);
@@ -504,12 +504,14 @@ $('#loadAutomatonBtn').change(function () {
   }
 });
 
+var tablaDeTablas = [];
+
 $('#evalGrammarExprBtn').click(function () {
   if (globalGrammar == null) {
     alert("Por favor carga una serie de reglas primero");
-  }else if (globalAutomaton == null) {
+  } else if (globalAutomaton == null) {
     alert("Por favor carga un autómata primero");
-  }else{
+  } else {
     strToEval = "";
     while (strToEval == "" || strToEval == null) {
       strToEval = prompt("Ingrese la cadena a evaluar: ", "cadena");
@@ -518,37 +520,89 @@ $('#evalGrammarExprBtn').click(function () {
     let aToken = [];
     let tokens = lexicalAnalysis(globalAutomaton, strToEval);
     console.log(tokens);
-    tokens.forEach(function(token) {
+    tokens.forEach(function (token) {
       aToken.push(TOKEN[token]);
     });
     console.log(aToken);
     let selected = $('#selectTable').find(":selected").text();
+    tablaDeTablas = [];
     let auxLexic = new Lexer(globalAutomaton, strToEval);
     console.log(selected);
     let increasedGrammar = globalGrammar;
     switch (selected) {
       case 'LL1':
         let tablaLL = new CFG();
-        tablaLL.constructor(globalGrammar.rules,globalGrammar.terminales,globalGrammar.noTerminales,globalGrammar.inicioGramatica, auxLexic);
+        tablaLL.constructor(globalGrammar.rules, globalGrammar.terminales, globalGrammar.noTerminales, globalGrammar.inicioGramatica, auxLexic);
         tablaLL.checkExpression();
         break;
       case 'LR0':
         increasedGrammar.increase();
         let tablaLR0 = new lr0();
-        tablaLR0.constructor(increasedGrammar.rules,increasedGrammar.terminales,increasedGrammar.noTerminales,increasedGrammar.inicioGramatica, auxLexic);
+        tablaLR0.constructor(increasedGrammar.rules, increasedGrammar.terminales, increasedGrammar.noTerminales, increasedGrammar.inicioGramatica, auxLexic);
+        console.log('tablar LR0');
         console.log(tablaLR0.tablaLR());
+        createTable(tablaLR0.tablaLR());
         tablaLR0.checkExpression(aToken);
         break;
       case 'LR1':
         increasedGrammar.increase();
         let tablaLR1 = new lr1();
-        tablaLR1.constructor(increasedGrammar.rules,increasedGrammar.terminales,increasedGrammar.noTerminales,increasedGrammar.inicioGramatica, auxLexic);
+        tablaLR1.constructor(increasedGrammar.rules, increasedGrammar.terminales, increasedGrammar.noTerminales, increasedGrammar.inicioGramatica, auxLexic);
         console.log(tablaLR1.tablaLR1());
         tablaLR1.checkExpression(aToken);
         break;
       case 'LALR':
-        // Do something
+        increasedGrammar.increase();
+        let tabla = new lalr();
+        tabla.constructor(increasedGrammar.rules, increasedGrammar.terminales, increasedGrammar.noTerminales, increasedGrammar.inicioGramatica, auxLexic);
+        console.log(tabla.tablaLALR());
+        tabla.checkExpression(aToken);
         break;
     }
   }
 });
+
+function createTable(obj) {
+  console.log('AAAA', obj);
+  var keysArr = [...obj.keys()].sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+  maxx = 0;
+  for (key of keysArr) {
+    curLength = [...(obj.get(key).keys())].length;
+    maxx = curLength > maxx ? curLength : maxx;
+  }
+  var subkeys;
+  for (key of keysArr) {
+    subkeys = [...(obj.get(key).keys())].sort();
+    row = [];
+    if (maxx > subkeys.length)
+      row.push("");
+    for (subkey of subkeys) {
+      row.push(obj.get(key).get(subkey));
+    }
+    tablaDeTablas.push(row);
+  }
+  console.log(tablaDeTablas);
+  debugger;
+  var table = $('<table style="margin-top: 50px;" class="table"></table>');
+  row = $('<tr><td>-</td></tr>');
+  for (var j = 0; j < subkeys.length; j++) {
+    var rowData = $('<td></td>').text(subkeys[j]);
+    row.append(rowData);
+  }
+  table.append(row);
+  for (var i = 0; i < tablaDeTablas.length; i++) {
+    row = $('<tr><td>' + i + '</td></tr>');
+    for (var j = 0; j < tablaDeTablas[i].length; j++) {
+      var rowData = $('<td></td>').text(tablaDeTablas[i][j]);
+      row.append(rowData);
+    }
+    table.append(row);
+  }
+
+  if ($('table').length) {
+    $("#someContainer tr:first").after(row);
+  }
+  else {
+    $('#someContainer').append(table);
+  }
+}
