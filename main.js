@@ -545,6 +545,7 @@ $('#evalGrammarExprBtn').click(function () {
         let tabla = new lalr();
         tabla.constructor(increasedGrammar.rules, increasedGrammar.terminales, increasedGrammar.noTerminales, increasedGrammar.inicioGramatica, auxLexic);
         console.log(tabla.tablaLALR());
+        createTable(tabla.tablaLALR());
         tabla.checkExpression(aToken);
         break;
     }
