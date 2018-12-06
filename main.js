@@ -534,6 +534,8 @@ $('#evalGrammarExprBtn').click(function () {
         let tablaLL = new CFG();
         tablaLL.constructor(globalGrammar.rules, globalGrammar.terminales, globalGrammar.noTerminales, globalGrammar.inicioGramatica, auxLexic);
         tablaLL.checkExpression();
+        console.log(tablaLL.tableLL);
+        createTable(tablaLL.tableLL);
         break;
       case 'LR0':
         increasedGrammar.increase();
